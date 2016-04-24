@@ -1,0 +1,36 @@
+tr {
+width: 100%;
+display: inline-table;
+}
+
+.page-container {
+  .page-bg {
+    padding: 15px;
+    background-color: #EFEFEF;
+  }
+}
+
+body {
+  background-color: #e6e6e6
+}
+.padding{
+    margin:15px;
+}
+.top{
+    margin-top:15px;
+}
+.tbody{
+overflow-y: scroll;
+height: 400px;
+margin-right: 20px;
+  margin-bottom: 20px;
+  width: auto;
+position: absolute;
+}
+.centered-text {
+    text-align:center
+}
+.code-div {
+float:left;
+width:100%;
+}
