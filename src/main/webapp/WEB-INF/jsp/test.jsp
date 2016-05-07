@@ -36,10 +36,10 @@
 		</div>
 		<div class="row">
 			<div class="padding col-sm-12">
-				<div class="col-sm-5">
+				<div class="col-sm-4">
 					<p>VIIMANE SÜNKRONISEERIMINE 12 h tagasi</p>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-sm-2">
 					<button type="button" class="btn btn-primary" data-toggle="modal"
 						data-target="#credentials">SÜNKRONISEERI NÜÜD</button>
 					<div class="modal fade" id="credentials" role="dialog">
@@ -67,6 +67,24 @@
 							</div>
 						</div>
 					</div>
+				</div>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td>Eira</td>
+							<td style="padding:5px;"><input type="text" name="k" value="13"/></td>
+							<td>märki</td>
+						</tr>
+						<tr>
+							<td>Sobita</td>
+							<td style="padding:5px;"><input type="text" name="t" value="39"/></td>
+							<td>märki</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-sm-3">
+					<button type="button" class="btn btn-primary"
+						data-target="#credentials">ANALÜÜSI</button>
 				</div>
 			</div>
 		</div>

@@ -24,8 +24,8 @@ public class Task {
 	private Timestamp creationTime;
 	private Timestamp lastSyncTime;
 
-	@OneToMany(targetEntity = Round.class, fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "task_id")
+	@OneToMany(targetEntity = Round.class, mappedBy="task_id", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	// @JoinColumn(name = "task_id")
 	private List<Round> rounds = new ArrayList<Round>();
 
 	@OneToMany(targetEntity = SavedComparison.class, fetch = FetchType.EAGER, cascade = {

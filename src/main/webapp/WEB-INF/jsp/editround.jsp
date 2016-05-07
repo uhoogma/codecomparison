@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -26,52 +27,75 @@
 						<p>UUE VOORU SISESTAMINE</p>
 					</div>
 				</div>
-				<div class="row">
-					<div class="padding alert alert-danger">
-						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-						<strong>Danger!</strong> This alert box could indicate a dangerous
-						or potentially negative action.
+				<c:if test="${not empty errors}">
+					<div class="row bottom">
+
+						<div class="padding alert alert-danger">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Danger!</strong>
+							<c:forEach items="${roundForm.errors}" var="person">
+								<c:out value="${person}"></c:out>
+								<br />
+							</c:forEach>
+						</div>
 					</div>
-				</div>
+				</c:if>
 				<div style="margin: 20px;">
-					<div class="row">
-						<div class="form-group">
-							<label class="col-sm-3" for="year">aasta</label> <input
-								class="col-sm-9" class="form-control" id="year" type="text">
+					<c:url value="saveRound" var="theAction" />
+					<form:form method="post" action="${theAction}" id="roundForm"
+						modelAttribute="roundForm">
+						<form:input type="hidden" path="round.id" />
+						<div class="row bottom">
+							<div class="form-group">
+								<label class="col-sm-3" for="year">aasta</label>
+								<form:input class="col-sm-9" id="yearBox" path="round.year" />
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="form-group">
-							<label class="col-sm-3" for="semester">semester</label> <input
-								class="col-sm-9" class="form-control" id="semester" type="text">
+						<div class="row bottom">
+							<div class="form-group">
+								<label class="col-sm-3" for="semester">semester</label>
+								<form:input class="col-sm-9" id="semesterBox"
+									path="round.semester" />
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="form-group">
-							<label class="col-sm-3" for="subject">aine nimi</label> <input
-								class="col-sm-9" class="form-control" id="subject" type="text">
+						<div class="row bottom">
+							<div class="form-group">
+								<label class="col-sm-3" for="subject">aine nimi</label>
+								<form:input class="col-sm-9" id="subjectBox"
+									path="round.subject" />
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="form-group">
-							<label class="col-sm-3" for="round">vooru nimi</label> <input
-								class="col-sm-9" class="form-control" id="round" type="text">
+						<div class="row bottom">
+							<div class="form-group">
+								<label class="col-sm-3" for="round">vooru nimi</label>
+								<form:input class="col-sm-9" id="roundNameBox"
+									path="round.roundName" />
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="form-group">
-							<label class="col-sm-3" for="moodle_id">Moodle id</label> <input
-								class="col-sm-9" class="form-control" id="moodle_id" type="text">
+						<div class="row bottom">
+							<div class="form-group">
+								<label class="col-sm-3" for="moodle_id">Moodle id</label>
+								<form:input class="col-sm-9" id="urlBox" path="round.url" />
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div>
-							<button type="button" class="btn btn-info">LOOBU</button>
-							<a href="<c:url value="edittest"/>">
-								<button type="button" class="btn btn-info pull-right">SALVESTA</button>
-							</a>
+						<div class="row">
+							<div>
+								<button type="button" class="btn btn-info">LOOBU</button>
+								<div class="pull-right">
+							
+								<button type="button" class="btn btn-danger" data-toggle="modal"
+									data-target="#confirmDelete">KUSTUTA VOOR JA KOGU
+									SEOTUD INFO</button>
+								<a href="<c:url value="edittest"/>"> <form:input
+										path="addRoundButton" class="btn btn-info"
+										type="submit" value="SALVESTA" />
+											
+								</a>
+								</div>
+							</div>
 						</div>
-					</div>
+					</form:form>
+
 				</div>
 			</div>
 		</div>

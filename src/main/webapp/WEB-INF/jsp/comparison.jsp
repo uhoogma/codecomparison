@@ -25,17 +25,13 @@
 		<div class="container-fluid">
 			<div class="page-bg">
 				<div class="top row">
-					<div class="col-sm-5">
+					<div class="col-sm-12">
 						<a href="<c:url value="index"/>"><button type="button"
 								class="btn btn-default-left">AVALEHT</button></a> <a
 							href="<c:url value="test"/>">
 							<button type="button" class="btn btn-primary">TAGASI
 								ANALÜÜSI JUURDE</button>
 						</a>
-					</div>
-					<div class="col-sm-7">
-						<p>Algoritmid ja andmestruktuurid IA17 IA18 | I231 | 5.
-							koduülesanne | 2015/2016 | Kevadsemester</p>
 					</div>
 				</div>
 				<div class="row">
@@ -50,6 +46,10 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
+						<div>
+							<p>Algoritmid ja andmestruktuurid IA17 IA18 | I231 | 5.
+								koduülesanne | 2015/2016 | Kevadsemester</p>
+						</div>
 						<div>Tudengi nimi | Tudengi Id | Katse Id</div>
 						<div class="code-div">
 							<textarea id="java-code" style="display: none;">
@@ -84,6 +84,10 @@ public class OunitUtil1 {
 					</div>
 
 					<div class="col-sm-6">
+						<div>
+							<p>Algoritmid ja andmestruktuurid IA17 IA18 | I231 | 5.
+								koduülesanne | 2015/2016 | Kevadsemester</p>
+						</div>
 						<div>Tudengi nimi | Tudengi Id | Katse Id</div>
 						<div class="code-div">
 							<textarea id="java-code2" style="display: none;">

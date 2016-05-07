@@ -33,7 +33,10 @@ CREATE TABLE ROUND(
    semester VARCHAR(20) NULL,
    subject VARCHAR(6) NULL,
    roundName VARCHAR(100) NULL,
-   url int NULL
+   url int NULL,
+   FOREIGN KEY (task_id) 
+        REFERENCES task(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE TASK(

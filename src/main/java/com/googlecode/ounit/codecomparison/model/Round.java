@@ -11,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class Round {
@@ -22,8 +25,18 @@ public class Round {
 	private String year;
 	private String semester;
 	private String subject;
+	// @NotEmpty
 	private String roundName;
 	private int url;
+	@Transient
+	private boolean checked;
+	public boolean getChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
 
 	public Round() {
 	}
@@ -84,7 +97,9 @@ public class Round {
 	@Override
 	public String toString() {
 		return "Round [id=" + id + ", task_id=" + task_id + ", year=" + year + ", semester=" + semester + ", subject="
-				+ subject + ", roundName=" + roundName + ", url=" + url + ", attempts=" + attempts + "]";
+				+ subject + ", roundName=" + roundName + ", url=" + url + ", checked=" + checked + ", attempts="
+				+ attempts + "]";
 	}
+
 
 }

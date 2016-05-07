@@ -18,6 +18,9 @@ body {
 .top{
     margin-top:15px;
 }
+.bottom{
+    padding-bottom:15px;
+}
 
 .myTbody{
 overflow-y: scroll;
