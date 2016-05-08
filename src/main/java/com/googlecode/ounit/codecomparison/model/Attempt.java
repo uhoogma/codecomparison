@@ -10,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -26,19 +25,16 @@ public class Attempt {
 	private boolean codeAcquired;
 	private boolean isBoilerPlate;
 
-	@OneToMany(targetEntity = SavedComparison.class, fetch = FetchType.EAGER, cascade = {
+	@OneToMany(targetEntity = SavedComparison.class, mappedBy="firstAttemptId", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "firstAttemptId")
-	private List<SavedComparison> first = new ArrayList<SavedComparison>();
+	private List<SavedComparison> firstAttempt = new ArrayList<SavedComparison>();
 
-	@OneToMany(targetEntity = SavedComparison.class, fetch = FetchType.EAGER, cascade = {
+	@OneToMany(targetEntity = SavedComparison.class,mappedBy="secondAttemptId", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "secondAttemptId")
-	private List<SavedComparison> second = new ArrayList<SavedComparison>();
+	private List<SavedComparison> secondAttempt = new ArrayList<SavedComparison>();
 
-	@OneToMany(targetEntity = AbstractedCode.class, fetch = FetchType.EAGER, cascade = {
+	@OneToMany(targetEntity = AbstractedCode.class,mappedBy="attempt_id", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "attempt_id")
 	private List<AbstractedCode> abstractedCodes = new ArrayList<AbstractedCode>();
 
 	public Attempt() {
@@ -95,8 +91,8 @@ public class Attempt {
 	@Override
 	public String toString() {
 		return "Attempt [id=" + id + ", round_id=" + round_id + ", student_id=" + student_id + ", code=" + code
-				+ ", codeAcquired=" + codeAcquired + ", isBoilerPlate=" + isBoilerPlate + ", first=" + first
-				+ ", second=" + second + ", abstractedCodes=" + abstractedCodes + "]";
+				+ ", codeAcquired=" + codeAcquired + ", isBoilerPlate=" + isBoilerPlate + ", firstAttempt="
+				+ firstAttempt + ", secondAttempt=" + secondAttempt + ", abstractedCodes=" + abstractedCodes + "]";
 	}
-
+	
 }

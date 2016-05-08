@@ -9,11 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class Round {
@@ -25,11 +22,12 @@ public class Round {
 	private String year;
 	private String semester;
 	private String subject;
-	// @NotEmpty
 	private String roundName;
 	private int url;
+
 	@Transient
 	private boolean checked;
+
 	public boolean getChecked() {
 		return checked;
 	}
@@ -41,9 +39,8 @@ public class Round {
 	public Round() {
 	}
 
-	@OneToMany(targetEntity = Attempt.class, fetch = FetchType.EAGER, cascade = {
+	@OneToMany(targetEntity = Attempt.class, mappedBy = "round_id", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "round_id")
 	private List<Attempt> attempts = new ArrayList<Attempt>();
 
 	public Long getId() {
@@ -100,6 +97,5 @@ public class Round {
 				+ subject + ", roundName=" + roundName + ", url=" + url + ", checked=" + checked + ", attempts="
 				+ attempts + "]";
 	}
-
 
 }

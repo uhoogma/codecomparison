@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -20,20 +19,16 @@ public class Version {
 	private Long id;
 	private int abstractionVersionId;
 	private int SimilarityVersionId;
+	private int defaultT;
+	private int defaultK;
 
-	@OneToMany(targetEntity = SavedComparison.class, fetch = FetchType.EAGER, cascade = {
+	@OneToMany(targetEntity = SavedComparison.class, mappedBy = "version_id", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "version_id")
 	private List<SavedComparison> savedComparisons = new ArrayList<SavedComparison>();
 
-	@OneToMany(targetEntity = AbstractedCode.class, fetch = FetchType.EAGER, cascade = {
+	@OneToMany(targetEntity = AbstractedCode.class, mappedBy = "version_id", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "version_id")
 	private List<AbstractedCode> abstractedCodes = new ArrayList<AbstractedCode>();
-
-	@OneToMany(targetEntity = Hash.class, fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "version_id")
-	private List<Hash> hashes = new ArrayList<Hash>();
 
 	public Version() {
 	}
@@ -62,11 +57,27 @@ public class Version {
 		SimilarityVersionId = similarityVersionId;
 	}
 
+	public int getDefaultT() {
+		return defaultT;
+	}
+
+	public void setDefaultT(int defaultT) {
+		this.defaultT = defaultT;
+	}
+
+	public int getDefaultK() {
+		return defaultK;
+	}
+
+	public void setDefaultK(int defaultK) {
+		this.defaultK = defaultK;
+	}
+
 	@Override
 	public String toString() {
 		return "Version [id=" + id + ", abstractionVersionId=" + abstractionVersionId + ", SimilarityVersionId="
-				+ SimilarityVersionId + ", savedComparisons=" + savedComparisons + ", abstractedCodes="
-				+ abstractedCodes + ", hashes=" + hashes + "]";
+				+ SimilarityVersionId + ", defaultT=" + defaultT + ", defaultK=" + defaultK + ", savedComparisons="
+				+ savedComparisons + ", abstractedCodes=" + abstractedCodes + "]";
 	}
 
 }

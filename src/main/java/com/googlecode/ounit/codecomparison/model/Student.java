@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -20,20 +19,17 @@ public class Student {
 	private int moodleId;
 	private String fullName;
 
-	@OneToMany(targetEntity = Attempt.class, fetch = FetchType.EAGER, cascade = {
+	@OneToMany(targetEntity = Attempt.class, mappedBy = "student_id", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "student_id")
 	private List<Attempt> attempts = new ArrayList<Attempt>();
 
-	@OneToMany(targetEntity = SavedComparison.class, fetch = FetchType.EAGER, cascade = {
+	@OneToMany(targetEntity = SavedComparison.class, mappedBy = "firstStudentId", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "firstStudentId")
-	private List<SavedComparison> first = new ArrayList<SavedComparison>();
+	private List<SavedComparison> firstStudent = new ArrayList<SavedComparison>();
 
-	@OneToMany(targetEntity = SavedComparison.class, fetch = FetchType.EAGER, cascade = {
+	@OneToMany(targetEntity = SavedComparison.class, mappedBy = "secondStudentId", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "secondStudentId")
-	private List<SavedComparison> second = new ArrayList<SavedComparison>();
+	private List<SavedComparison> secondStudent = new ArrayList<SavedComparison>();
 
 	public Student() {
 	}
@@ -65,7 +61,7 @@ public class Student {
 	@Override
 	public String toString() {
 		return "Student [id=" + id + ", moodleId=" + moodleId + ", fullName=" + fullName + ", attempts=" + attempts
-				+ ", first=" + first + ", second=" + second + "]";
+				+ ", firstStudent=" + firstStudent + ", secondStudent=" + secondStudent + "]";
 	}
 
 }

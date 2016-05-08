@@ -1,17 +1,10 @@
 package com.googlecode.ounit.codecomparison.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 
 @Entity
 public class AbstractedCode {
@@ -22,10 +15,6 @@ public class AbstractedCode {
 	private Long version_id;
 	@Column(columnDefinition = "TEXT")
 	private String abstractedCode;
-
-	@OneToMany(targetEntity = Hash.class, fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
-	@JoinColumn(name = "abstractedCode_id")
-	private List<Hash> hashes = new ArrayList<Hash>();
 
 	public AbstractedCode() {
 	}
@@ -65,7 +54,7 @@ public class AbstractedCode {
 	@Override
 	public String toString() {
 		return "AbstractedCode [id=" + id + ", attempt_id=" + attempt_id + ", version_id=" + version_id
-				+ ", abstractedCode=" + abstractedCode + ", hashes=" + hashes + "]";
+				+ ", abstractedCode=" + abstractedCode + "]";
 	}
 
 }

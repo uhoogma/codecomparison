@@ -16,9 +16,10 @@ public class SavedComparison {
 	private Long secondStudentId;
 	private Long firstAttemptId;
 	private Long secondAttemptId;
-	private int t;
-	private int k;
-	private double comparisonResult;
+	private double firstToSecondResult;
+	private double secondToFirstResult;
+	private boolean firstToSecondIsInfinite;
+	private boolean secondToFirstIsInfinite;
 
 	public SavedComparison() {
 	}
@@ -79,36 +80,45 @@ public class SavedComparison {
 		this.secondAttemptId = secondAttemptId;
 	}
 
-	public int getT() {
-		return t;
+	public double getFirstToSecondResult() {
+		return firstToSecondResult;
 	}
 
-	public void setT(int t) {
-		this.t = t;
+	public void setFirstToSecondResult(double firstToSecondResult) {
+		this.firstToSecondResult = firstToSecondResult;
 	}
 
-	public int getK() {
-		return k;
+	public double getSecondToFirstResult() {
+		return secondToFirstResult;
 	}
 
-	public void setK(int k) {
-		this.k = k;
+	public void setSecondToFirstResult(double secondToFirstResult) {
+		this.secondToFirstResult = secondToFirstResult;
 	}
 
-	public double getComparisonResult() {
-		return comparisonResult;
+	public boolean isFirstToSecondIsInfinite() {
+		return firstToSecondIsInfinite;
 	}
 
-	public void setComparisonResult(double comparisonResult) {
-		this.comparisonResult = comparisonResult;
+	public void setFirstToSecondIsInfinite(boolean firstToSecondIsInfinite) {
+		this.firstToSecondIsInfinite = firstToSecondIsInfinite;
+	}
+
+	public boolean isSecondToFirstIsInfinite() {
+		return secondToFirstIsInfinite;
+	}
+
+	public void setSecondToFirstIsInfinite(boolean secondToFirstIsInfinite) {
+		this.secondToFirstIsInfinite = secondToFirstIsInfinite;
 	}
 
 	@Override
 	public String toString() {
 		return "SavedComparison [id=" + id + ", task_id=" + task_id + ", version_id=" + version_id + ", firstStudentId="
 				+ firstStudentId + ", secondStudentId=" + secondStudentId + ", firstAttemptId=" + firstAttemptId
-				+ ", secondAttemptId=" + secondAttemptId + ", t=" + t + ", k=" + k + ", comparisonResult="
-				+ comparisonResult + "]";
+				+ ", secondAttemptId=" + secondAttemptId + ", firstToSecondResult=" + firstToSecondResult
+				+ ", secondToFirstResult=" + secondToFirstResult + ", firstToSecondIsInfinite="
+				+ firstToSecondIsInfinite + ", secondToFirstIsInfinite=" + secondToFirstIsInfinite + "]";
 	}
 
 }

@@ -26,6 +26,17 @@ INSERT INTO PERSON ( givenName, sureName, code, customerType)
   VALUES ('Mad' ,'Max','789', 'customerType.corporate');
 
 -- codecomparison
+
+CREATE TABLE TASK(
+   id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+   taskName VARCHAR(50) NULL,
+   active boolean NULL,
+   creationTime Timestamp NOT NULL,
+   lastSyncTime Timestamp NULL,
+   t int NOT NULL,
+   k int NOT NULL
+);
+
 CREATE TABLE ROUND(
    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
    task_id BIGINT NULL,
@@ -35,16 +46,30 @@ CREATE TABLE ROUND(
    roundName VARCHAR(100) NULL,
    url int NULL,
    FOREIGN KEY (task_id) 
-        REFERENCES task(id)
+        REFERENCES TASK(id)
         ON DELETE CASCADE
 );
 
-CREATE TABLE TASK(
+CREATE TABLE VERSION(
    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-   taskName VARCHAR(50) NULL,
-   active boolean NULL,
-   creationTime Timestamp NOT NULL,
-   lastSyncTime Timestamp NULL
+   abstractionVersionId int NOT NULL,
+   SimilarityVersionId int NOT NULL,
+   defaultT int NOT NULL,
+   defaultK int NOT NULL
+);
+
+CREATE TABLE SAVEDCOMPARISON(
+   id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+   task_id BIGINT NOT NULL,
+   version_id BIGINT NOT NULL,
+   firstStudentId BIGINT NOT NULL,
+   secondStudentId BIGINT NOT NULL,
+   firstAttemptId BIGINT NOT NULL,
+   secondAttemptId BIGINT NOT NULL,
+   firstToSecondResult DOUBLE NOT NULL,
+   secondToFirstResult DOUBLE NOT NULL,
+   firstToSecondIsInfinite boolean NULL,
+   secondToFirstIsInfinite boolean NULL
 );
 
 CREATE TABLE ATTEMPT(
@@ -58,40 +83,81 @@ CREATE TABLE ATTEMPT(
 
 CREATE TABLE STUDENT(
    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-   moodleId int not NULL,
+   moodleId int NOT NULL,
    fullName VARCHAR(100)
 );
 
-CREATE TABLE SavedComparison(
-   id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-   task_id BIGINT not NULL,
-   version_id BIGINT not NULL,
-   firstStudentId BIGINT not NULL,
-   secondStudentId BIGINT not NULL,
-   firstAttemptId BIGINT not NULL,
-   secondAttemptId BIGINT not NULL,
-   t int not null,
-   k int not null,
-   comparisonResult DOUBLE not null
-);
-
-CREATE TABLE AbstractedCode(
+CREATE TABLE ABSTRACTEDCODE(
    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
    attempt_id BIGINT not NULL,
    version_id BIGINT not NULL,
    abstractedCode TEXT NULL
 );
 
-CREATE TABLE Hash(
-   id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-   abstractedCode_id BIGINT not NULL,
-   version_id BIGINT not NULL,
-   hashPosition int NULL,
-   hashValue int NULL
-);
+-- codecomparison constraints
 
-CREATE TABLE Version(
-   id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-   abstractionVersionId int not NULL,
-   SimilarityVersionId int not NULL
-);
+ALTER TABLE ROUND 
+    ADD CONSTRAINT FK_round_task FOREIGN KEY(task_id)
+    REFERENCES TASK (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE SAVEDCOMPARISON 
+    ADD CONSTRAINT FK_savedcomparison_task FOREIGN KEY(task_id)
+    REFERENCES TASK (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE ATTEMPT 
+    ADD CONSTRAINT FK_attempt_round FOREIGN KEY(round_id)
+    REFERENCES ROUND (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE SAVEDCOMPARISON 
+    ADD CONSTRAINT FK_savedcomparison_first_student FOREIGN KEY(firstStudentId)
+    REFERENCES STUDENT (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE SAVEDCOMPARISON 
+    ADD CONSTRAINT FK_savedcomparison_second_student FOREIGN KEY(secondStudentId)
+    REFERENCES STUDENT (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE ATTEMPT 
+    ADD CONSTRAINT FK_attempt_student FOREIGN KEY(student_id)
+    REFERENCES STUDENT (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE SAVEDCOMPARISON 
+    ADD CONSTRAINT FK_savedcomparison_first_attempt FOREIGN KEY(firstAttemptId)
+    REFERENCES ATTEMPT (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE SAVEDCOMPARISON 
+    ADD CONSTRAINT FK_savedcomparison_second_attempt FOREIGN KEY(secondAttemptId)
+    REFERENCES ATTEMPT (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE ABSTRACTEDCODE 
+    ADD CONSTRAINT FK_abstractedcode_student FOREIGN KEY(attempt_id)
+    REFERENCES STUDENT (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE SAVEDCOMPARISON 
+    ADD CONSTRAINT FK_savedcomparison_version FOREIGN KEY(version_id)
+    REFERENCES VERSION (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE ABSTRACTEDCODE 
+    ADD CONSTRAINT FK_abstractedcode_version FOREIGN KEY(version_id)
+    REFERENCES VERSION (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
