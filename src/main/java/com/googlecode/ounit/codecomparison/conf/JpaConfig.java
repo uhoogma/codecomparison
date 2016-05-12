@@ -35,9 +35,9 @@ public class JpaConfig {
 	public DataSource dataSource() {
 		DriverManagerDataSource ds = new DriverManagerDataSource();
 		ds.setDriverClassName("com.mysql.jdbc.Driver");
-		ds.setUsername("hibuser");
-		ds.setPassword("root");
-		ds.setUrl("jdbc:mysql://localhost:3306/Uhoogma");
+		ds.setUsername(env.getProperty("db.user"));
+		ds.setPassword(env.getProperty("db.pass"));
+		ds.setUrl(env.getProperty("db.url"));
 		return ds;
 	}
 

@@ -8,11 +8,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edit Round</title>
-<link rel="stylesheet"
+<link rel="stylesheet" type="text/css"
 	href="<c:url value="/static/css/bootstrap.min.css"/>">
-<script src="<c:url value="/static/js/jquery.min.js"/>"></script>
-<script src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
-<link rel="stylesheet" href="<c:url value="/static/css/edittest.css"/>">
+<script type="text/javascript"
+	src="<c:url value="/static/js/jquery.min.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/static/js/general.js"/>"></script>
+<link type="text/css" rel="stylesheet"
+	href="<c:url value="/static/css/edittest.css"/>">
 </head>
 <body>
 	<div class="page-container">
@@ -20,7 +25,7 @@
 			<div class="page-bg">
 				<div class="top row">
 					<div class="col-sm-2">
-						<a href="<c:url value="index"/>"><button type="button"
+						<a href="<c:url value="/index"/>"><button type="button"
 								class="btn btn-default-left">AVALEHT</button></a>
 					</div>
 					<div class="col-sm-7">
@@ -29,22 +34,20 @@
 				</div>
 				<c:if test="${not empty errors}">
 					<div class="row bottom">
-
 						<div class="padding alert alert-danger">
 							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-							<strong>Danger!</strong>
-							<c:forEach items="${roundForm.errors}" var="person">
-								<c:out value="${person}"></c:out>
-								<br />
+							<strong>Oht!<br></strong>
+							<c:forEach items="${errors}" var="error">
+								<c:out value="${error}"></c:out>
+								<br>
 							</c:forEach>
 						</div>
 					</div>
 				</c:if>
 				<div style="margin: 20px;">
-					<c:url value="saveRound" var="theAction" />
-					<form:form method="post" action="${theAction}" id="roundForm"
+					<form:form method="post" action="" id="roundForm"
 						modelAttribute="roundForm">
-						<form:input type="hidden" path="round.id" />
+						<form:input type="hidden" id="roundId" path="round.id" />
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="year">aasta</label>
@@ -80,22 +83,35 @@
 						</div>
 						<div class="row">
 							<div>
-								<button type="button" class="btn btn-info">LOOBU</button>
-								<div class="pull-right">
-							
-								<button type="button" class="btn btn-danger" data-toggle="modal"
-									data-target="#confirmDelete">KUSTUTA VOOR JA KOGU
-									SEOTUD INFO</button>
-								<a href="<c:url value="edittest"/>"> <form:input
-										path="addRoundButton" class="btn btn-info"
-										type="submit" value="SALVESTA" />
-											
+								<a href="<c:url value="/index"/>">
+									<button type="button" class="btn btn-info">LOOBU</button>
 								</a>
+								<div class="pull-right">
+									<button type="button" class="btn btn-danger"
+										data-toggle="modal" data-target="#confirmDelete">KUSTUTA
+										VOOR JA KOGU SEOTUD INFO</button>
+									<div class="modal fade" id="confirmDelete" role="dialog">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal">&times;</button>
+													<h4 class="modal-title">Kinnita kustutamine</h4>
+												</div>
+												<div class="modal-body">
+													<button type="button" class="btn btn-default"
+														data-dismiss="modal">Loobu</button>
+													<button type="button" id="deleteRoundButton"
+														class="btn btn-danger pull-right" data-dismiss="modal">KUSTUTA</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<form:input path="round.saveRoundButton" class="btn btn-info"
+										type="submit" value="Salvesta" />
 								</div>
 							</div>
 						</div>
 					</form:form>
-
 				</div>
 			</div>
 		</div>

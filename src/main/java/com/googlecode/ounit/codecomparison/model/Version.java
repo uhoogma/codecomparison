@@ -18,7 +18,7 @@ public class Version {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private int abstractionVersionId;
-	private int SimilarityVersionId;
+	private int similarityVersionId;
 	private int defaultT;
 	private int defaultK;
 
@@ -50,11 +50,11 @@ public class Version {
 	}
 
 	public int getSimilarityVersionId() {
-		return SimilarityVersionId;
+		return similarityVersionId;
 	}
 
 	public void setSimilarityVersionId(int similarityVersionId) {
-		SimilarityVersionId = similarityVersionId;
+		this.similarityVersionId = similarityVersionId;
 	}
 
 	public int getDefaultT() {
@@ -76,7 +76,7 @@ public class Version {
 	@Override
 	public String toString() {
 		return "Version [id=" + id + ", abstractionVersionId=" + abstractionVersionId + ", SimilarityVersionId="
-				+ SimilarityVersionId + ", defaultT=" + defaultT + ", defaultK=" + defaultK + ", savedComparisons="
+				+ similarityVersionId + ", defaultT=" + defaultT + ", defaultK=" + defaultK + ", savedComparisons="
 				+ savedComparisons + ", abstractedCodes=" + abstractedCodes + "]";
 	}
 

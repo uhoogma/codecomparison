@@ -23,7 +23,7 @@ public class Attempt {
 	@Column(columnDefinition = "TEXT")
 	private String code;
 	private boolean codeAcquired;
-	private boolean isBoilerPlate;
+	private boolean isBoilerplate;
 
 	@OneToMany(targetEntity = SavedComparison.class, mappedBy="firstAttemptId", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
@@ -73,11 +73,11 @@ public class Attempt {
 	}
 
 	public boolean isBoilerPlate() {
-		return isBoilerPlate;
+		return isBoilerplate;
 	}
 
 	public void setBoilerPlate(boolean isBoilerPlate) {
-		this.isBoilerPlate = isBoilerPlate;
+		this.isBoilerplate = isBoilerPlate;
 	}
 
 	public Long getRound_id() {
@@ -91,7 +91,7 @@ public class Attempt {
 	@Override
 	public String toString() {
 		return "Attempt [id=" + id + ", round_id=" + round_id + ", student_id=" + student_id + ", code=" + code
-				+ ", codeAcquired=" + codeAcquired + ", isBoilerPlate=" + isBoilerPlate + ", firstAttempt="
+				+ ", codeAcquired=" + codeAcquired + ", isBoilerPlate=" + isBoilerplate + ", firstAttempt="
 				+ firstAttempt + ", secondAttempt=" + secondAttempt + ", abstractedCodes=" + abstractedCodes + "]";
 	}
 	

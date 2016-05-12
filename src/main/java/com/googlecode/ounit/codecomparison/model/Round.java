@@ -26,6 +26,27 @@ public class Round {
 	private int url;
 
 	@Transient
+	private String saveRoundButton;
+	@Transient
+	private String deleteRoundButton;
+	
+	public String getDeleteRoundButton() {
+		return deleteRoundButton;
+	}
+
+	public void setDeleteRoundButton(String deleteRoundButton) {
+		this.deleteRoundButton = deleteRoundButton;
+	}
+
+	public String getSaveRoundButton() {
+		return saveRoundButton;
+	}
+
+	public void setSaveRoundButton(String saveRoundButton) {
+		this.saveRoundButton = saveRoundButton;
+	}
+	
+	@Transient
 	private boolean checked;
 
 	public boolean getChecked() {
@@ -94,8 +115,9 @@ public class Round {
 	@Override
 	public String toString() {
 		return "Round [id=" + id + ", task_id=" + task_id + ", year=" + year + ", semester=" + semester + ", subject="
-				+ subject + ", roundName=" + roundName + ", url=" + url + ", checked=" + checked + ", attempts="
-				+ attempts + "]";
+				+ subject + ", roundName=" + roundName + ", url=" + url + ", saveRoundButton=" + saveRoundButton
+				+ ", deleteRoundButton=" + deleteRoundButton + ", checked=" + checked + ", attempts=" + attempts + "]";
 	}
 
+	
 }

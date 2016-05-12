@@ -10,7 +10,6 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.googlecode.ounit.codecomparison.model.Person;
 import com.googlecode.ounit.codecomparison.model.Round;
 import com.googlecode.ounit.codecomparison.model.Task;
 
@@ -24,10 +23,8 @@ public class RoundDao {
 	public void store(Round person) {
 		if (person != null) {
 			em.merge(person);
-
-		}else{
+		} else {
 			em.persist(person);
-
 		}
 	}
 
@@ -46,6 +43,7 @@ public class RoundDao {
 	}
 
 	public Round findRoundForId(Long id) {
+		System.out.println("id on"+id);
 		TypedQuery<Round> query = em.createQuery("select p from Round p where p.id = :id", Round.class);
 		query.setParameter("id", id);
 		return getSingleRound(query);
@@ -54,19 +52,29 @@ public class RoundDao {
 	private Round getSingleRound(TypedQuery<Round> query) {
 		List<Round> persons = query.getResultList();
 		if (persons.size() < 1)
-			return new Round();
+			return null;
 		else
 			return persons.get(0);
 	}
 
-	public void addTask(long roundId, Task findTaskForId) {
+	/*public void addTask(long roundId, Task findTaskForId) {
 		Round r = findRoundForId(roundId);
-		
+
 	}
-	
+*/
 	public List<Round> getRoundsNotInTask(long parseLong) {
-		TypedQuery<Round> query = em.createQuery("select p from Round p where p.task_id != :id or p.task_id is null", Round.class);
+		TypedQuery<Round> query = em.createQuery("select p from Round p where p.task_id != :id or p.task_id is null",
+				Round.class);
 		query.setParameter("id", parseLong);
 		return query.getResultList();
+	}
+	
+	@Transactional
+	public void delete(Long id) {
+		System.out.println(id +"id on null");
+		Round round = findRoundForId(id);
+		if (round != null) {
+			em.remove(round);
+		}
 	}
 }

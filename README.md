@@ -14,8 +14,8 @@ Instructors who have access to Moodle's programming courses that are being evalu
 
 ## TaskList:
 
-1. TODO - update Entity-Relationship Model and database table script
-2. TODO - CRUD operations for Round
+1. DONE - update Entity-Relationship Model and database table script
+2. DONE - CRUD operations for Round
 3. TODO - CRUD operations for Task
 4. TODO - display several rounds in one task in index view
 5. TODO - either make Selenium Webdriver work properly or make sure it will gracefully degrade in case of an error

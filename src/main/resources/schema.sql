@@ -44,16 +44,13 @@ CREATE TABLE ROUND(
    semester VARCHAR(20) NULL,
    subject VARCHAR(6) NULL,
    roundName VARCHAR(100) NULL,
-   url int NULL,
-   FOREIGN KEY (task_id) 
-        REFERENCES TASK(id)
-        ON DELETE CASCADE
+   url int NULL
 );
 
 CREATE TABLE VERSION(
    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
    abstractionVersionId int NOT NULL,
-   SimilarityVersionId int NOT NULL,
+   similarityVersionId int NOT NULL,
    defaultT int NOT NULL,
    defaultK int NOT NULL
 );
@@ -78,7 +75,7 @@ CREATE TABLE ATTEMPT(
    student_id BIGINT NULL,
    code TEXT NULL,
    codeAcquired boolean,
-   isBoilerPlate boolean
+   isBoilerplate boolean
 );
 
 CREATE TABLE STUDENT(
