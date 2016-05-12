@@ -19,6 +19,14 @@ public class Round {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private Long task_id;
+	public Long getTask_id() {
+		return task_id;
+	}
+
+	public void setTask_id(Long task_id) {
+		this.task_id = task_id;
+	}
+
 	private String year;
 	private String semester;
 	private String subject;
@@ -118,6 +126,5 @@ public class Round {
 				+ subject + ", roundName=" + roundName + ", url=" + url + ", saveRoundButton=" + saveRoundButton
 				+ ", deleteRoundButton=" + deleteRoundButton + ", checked=" + checked + ", attempts=" + attempts + "]";
 	}
-
 	
 }

@@ -17,6 +17,15 @@ public class TaskForm {
 	}
 
 	List<Round> roundsNotInTask = new ArrayList<>();
+	List<Round> roundsInTask = new ArrayList<>();
+
+	public List<Round> getRoundsInTask() {
+		return roundsInTask;
+	}
+
+	public void setRoundsInTask(List<Round> roundsInTask) {
+		this.roundsInTask = roundsInTask;
+	}
 
 	public List<Round> getRoundsNotInTask() {
 		return roundsNotInTask;

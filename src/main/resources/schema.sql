@@ -158,3 +158,6 @@ ALTER TABLE ABSTRACTEDCODE
     REFERENCES VERSION (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
+    
+-- data
+insert into VERSION (abstractionVersionId,SimilarityVersionId,defaultK,defaultT) values(1,1,13,39);

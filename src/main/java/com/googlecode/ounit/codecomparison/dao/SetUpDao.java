@@ -25,7 +25,6 @@ public class SetUpDao {
 			if (statement.matches("\\s*")) {
 				continue;
 			}
-
 			executeUpdate(statement);
 		}
 	}
@@ -33,10 +32,11 @@ public class SetUpDao {
 	public void executeUpdate(String sql) {
 		System.out.println("executeupdate");
 		String url = new PropertyLoader().getProperty("db.url");
-		try (Connection conn = DriverManager.getConnection(url, "hibuser", "root"); Statement stmt = conn.createStatement()) {
-
+		String user = new PropertyLoader().getProperty("db.user");
+		String pass = new PropertyLoader().getProperty("db.pass");
+		
+		try (Connection conn = DriverManager.getConnection(url, user, pass); Statement stmt = conn.createStatement()) {
 			System.out.println("executing: " + sql);
-
 			// stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

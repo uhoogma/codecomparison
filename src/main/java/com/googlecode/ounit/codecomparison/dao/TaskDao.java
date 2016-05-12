@@ -9,7 +9,6 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.googlecode.ounit.codecomparison.model.Person;
 import com.googlecode.ounit.codecomparison.model.Round;
 import com.googlecode.ounit.codecomparison.model.Task;
 
@@ -20,24 +19,14 @@ public class TaskDao {
 	private EntityManager em;
 
 	@Transactional
-	public void store(Task person) {
-		em.persist(person);
-	}
-	@Transactional
-	public void save(Task person) {
-		if (person != null) {
-			em.merge(person);
-
-		}else{
-			em.persist(person);
-
+	public void store(Task task) {
+		if (task != null) {
+			em.merge(task);
+		} else {
+			em.persist(task);
 		}
-		// em.persist(person);
 	}
-	public List<Task> findAllRounds() {
-		return em.createQuery("select p from Task p", Task.class).getResultList();
-	}
-
+	
 	public Task findTaskForId(Long id) {
 		TypedQuery<Task> query = em.createQuery("select p from Task p where p.id = :id", Task.class);
 		query.setParameter("id", id);
@@ -51,19 +40,23 @@ public class TaskDao {
 		else
 			return persons.get(0);
 	}
-	
+
 	@Transactional
-	public void addRounds(Task t, List<Round> roundsToAdd) {
-		// Task t= findTaskForId(taskId);
-		if (t.getId() == null) {
+	public void addRound(Task t, Round round) {
+		if (t.getId() == null || round == null) {
 			return;
 		}
-		for (Round round : roundsToAdd) {
-			System.out.println("foreach");
-			t.addRound(round);
-			em.merge(t);
-		}
-		
+		round.setTask_id(t.getId());
+		em.merge(round);
 	}
 	
+	@Transactional
+	public void removeRound(Task t, Round round) {
+		if (round == null) {
+			return;
+		}
+		round.setTask_id(null);
+		em.merge(round);
+	}
+
 }

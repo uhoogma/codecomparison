@@ -7,48 +7,26 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.googlecode.ounit.codecomparison.dao.PersonDao;
-import com.googlecode.ounit.codecomparison.dao.RoundDao;
-import com.googlecode.ounit.codecomparison.dao.TaskDao;
 import com.googlecode.ounit.codecomparison.model.Person;
 import com.googlecode.ounit.codecomparison.model.Phone;
-import com.googlecode.ounit.codecomparison.model.Round;
-import com.googlecode.ounit.codecomparison.model.Task;
 import com.googlecode.ounit.codecomparison.view.PersonForm;
-import com.googlecode.ounit.codecomparison.view.TaskForm;
 
 @Controller
 public class PersonController {
 
 	@Resource
 	private PersonDao personDao = new PersonDao();
-	@Resource
-	private RoundDao roundDao = new RoundDao();
-	@Resource
-	private TaskDao taskDao = new TaskDao();
 
-	/*
-	@ModelAttribute("personForm")
-	public PersonForm getUserObject2() {
-		return new PersonForm();
-	}
-	@ModelAttribute("taskForm")
-	public TaskForm getUserObject3() {
-		return new TaskForm();
-	}
-*/
 	@RequestMapping("/")
 	public String home() {
 		return "redirect:/search";
 	}
-
 	@RequestMapping("/index")
 	public String index() {
 		return "index";
@@ -59,59 +37,10 @@ public class PersonController {
 		return "test";
 	}
 
-	@RequestMapping(value = "/edittest/{taskId}", method = RequestMethod.GET)
-	public String edittest(@ModelAttribute("taskForm") TaskForm form, @PathVariable("taskId") String taskId,
-			BindingResult result, ModelMap model) {
-		Task t = taskDao.findTaskForId(Long.parseLong(taskId));
-		List<Round> asd = roundDao.getRoundsNotInTask(Long.parseLong(taskId));
-		System.out.println("asd" + asd.toString());
-		// model.addAttribute("roundsNotInTask", asd);
-		form.setRoundsNotInTask(asd);
-		return "edittest";
-
-	}
-
-	@RequestMapping(value = "/edittest/{taskId}", method = RequestMethod.POST)
-	public String saveTask(@ModelAttribute("taskForm") TaskForm form, @PathVariable("taskId") String taskId,
-			BindingResult result, ModelMap model) {
-
-		Task t = taskDao.findTaskForId(Long.parseLong(taskId));
-
-		List<Round> asd = form.getRoundsNotInTask();
-		List<Long> roundsToAdd = new ArrayList<>();
-
-		for (int i = 0; i < asd.size(); i++) {
-			if (asd.get(i).getChecked()) {
-				System.out.println("id on" + asd.get(i).toString());
-				roundsToAdd.add(asd.get(i).getId());
-			}
-		}
-		System.out.println(roundsToAdd.size() + "roundsToAdd.size()");
-		List<Round> rrr = new ArrayList<>();
-
-		for (int i = 0; i < roundsToAdd.size(); i++) {
-			rrr.add(roundDao.findRoundForId(roundsToAdd.get(i)));
-		}
-		taskDao.addRounds(t, rrr);
-		// roundDao.addTask(6L, taskDao.findTaskForId(1L));
-
-		/*
-		 * List<Round> roundsNotInTask = new ArrayList<>(); roundsNotInTask =
-		 * roundDao.findAllRounds(); model.addAttribute("roundsNotInTask",
-		 * roundsNotInTask);
-		 */
-		taskDao.save(t);
-		System.out.println(taskDao.findTaskForId(Long.parseLong(taskId)).toString());
-		// edittest(form, taskId, result, model);
-		return "redirect:/edittest/" + t.getId();
-	}
-
 	@RequestMapping("/comparison")
 	public String comparison() {
 		return "comparison";
 	}
-
-	
 
 	@RequestMapping(value = { "/search?searchString={code}", "/search" })
 	public String personList(ModelMap model,
