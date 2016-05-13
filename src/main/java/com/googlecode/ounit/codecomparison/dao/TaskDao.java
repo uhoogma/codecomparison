@@ -28,7 +28,7 @@ public class TaskDao {
 	}
 	
 	public Task findTaskForId(Long id) {
-		TypedQuery<Task> query = em.createQuery("select p from Task p where p.id = :id", Task.class);
+		TypedQuery<Task> query = em.createQuery("select t from Task t where t.id = :id", Task.class);
 		query.setParameter("id", id);
 		return getSingleTask(query);
 	}
@@ -57,6 +57,16 @@ public class TaskDao {
 		}
 		round.setTask_id(null);
 		em.merge(round);
+	}
+
+	public List<Task> findActiveTasks() {
+		TypedQuery<Task> query = em.createQuery("select t from Task t where t.active = 1", Task.class);
+		return query.getResultList();
+	}
+
+	public List<Task> findHiddenTasks() {
+		TypedQuery<Task> query = em.createQuery("select t from Task t where t.active = 0", Task.class);
+		return query.getResultList();
 	}
 
 }

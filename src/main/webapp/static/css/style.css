@@ -1,36 +1,48 @@
 tr {
-width: 100%;
-display: inline-table;
+	width: 100%;
+	display: inline-table;
+}
+.task-td{
+	width: 20%;
+}
+.rounds-td{
+	width: auto;
+}
+.button-td{
+	width: 40px;
+}
+.page-container { .page-bg { padding:15px;
+	background-color: #EFEFEF;
 }
 
-.page-container {
-  .page-bg {
-    padding: 15px;
-    background-color: #EFEFEF;
-  }
 }
-
 body {
-  background-color: #e6e6e6
+	background-color: #e6e6e6
 }
-.padding{
-    margin:15px;
+
+.padding {
+	margin: 15px;
 }
-.top{
-    margin-top:15px;
+
+.top {
+	margin-top: 15px;
+	margin-bottom: 15px;
 }
-.tbody{
-overflow-y: scroll;
-height: 400px;
-margin-right: 20px;
-  margin-bottom: 20px;
-  width: auto;
-position: absolute;
+
+.tbody {
+	overflow-y: scroll;
+	height: 400px;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	width: auto;
+	position: absolute;
 }
+
 .centered-text {
-    text-align:center
+	text-align: center
 }
+
 .code-div {
-float:left;
-width:100%;
+	float: left;
+	width: 100%;
 }

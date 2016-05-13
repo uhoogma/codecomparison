@@ -7,14 +7,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Testid</title>
-<link rel="stylesheet"
+<link rel="stylesheet" type="text/css"
 	href="<c:url value="/static/css/bootstrap.min.css"/>">
-<script src="<c:url value="/static/js/jquery.min.js"/>"></script>
-<script src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
-<link rel="stylesheet" href="<c:url value="/static/css/jquery-ui.css"/>">
-<script src="<c:url value="/static/js/jquery-ui.js"/>"></script>
-<link rel="stylesheet" href="<c:url value="/static/css/style.css"/>">
-<script>
+<script type="text/javascript"
+	src="<c:url value="/static/js/jquery.min.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
+<link type="text/css" rel="stylesheet"
+	href="<c:url value="/static/css/jquery-ui.css"/>">
+<script type="text/javascript"
+	src="<c:url value="/static/js/jquery-ui.js"/>"></script>
+<link type="text/css" rel="stylesheet"
+	href="<c:url value="/static/css/style.css"/>">
+<script type="text/javascript">
 	$(function() {
 		$("#tabs").tabs();
 	});
@@ -25,22 +30,13 @@
 		<div class="container-fluid">
 			<div class="page-bg">
 				<div class="top row">
-					<div class="col-sm-2">
+					<div class="col-sm-6">
 						<button type="button" class="btn btn-default-left">AVALEHT</button>
 					</div>
-					<div class="col-sm-7">
-						<p></p>
-					</div>
-					<div class="col-sm-3">
+
+					<div class="col-sm-6 pull-right">
 						<a href="<c:url value="edittask"/>"><button type="button"
 								class="btn btn-info pull-right">LOO UUS TEST</button></a>
-					</div>
-				</div>
-				<div class="row">
-					<div class="padding alert alert-danger">
-						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-						<strong>Danger!</strong> This alert box could indicate a dangerous
-						or potentially negative action.
 					</div>
 				</div>
 				<div class="row">
@@ -53,121 +49,43 @@
 							<div id="tabs-1">
 								<table class="table table-striped">
 									<!-- http://www.bootply.com/eijj8IllcO -->
-									<tbody class="tbody">
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
+									<tbody>
+										<c:forEach items="${active}" var="task">
+											<tr>
+												<td class="task-td"><a
+													href="<c:url value="/edittask/${task.id}"/>">${task.taskName}</a>
+												</td>
+												<td class="rounds-td"><c:forEach items="${task.rounds}"
+														var="round">
+														<p>${round.roundName}|${round.subject}|${round.year}|
+															${round.semester}</p>
+													</c:forEach></td>
+												<td class="button-td"><a href="<c:url value="task/${task.id}"/>"><button
+															type="button" class="btn btn-info">Info</button></a></td>
+											</tr>
+										</c:forEach>
 									</tbody>
 								</table>
 							</div>
 							<div id="tabs-2">
 								<table class="table table-striped">
 									<tbody>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
-										<tr>
-											<td><p>Algoritmid ja andmestruktuurid IA17 IA18 |
-													I231 | 5. koduülesanne | 2015/2016 | Kevadsemester</p></td>
-											<td><a href="<c:url value="test"/>"><button
-														type="button" class="btn btn-info">Info</button></a></td>
-										</tr>
+										<c:forEach items="${hidden}" var="task">
+											<tr>
+												<td class="task-td"><a
+													href="<c:url value="/edittask/${task.id}"/>">${task.taskName}</a>
+												</td>
+												<td class="rounds-td"><c:forEach items="${task.rounds}"
+														var="round">
+														<p>${round.roundName}|${round.subject}|${round.year}|
+															${round.semester}</p>
+													</c:forEach></td>
+												<td class="button-td"><a
+													href="<c:url value="task/${task.id}"/>">
+														<button type="button" class="btn btn-info">Info</button>
+												</a></td>
+											</tr>
+										</c:forEach>
 									</tbody>
 								</table>
 							</div>

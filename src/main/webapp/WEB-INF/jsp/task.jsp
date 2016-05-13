@@ -7,14 +7,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Test</title>
-<link rel="stylesheet"
+<link rel="stylesheet" type="text/css"
 	href="<c:url value="/static/css/bootstrap.min.css"/>">
-<script src="<c:url value="/static/js/jquery.min.js"/>"></script>
-<script src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
-<link rel="stylesheet" href="<c:url value="/static/css/test.css"/>">
-<script src="<c:url value="/static/js/Chart.min.js"/>"></script>
-<script src="<c:url value="/static/js/MyChart.js"/>"></script>
-<link rel="stylesheet" href="<c:url value="/static/css/test.css"/>">
+<script type="text/javascript" src="<c:url value="/static/js/jquery.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
+<link type="text/css" rel="stylesheet" href="<c:url value="/static/css/test.css"/>">
+<script type="text/javascript" src="<c:url value="/static/js/Chart.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/static/js/MyChart.js"/>"></script>
+<link type="text/css" rel="stylesheet" href="<c:url value="/static/css/test.css"/>">
 </head>
 <body>
 	<div class="container">
@@ -52,11 +52,11 @@
 								<div class="modal-body">
 									<div class="form-group">
 										<label class="col-sm-5" for="year">Kasutajanimi</label> <input
-											class="col-sm-7" class="form-control" id="year" type="text">
+											class="col-sm-7 form-control" id="year" type="text">
 									</div>
 									<div class="form-group">
 										<label class="col-sm-5" for="year">Salasõna</label> <input
-											class="col-sm-7" class="form-control" id="year"
+											class="col-sm-7 form-control" id="year"
 											type="password">
 									</div>
 								</div>
@@ -112,7 +112,7 @@
 							<td>1479173</td>
 							<td>Infinity</td>
 							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="comparison"/>"><button type="button"
+								href="<c:url value="/comparison"/>"><button type="button"
 										class="btn btn-info">Vaata</button></a></td>
 						</tr>
 						<tr>
@@ -131,7 +131,7 @@
 							<td>1479173</td>
 							<td>Infinity</td>
 							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="comparison"/>"><button type="button"
+								href="<c:url value="/comparison"/>"><button type="button"
 										class="btn btn-info">Vaata</button></a></td>
 						</tr>
 						<tr>
@@ -150,7 +150,7 @@
 							<td>1479173</td>
 							<td>Infinity</td>
 							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="comparison"/>"><button type="button"
+								href="<c:url value="/comparison"/>"><button type="button"
 										class="btn btn-info">Vaata</button></a></td>
 						</tr>
 						<tr>
@@ -169,7 +169,7 @@
 							<td>1479173</td>
 							<td>Infinity</td>
 							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="comparison"/>"><button type="button"
+								href="<c:url value="/comparison"/>"><button type="button"
 										class="btn btn-info">Vaata</button></a></td>
 						</tr>
 						<tr>
@@ -188,7 +188,7 @@
 							<td>1479173</td>
 							<td>Infinity</td>
 							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="comparison"/>"><button type="button"
+								href="<c:url value="/comparison"/>"><button type="button"
 										class="btn btn-info">Vaata</button></a></td>
 						</tr>
 						<tr>
@@ -207,7 +207,7 @@
 							<td>1479173</td>
 							<td>Infinity</td>
 							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="comparison"/>"><button type="button"
+								href="<c:url value="/comparison"/>"><button type="button"
 										class="btn btn-info">Vaata</button></a></td>
 						</tr>
 						<tr>
@@ -226,7 +226,7 @@
 							<td>1479173</td>
 							<td>Infinity</td>
 							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="comparison"/>"><button type="button"
+								href="<c:url value="/comparison"/>"><button type="button"
 										class="btn btn-info">Vaata</button></a></td>
 						</tr>
 						<tr>

@@ -69,11 +69,11 @@ public class TaskController {
 	}
 
 	@RequestMapping(value = "/edittask/{id}", method = RequestMethod.GET, produces = "text/html; charset=utf-8")
-	public String edittask(@ModelAttribute("taskForm") TaskForm form, @ModelAttribute("fileForm") FileForm fileForm,
+	public String edittask(@ModelAttribute("taskForm") TaskForm taskForm, @ModelAttribute("fileForm") FileForm fileForm,
 			@PathVariable("id") String id) {
 		Task task = taskDao.findTaskForId(Long.parseLong(id));
 		if (task != null) {
-			setRounds(form, task);
+			setRounds(taskForm, task);
 			setAttemptFile(fileForm, task);
 			return "edittask";
 		} else {
@@ -198,4 +198,10 @@ public class TaskController {
 		attempt.setFileName(file.getOriginalFilename());
 		attemptDao.store(attempt);
 	}
+	
+	@RequestMapping(value = "/task/{id}", method = RequestMethod.GET)
+	public String showTask() {
+		return "task";
+	}
+	
 }
