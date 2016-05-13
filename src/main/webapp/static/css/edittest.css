@@ -1,32 +1,38 @@
 tr {
-width: 100%;
+	width: 100%;
 }
 
-.page-container {
-  .page-bg {
-    padding: 15px;
-    background-color: #EFEFEF;
-  }
+.page-container { .page-bg { padding:15px;
+	background-color: #EFEFEF;
 }
 
+}
 body {
-  background-color: #e6e6e6
-}
-.padding{
-    margin:15px;
-}
-.top{
-    margin-top:15px;
-}
-.bottom{
-    padding-bottom:15px;
+	background-color: #e6e6e6
 }
 
-.myTbody{
-overflow-y: scroll;
-height: 400px;
- margin-right: 20px;
-  margin-bottom: 20px;
-  width: auto;
-position: absolute;
+.padding {
+	margin: 15px;
+}
+
+.top {
+	margin-top: 15px;
+}
+
+.bottom {
+	padding-bottom: 15px;
+}
+
+.myTbody {
+	overflow-y: scroll;
+	height: 400px;
+	margin-right: 20px;
+	padding-right: 20px;
+	margin-bottom: 20px;
+	width: auto;
+	position: absolute;
+}
+
+td {
+	width: 100%;
 }

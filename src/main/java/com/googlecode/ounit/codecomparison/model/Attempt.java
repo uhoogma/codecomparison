@@ -18,10 +18,12 @@ public class Attempt {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private Long task_id;
 	private Long round_id;
 	private Long student_id;
 	@Column(columnDefinition = "TEXT")
 	private String code;
+	private String fileName;
 	private boolean codeAcquired;
 	private boolean isBoilerplate;
 
@@ -64,6 +66,22 @@ public class Attempt {
 		this.code = code;
 	}
 
+	public Long getTask_id() {
+		return task_id;
+	}
+
+	public void setTask_id(Long task_id) {
+		this.task_id = task_id;
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 	public boolean isCodeAcquired() {
 		return codeAcquired;
 	}
@@ -90,9 +108,10 @@ public class Attempt {
 
 	@Override
 	public String toString() {
-		return "Attempt [id=" + id + ", round_id=" + round_id + ", student_id=" + student_id + ", code=" + code
-				+ ", codeAcquired=" + codeAcquired + ", isBoilerPlate=" + isBoilerplate + ", firstAttempt="
-				+ firstAttempt + ", secondAttempt=" + secondAttempt + ", abstractedCodes=" + abstractedCodes + "]";
+		return "Attempt [id=" + id + ", task_id=" + task_id + ", round_id=" + round_id + ", student_id=" + student_id
+				+ ", code=" + code + ", fileName=" + fileName + ", codeAcquired=" + codeAcquired + ", isBoilerplate="
+				+ isBoilerplate + ", firstAttempt=" + firstAttempt + ", secondAttempt=" + secondAttempt
+				+ ", abstractedCodes=" + abstractedCodes + "]";
 	}
 	
 }

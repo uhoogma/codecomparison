@@ -49,22 +49,12 @@ public class RoundDao {
 		}
 	}
 
-	public List<Round> findAllRounds() {
-		return em.createQuery("select r from Round r", Round.class).getResultList();
+	public List<Round> findAllRoundsNotInAnyTask() {
+		return em.createQuery("select r from Round r where r.task_id IS NULL", Round.class).getResultList();
 	}
 
 	public List<Round> findAllRoundsInTask(Long taskId) {
 		TypedQuery<Round> query = em.createQuery("select r from Round r where r.task_id = :taskId", Round.class);
-		query.setParameter("taskId", taskId);
-		List<Round> rounds = query.getResultList();
-		if (rounds == null) {
-			return new ArrayList<>();
-		}
-		return rounds;
-	}
-	
-	public List<Round> findAllRoundsNotInTask(Long taskId) {
-		TypedQuery<Round> query = em.createQuery("select r from Round r where r.task_id != :taskId or r.task_id is null", Round.class);
 		query.setParameter("taskId", taskId);
 		List<Round> rounds = query.getResultList();
 		if (rounds == null) {

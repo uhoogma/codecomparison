@@ -32,7 +32,7 @@
 						<p></p>
 					</div>
 					<div class="col-sm-3">
-						<a href="<c:url value="edittest"/>"><button type="button"
+						<a href="<c:url value="edittask"/>"><button type="button"
 								class="btn btn-info pull-right">LOO UUS TEST</button></a>
 					</div>
 				</div>

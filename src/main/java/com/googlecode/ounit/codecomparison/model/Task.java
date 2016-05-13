@@ -10,7 +10,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 @Entity
 public class Task {
@@ -25,6 +28,17 @@ public class Task {
 	private int t;
 	private int k;
 
+	@Transient
+	private String fileName;
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 	@OneToMany(targetEntity = Round.class, mappedBy = "task_id", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
 	private List<Round> rounds = new ArrayList<Round>();
@@ -32,6 +46,18 @@ public class Task {
 	@OneToMany(targetEntity = SavedComparison.class, mappedBy = "task_id", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
 	private List<SavedComparison> savedComparisons = new ArrayList<SavedComparison>();
+
+	@OneToOne
+	@JoinColumn(name = "id")
+	private Attempt attempt;
+
+	public Attempt getAttempt() {
+		return attempt;
+	}
+
+	public void setAttempt(Attempt attempt) {
+		this.attempt = attempt;
+	}
 
 	public Task() {
 	}
@@ -107,8 +133,8 @@ public class Task {
 	@Override
 	public String toString() {
 		return "Task [id=" + id + ", taskName=" + taskName + ", active=" + active + ", creationTime=" + creationTime
-				+ ", lastSyncTime=" + lastSyncTime + ", t=" + t + ", k=" + k + ", rounds=" + rounds
-				+ ", savedComparisons=" + savedComparisons + "]";
+				+ ", lastSyncTime=" + lastSyncTime + ", t=" + t + ", k=" + k + ", fileName=" + fileName + ", rounds="
+				+ rounds + ", savedComparisons=" + savedComparisons + ", attempt=" + attempt + "]";
 	}
 
 }
