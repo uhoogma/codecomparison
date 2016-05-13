@@ -7,7 +7,13 @@ import com.googlecode.ounit.codecomparison.model.Round;
 import com.googlecode.ounit.codecomparison.model.Task;
 
 public class TaskForm {
-	
+
+	private Task task;
+	private String addTaskButton;
+	private List<Round> roundsNotInTask = new ArrayList<>();
+	private List<Round> roundsInTask = new ArrayList<>();
+	private String lastSyncDifference;
+
 	public Task getTask() {
 		return task;
 	}
@@ -15,9 +21,6 @@ public class TaskForm {
 	public void setTask(Task task) {
 		this.task = task;
 	}
-
-	List<Round> roundsNotInTask = new ArrayList<>();
-	List<Round> roundsInTask = new ArrayList<>();
 
 	public List<Round> getRoundsInTask() {
 		return roundsInTask;
@@ -35,6 +38,19 @@ public class TaskForm {
 		this.roundsNotInTask = roundsNotInTask;
 	}
 
+	public String getLastSyncDifference() {
+		if (task.getLastSyncTime() == null) {
+			setLastSyncDifference("Mitte kunagi");
+			return lastSyncDifference;
+		} else {
+			return String.format("%.3f h tagasi", (System.currentTimeMillis() - task.getLastSyncTime().getTime()) / 3600000.0);
+		}
+	}
+
+	public void setLastSyncDifference(String lastSyncDifference) {
+		this.lastSyncDifference = lastSyncDifference;
+	}
+
 	public String getAddTaskButton() {
 		return addTaskButton;
 	}
@@ -43,7 +59,4 @@ public class TaskForm {
 		this.addTaskButton = addTaskButton;
 	}
 
-	private Task task;
-
-	private String addTaskButton;
 }

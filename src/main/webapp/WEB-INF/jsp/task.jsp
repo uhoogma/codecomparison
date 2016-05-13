@@ -9,12 +9,18 @@
 <title>Test</title>
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/static/css/bootstrap.min.css"/>">
-<script type="text/javascript" src="<c:url value="/static/js/jquery.min.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
-<link type="text/css" rel="stylesheet" href="<c:url value="/static/css/test.css"/>">
-<script type="text/javascript" src="<c:url value="/static/js/Chart.min.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/static/js/MyChart.js"/>"></script>
-<link type="text/css" rel="stylesheet" href="<c:url value="/static/css/test.css"/>">
+<script type="text/javascript"
+	src="<c:url value="/static/js/jquery.min.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
+<link type="text/css" rel="stylesheet"
+	href="<c:url value="/static/css/test.css"/>">
+<script type="text/javascript"
+	src="<c:url value="/static/js/Chart.min.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/static/js/MyChart.js"/>"></script>
+<link type="text/css" rel="stylesheet"
+	href="<c:url value="/static/css/test.css"/>">
 </head>
 <body>
 	<div class="container">
@@ -23,8 +29,21 @@
 				<a href="<c:url value="index"/>"><button type="button"
 						class="btn btn-default-left">AVALEHT</button></a>
 			</div>
-			<div class="col-sm-7">
-				<p></p>
+			<div class="col-sm-10">
+				<table class="table">
+					<tbody>
+						<tr>
+							<td class="task-td"><a
+								href="<c:url value="/edittask/${taskForm.task.id}"/>">${taskForm.task.taskName}</a>
+							</td>
+							<td class="rounds-td"><c:forEach
+									items="${taskForm.task.rounds}" var="round">
+									<p>${round.roundName}|${round.subject}|${round.year}|
+										${round.semester}</p>
+								</c:forEach></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 		<div class="row">
@@ -35,11 +54,11 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="padding col-sm-12">
-				<div class="col-sm-4">
-					<p>VIIMANE SÜNKRONISEERIMINE 12 h tagasi</p>
+			<div class="padding">
+				<div class="col-sm-3">
+					<p>VIIMANE SÜNKRONISEERIMINE ${taskForm.lastSyncDifference}</p>
 				</div>
-				<div class="col-sm-2">
+				<div class="col-sm-3">
 					<button type="button" class="btn btn-primary" data-toggle="modal"
 						data-target="#credentials">SÜNKRONISEERI NÜÜD</button>
 					<div class="modal fade" id="credentials" role="dialog">
@@ -56,33 +75,37 @@
 									</div>
 									<div class="form-group">
 										<label class="col-sm-5" for="year">Salasõna</label> <input
-											class="col-sm-7 form-control" id="year"
-											type="password">
+											class="col-sm-7 form-control" id="year" type="password">
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-default"
-										data-dismiss="modal">Logi</button>
+									<div class="form-group">
+										<button type="button" class="btn btn-default"
+											data-dismiss="modal">Logi</button>
+									</div>
 								</div>
+
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-sm-4">
 					<table>
 						<tr>
 							<td>Eira</td>
-							<td style="padding:5px;"><input type="text" name="k" value="13"/></td>
+							<td style="padding: 5px;"><input type="text" name="k"
+								value="${taskForm.task.k}" /></td>
 							<td>märki</td>
 						</tr>
 						<tr>
 							<td>Sobita</td>
-							<td style="padding:5px;"><input type="text" name="t" value="39"/></td>
+							<td style="padding: 5px;"><input type="text" name="t"
+								value="${taskForm.task.t}" /></td>
 							<td>märki</td>
 						</tr>
 					</table>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-sm-2">
 					<button type="button" class="btn btn-primary"
 						data-target="#credentials">ANALÜÜSI</button>
 				</div>

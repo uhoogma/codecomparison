@@ -130,9 +130,7 @@ public class TaskController {
 	}
 
 	private String editingResponse(TaskForm form, BindingResult result,Long id, Model model) {
-		
 		Task t = taskDao.findTaskForId(id);
-		System.out.println(t.toString());
 		if (result.hasErrors()) {
 			List<String> errors = new ArrayList<>();
 			for (FieldError error : result.getFieldErrors()) {
@@ -183,24 +181,28 @@ public class TaskController {
 		}
 	}
 
-	private void createBoilerplateCode(MultipartFile file, String taskId, String theString) {
+	private void createBoilerplateCode(MultipartFile file, String taskId, String code) {
 		Attempt newAttempt = new Attempt();
 		newAttempt.setTask_id(Long.parseLong(taskId));
-		newAttempt.setCode(theString);
+		newAttempt.setCode(code);
 		newAttempt.setCodeAcquired(true);
 		newAttempt.setBoilerPlate(true);
 		newAttempt.setFileName(file.getOriginalFilename());
 		attemptDao.store(newAttempt);
 	}
 
-	private void updateBoilerplateCode(MultipartFile file, String theString, Attempt attempt) {
-		attempt.setCode(theString);
+	private void updateBoilerplateCode(MultipartFile file, String code, Attempt attempt) {
+		attempt.setCode(code);
 		attempt.setFileName(file.getOriginalFilename());
 		attemptDao.store(attempt);
 	}
 	
-	@RequestMapping(value = "/task/{id}", method = RequestMethod.GET)
-	public String showTask() {
+	@RequestMapping(value = "/task/{taskId}", method = RequestMethod.GET)
+	public String showTask(@PathVariable("taskId") String taskId, Model model) {
+		Task task = taskDao.findTaskForId(Long.parseLong(taskId));
+		TaskForm form = new TaskForm();
+		form.setTask(task);
+		model.addAttribute("taskForm", form);
 		return "task";
 	}
 	
