@@ -105,6 +105,12 @@
 			<artifactId>antlr4-runtime</artifactId>
 			<version>4.5</version>
 		</dependency>
+		<!-- Fix for Selenium WebDriver with Maven http://stackoverflow.com/questions/10234201/appengine-error-java-lang-noclassdeffounderror-org-w3c-dom-elementtraversal -->
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.4.01</version>
+		</dependency>
 
 	</dependencies>
 	<build>

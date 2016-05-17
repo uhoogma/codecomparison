@@ -13,10 +13,16 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Student {
+	
+	public Student(Integer moodleId, String fullName) {
+		this.moodleId = moodleId;
+		this.fullName = fullName;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private int moodleId;
+	private Integer moodleId;
 	private String fullName;
 
 	@OneToMany(targetEntity = Attempt.class, mappedBy = "student_id", fetch = FetchType.EAGER, cascade = {
@@ -42,11 +48,11 @@ public class Student {
 		this.id = id;
 	}
 
-	public int getMoodleId() {
+	public Integer getMoodleId() {
 		return moodleId;
 	}
 
-	public void setMoodleId(int moodleId) {
+	public void setMoodleId(Integer moodleId) {
 		this.moodleId = moodleId;
 	}
 

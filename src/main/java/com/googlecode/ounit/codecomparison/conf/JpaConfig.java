@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @PropertySource("classpath:/application.properties")
 @EnableTransactionManagement
-@ComponentScan("com.googlecode.ounit.codecomparison")
+@ComponentScan({"com.googlecode.ounit.codecomparison"})
 public class JpaConfig {
 
 	@Resource

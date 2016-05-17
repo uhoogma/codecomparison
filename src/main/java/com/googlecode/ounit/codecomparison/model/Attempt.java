@@ -18,9 +18,20 @@ public class Attempt {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private Long moodleId;
+	
+
+	public Long getMoodleId() {
+		return moodleId;
+	}
+
+	public void setMoodleId(Long moodleId) {
+		this.moodleId = moodleId;
+	}
+
 	private Long task_id;
 	private Long round_id;
-	private Long student_id;
+	private Integer student_id;
 	@Column(columnDefinition = "TEXT")
 	private String code;
 	private String fileName;
@@ -50,11 +61,11 @@ public class Attempt {
 		this.id = id;
 	}
 
-	public Long getStudentId() {
+	public Integer getStudentId() {
 		return student_id;
 	}
 
-	public void setStudentId(Long studentId) {
+	public void setStudentId(Integer studentId) {
 		this.student_id = studentId;
 	}
 

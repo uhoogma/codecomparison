@@ -48,6 +48,7 @@
 					<form:form method="post" action="" id="roundForm"
 						modelAttribute="roundForm">
 						<form:input type="hidden" id="roundId" path="round.id" />
+						<form:input type="hidden" id="taskId" path="round.task_id" />
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="year">aasta</label>

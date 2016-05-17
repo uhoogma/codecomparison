@@ -71,9 +71,10 @@ CREATE TABLE SAVEDCOMPARISON(
 
 CREATE TABLE ATTEMPT(
    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+   moodleId BIGINT NOT NULL,
    round_id BIGINT NULL,
    task_id BIGINT NULL,
-   student_id BIGINT NULL,
+   student_id int NULL,
    fileName VARCHAR(100),
    code TEXT NULL,
    codeAcquired boolean,
@@ -94,6 +95,8 @@ CREATE TABLE ABSTRACTEDCODE(
 );
 
 -- codecomparison constraints
+
+ALTER TABLE STUDENT ADD INDEX (moodleId);
 
 ALTER TABLE ROUND 
     ADD CONSTRAINT FK_round_task FOREIGN KEY(task_id)
@@ -133,7 +136,7 @@ ALTER TABLE SAVEDCOMPARISON
     
 ALTER TABLE ATTEMPT 
     ADD CONSTRAINT FK_attempt_student FOREIGN KEY(student_id)
-    REFERENCES STUDENT (id)
+    REFERENCES STUDENT (moodleId)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
     

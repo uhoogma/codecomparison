@@ -39,4 +39,14 @@ public class AttemptDao {
 		else
 			return persons.get(0);
 	}
+	
+	public List<Long> getAttemptIds() {
+		return em.createNativeQuery("select distinct a.id from Attempt a").getResultList();
+	}
+
+	public List<Attempt> findAttemptsNotFetched(Long roundId) {
+		TypedQuery<Attempt> query = em.createQuery("select a from Attempt a where a.round_id= :roundId and a.codeAcquired =0 and a.isBoilerplate =0", Attempt.class);
+		query.setParameter("roundId", roundId);
+		return query.getResultList();
+	}
 }

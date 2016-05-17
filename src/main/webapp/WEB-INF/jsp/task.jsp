@@ -21,12 +21,14 @@
 	src="<c:url value="/static/js/MyChart.js"/>"></script>
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/static/css/test.css"/>">
+<script type="text/javascript"
+	src="<c:url value="/static/js/general.js"/>"></script>
 </head>
 <body>
 	<div class="container">
 		<div class="top row">
 			<div class="col-sm-2">
-				<a href="<c:url value="index"/>"><button type="button"
+				<a href="<c:url value="/index"/>"><button type="button"
 						class="btn btn-default-left">AVALEHT</button></a>
 			</div>
 			<div class="col-sm-10">
@@ -71,16 +73,17 @@
 								<div class="modal-body">
 									<div class="form-group">
 										<label class="col-sm-5" for="year">Kasutajanimi</label> <input
-											class="col-sm-7 form-control" id="year" type="text">
+											class="col-sm-7 form-control" id="user" type="text">
 									</div>
 									<div class="form-group">
 										<label class="col-sm-5" for="year">Salasõna</label> <input
-											class="col-sm-7 form-control" id="year" type="password">
+											class="col-sm-7 form-control" id="password" type="password">
 									</div>
 								</div>
 								<div class="modal-footer">
 									<div class="form-group">
-										<button type="button" class="btn btn-default"
+										<button type="button" id="synchronize"
+											class="btn btn-primary col-sm-2 pull-right"
 											data-dismiss="modal">Logi</button>
 									</div>
 								</div>
