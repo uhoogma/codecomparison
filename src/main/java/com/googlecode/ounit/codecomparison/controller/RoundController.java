@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.googlecode.ounit.codecomparison.dao.RoundDao;
 import com.googlecode.ounit.codecomparison.model.Round;
 import com.googlecode.ounit.codecomparison.view.RoundForm;
-import com.googlecode.ounit.codecomparison.view.TaskForm;
 
 @Controller
 public class RoundController {
@@ -26,14 +25,12 @@ public class RoundController {
 	@Resource
 	private RoundDao roundDao = new RoundDao();
 
-	// fishy
-	@ModelAttribute("taskForm")
-	public TaskForm getUserObject3() {
-		return new TaskForm();
-	}
-
+	/*
+	 * @ModelAttribute("taskForm") public TaskForm getTaskForm() { return new
+	 * TaskForm(); }
+	 */
 	@ModelAttribute("roundForm")
-	public RoundForm getUserObject() {
+	public RoundForm getRoundForm() {
 		return new RoundForm();
 	}
 

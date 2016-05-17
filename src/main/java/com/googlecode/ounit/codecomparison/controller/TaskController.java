@@ -35,7 +35,7 @@ import com.googlecode.ounit.codecomparison.model.Task;
 import com.googlecode.ounit.codecomparison.util.CharsetUtil;
 import com.googlecode.ounit.codecomparison.view.FileForm;
 import com.googlecode.ounit.codecomparison.view.TaskForm;
-import com.googlecode.ounit.moodlescraper.MoodleScraper2;
+import com.googlecode.ounit.moodlescraper.MoodleScraper;
 import com.googlecode.ounit.moodlescraper.MoodleScraperRunner;
 
 @Controller
@@ -217,51 +217,46 @@ public class TaskController {
 
 	@RequestMapping(value = "/synchronizetask/{taskId}", method = RequestMethod.POST)
 	public String synchronizeTask(@PathVariable("taskId") String taskId, @RequestBody Login login) {
-		System.out.println(login.toString());
 		MoodleScraperRunner msr = new MoodleScraperRunner();
 		List<Round> rounds = roundDao.findAllRoundsInTask(Long.parseLong(taskId));
 
-		// saveNewStudents(rounds, taskId, login, msr);
-		// saveNewAttempts(rounds, taskId, login, msr);
-		saveAttempts(rounds, taskId, login, msr);
+		MoodleScraper ms = msr.login(rounds.get(0), login);
+
+		saveNewStudents(rounds, taskId, ms);
+		saveNewAttempts(rounds, taskId, ms);
+		saveAttempts(rounds, taskId, ms);
+
+		ms.logout();
 		return "redirect:/task/" + taskId;
 	}
 
-	private void saveNewStudents(List<Round> rounds, String taskId, Login login, MoodleScraperRunner msr) {
-		List<Long> uniqueIdsFromDB = studentDao.getAllMoodleIds();
+	private void saveNewStudents(List<Round> rounds, String taskId, MoodleScraper ms) {
+		List<Long> studentIds = studentDao.getAllMoodleIds();
 		for (Round round : rounds) {
-			List<Student> studs = msr.getNewStudents(round, Integer.parseInt(taskId), login.getUser(), login.getPass(),
-					uniqueIdsFromDB);
-			System.out.println(studs);
-			for (Student stu : studs) {
-				studentDao.store(stu);
+			List<Student> students = ms.downloadStudents(round, "TreeNode.java", studentIds);
+			for (Student student : students) {
+				studentDao.store(student);
 			}
 		}
 	}
 
-	private void saveNewAttempts(List<Round> rounds, String taskId, Login login, MoodleScraperRunner msr) {
-		List<Long> uniqueIdsFromDB = attemptDao.getAttemptIds();
+	private void saveNewAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
+		List<Long> attemptIds = attemptDao.getAttemptIds();
 		for (Round round : rounds) {
-			List<Attempt> studs = msr.getNewAttempts(round, Integer.parseInt(taskId), login.getUser(), login.getPass(),
-					uniqueIdsFromDB);
-			System.out.println(studs);
-			for (Attempt stu : studs) {
-				attemptDao.store(stu);
+			List<Attempt> attempts = ms.downloadAttempts(round, "TreeNode.java", attemptIds);
+			for (Attempt attempt : attempts) {
+				attemptDao.store(attempt);
 			}
 		}
 	}
-	
-	private void saveAttempts(List<Round> rounds, String taskId, Login login, MoodleScraperRunner msr) {
 
+	private void saveAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
 		for (Round round : rounds) {
-			List<Attempt> attempts = attemptDao.findAttemptsNotFetched(round.getId());
-
-			List<Attempt> studs = msr.downloadAttempts(round, attempts, login.getUser(), login.getPass());
-			System.out.println(studs);
-			for (Attempt stu : studs) {
-				stu.setCodeAcquired(true);
-				attemptDao.store(stu);
-				break;
+			List<Attempt> attemptsNotFetched = attemptDao.findAttemptsNotFetched(round.getId());
+			List<Attempt> fetchedAttempts = ms.bulkDownload(round, attemptsNotFetched);
+			for (Attempt attempt : fetchedAttempts) {
+				attempt.setCodeAcquired(true);
+				attemptDao.store(attempt);
 			}
 		}
 	}

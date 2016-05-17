@@ -13,11 +13,6 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Student {
-	
-	public Student(Integer moodleId, String fullName) {
-		this.moodleId = moodleId;
-		this.fullName = fullName;
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +35,11 @@ public class Student {
 	public Student() {
 	}
 
+	public Student(Integer moodleId, String fullName) {
+		this.moodleId = moodleId;
+		this.fullName = fullName;
+	}
+	
 	public Long getId() {
 		return id;
 	}

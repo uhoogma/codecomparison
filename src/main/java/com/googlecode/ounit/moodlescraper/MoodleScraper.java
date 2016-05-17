@@ -1,12 +1,13 @@
 package com.googlecode.ounit.moodlescraper;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.junit.After;
 import org.junit.Test;
@@ -16,78 +17,118 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import com.googlecode.ounit.codecomparison.model.Attempt;
+import com.googlecode.ounit.codecomparison.model.Round;
+import com.googlecode.ounit.codecomparison.model.Student;
+
 public class MoodleScraper {
 
 	private WebDriver driver = new HtmlUnitDriver();
-	private static String FS = System.getProperty("file.separator");
-	private String studentSaveDirectory;
 	private Map<String, Exception> exceptions = new HashMap<String, Exception>();
+	private Map<Integer, Student> pairs = new HashMap<Integer, Student>();
+	private static String user;
+	private static String pass;
 
-	public MoodleScraper(String studentSaveDirectory) {
-		this.studentSaveDirectory = studentSaveDirectory;
+	public MoodleScraper(String userName, String password) {
+		user = userName;
+		pass = password;
 	}
 
 	@Test
-	public void downloadTest(Integer testId, String fileName) {
-		long start = System.currentTimeMillis();
+	public List<Student> downloadStudents(Round round, String fileName, List<Long> uniqueIdsFromDB) {
+		getReport(round.getUrl());
+		Set<Student> uniqueStudentsFromMoodle = (pairs.values()).stream().collect(Collectors
+				.toCollection(() -> new TreeSet<Student>((p1, p2) -> p1.getMoodleId().compareTo(p2.getMoodleId()))));
+		List<Student> newStudents = new ArrayList<>();
+		for (Student student : uniqueStudentsFromMoodle) {
+			if (uniqueIdsFromDB == null) {
+				newStudents.add(student);
+			}
+			if (uniqueIdsFromDB != null && !uniqueIdsFromDB.contains(student.getMoodleId())) {
+				newStudents.add(student);
+			}
+		}
+		return newStudents;
+	}
+
+	@Test
+	public List<Attempt> downloadAttempts(Round round, String fileName, List<Long> uniqueIdsFromDB) {
+		getReport(round.getUrl());
+		List<Attempt> newAttempts = new ArrayList<>();
+		for (Entry<Integer, Student> attempt : pairs.entrySet()) {
+			Attempt newAttempt = new Attempt(round.getTask_id(), round.getId(), new Long(attempt.getKey()), attempt.getValue().getMoodleId());
+			if (uniqueIdsFromDB == null) {
+				newAttempts.add(newAttempt);
+			}
+			if (uniqueIdsFromDB != null && !uniqueIdsFromDB.contains(attempt)) {
+				newAttempts.add(newAttempt);
+			}
+		}
+		return newAttempts;
+	}
+
+	public void prepare(Integer roundId) {
 		login();
-		getTest(testId);
-		downloadAttempts(fileName);
-		logout();
-		long elapsedTimeMillis = System.currentTimeMillis() - start;
-		System.out.println("downloadTest runtime: " + elapsedTimeMillis / 1000F
-				+ " sec");
-		System.out.println("With exceptions: " + exceptions.toString());
 	}
 
 	private void login() {
 		driver.get("https://moodle.hitsa.ee/");
-		elementById("login_username").sendKeys("uhoogma");
-		elementById("login_password").sendKeys("GetYourOwnPass");
+		elementById("login_username").sendKeys(user);
+		elementById("login_password").sendKeys(pass);
 		elementByXPath("submit").click();
 	}
 
-	private void getTest(Integer testId) {
-		driver.get("https://moodle.hitsa.ee/mod/quiz/report.php?id=" + testId
-				+ "&mode=overview");
+	private void getReport(Integer roundId) {
+		getRound(roundId);
+		pairs = getReport("mod-quiz-report-overview-report");
+	}
+
+	private void getRound(Integer roundId) {
+		driver.get("https://moodle.hitsa.ee/mod/quiz/report.php?id=" + roundId + "&mode=overview");
+		System.out.println(driver.getPageSource());
 		// set params for example:
-		// elementById("id_pagesize").sendKeys("1000");
+		elementById("id_pagesize").sendKeys("1000");
 		elementById("id_submitbutton").click();
 	}
-
-	private void downloadAttempts(String fileName) {
-		Map<Integer, Integer> pairs = getReport("mod-quiz-report-overview-report");
-		System.out.println(pairs.toString());
-		bulkDownload(pairs, fileName);
+	
+	public Map<Integer, Student> getPairs() {
+		return pairs;
 	}
 
-	private void logout() {
+	public void setPairs(Map<Integer, Student> pairs) {
+		this.pairs = pairs;
+	}
+
+	public void logout() {
 		elementByCSS("https://moodle.hitsa.ee/login/logout.php?").click();
 		System.out.println("Done");
 	}
 
-	private Map<Integer, Integer> getReport(String id) {
+	private Map<Integer, Student> getReport(String id) {
 		WebElement table = driver.findElements(By.id("attempts")).get(0);
-		Map<Integer, Integer> pairs = new HashMap<Integer, Integer>();
-		for (WebElement elem : table.findElements(By.cssSelector("tr[id*='"
-				+ "mod-quiz-report-overview-report_r" + "']"))) {
+		Map<Integer, Student> pairs = new HashMap<Integer, Student>();
+		for (WebElement elem : table
+				.findElements(By.cssSelector("tr[id*='" + "mod-quiz-report-overview-report_r" + "']"))) {
 			System.out.println(elem.toString());
 			try {
-				List<WebElement> teines = elem.findElements(By.cssSelector("td.c2"));
-				if (!teines.isEmpty()) {
-					WebElement teine = teines.get(0);
-					if (teine != null) {
-						String tudeng = teine.findElement(
-								By.cssSelector("a[href*='"
-										+ "https://moodle.hitsa.ee/user/view.php?id="
-										+ "']")).getAttribute("href");
-						String attempt = teine
-								.findElement(
-										By.cssSelector("a[href*='"
-												+ "https://moodle.hitsa.ee/mod/quiz/review.php?attempt="
-												+ "']")).getAttribute("href");
+				List<WebElement> tableData = elem.findElements(By.cssSelector("td.c2"));
+				if (!tableData.isEmpty()) {
+					WebElement data = tableData.get(0);
+					if (data != null) {
+						String student = data
+								.findElement(By
+										.cssSelector("a[href*='" + "https://moodle.hitsa.ee/user/view.php?id=" + "']"))
+								.getAttribute("href");
+						String fullName = data
+								.findElement(By
+										.cssSelector("a[href*='" + "https://moodle.hitsa.ee/user/view.php?id=" + "']"))
+								.getText().trim();
+						String attempt = data
+								.findElement(By.cssSelector(
+										"a[href*='" + "https://moodle.hitsa.ee/mod/quiz/review.php?attempt=" + "']"))
+								.getAttribute("href");
 						pairs.put(Util.splitQuery(attempt, "attempt"),
-								Util.splitQuery(tudeng, "id"));
+								new Student(Util.splitQuery(student, "id"), fullName));
 					}
 				}
 			} catch (NoSuchElementException e) {
@@ -97,50 +138,27 @@ public class MoodleScraper {
 		}
 		return pairs;
 	}
-
-	private void bulkDownload(Map<Integer, Integer> pairs, String fileName) {
-		boolean sentinel = true;
-		for (Map.Entry<Integer, Integer> pair : pairs.entrySet()) {
-			if (sentinel) {
-				sentinel = download(pair.getKey(), pair.getValue(), fileName);
-			}
+	
+	@Test
+	public List<Attempt> bulkDownload(Round round, List<Attempt> attempts) {
+		List<Attempt> retVal = new ArrayList<>();
+		for (Attempt attempt : attempts) {
+			String code = download(attempt.getMoodleId(), attempt.getStudentId());
+			attempt.setCode(code);
+			retVal.add(attempt);
 		}
+		return retVal;
 	}
 
-	private boolean download(int attempt, int student, String fileName) {
-		driver.get("https://moodle.hitsa.ee/mod/quiz/review.php?attempt="
-				+ attempt);
-		List<WebElement> elements = driver.findElements(By
-				.cssSelector("textarea[class='ou-codeeditor']"));
+	private String download(Long attemptId, Integer studentId) {
+		driver.get("https://moodle.hitsa.ee/mod/quiz/review.php?attempt=" + attemptId);
+		List<WebElement> elements = driver.findElements(By.cssSelector("textarea[class='ou-codeeditor']"));
 		WebElement elem = elements.isEmpty() ? null : elements.get(0);
 		if (elem == null) {
-			System.out.println(driver.getPageSource());
-			return true;
+			throw new RuntimeException("elem is null");
 		}
 		String code = elem == null ? "" : elem.getAttribute("value");
-		save(attempt, student, code, fileName);
-		return true;
-	}
-
-	private void save(int attempt, int student, String code, String fileName) {
-		File f1 = new File(studentSaveDirectory + FS + student);
-		if (!f1.exists()) {
-			System.out.println("making a dir " + studentSaveDirectory + FS
-					+ student);
-			f1.mkdir();
-		}
-		File f2 = new File(studentSaveDirectory + FS + student + FS + attempt);
-		f2.mkdir();
-		try (PrintWriter out = new PrintWriter(studentSaveDirectory + FS
-				+ student + FS + attempt + FS + fileName, "UTF-8"))
-		// must be UTF-8
-		{
-			System.out.println("saving: " + studentSaveDirectory + FS + student
-					+ FS + attempt + FS + fileName);
-			out.println(code);
-		} catch (UnsupportedEncodingException | FileNotFoundException e) {
-			exceptions.put(Long.toString(System.currentTimeMillis()), e);
-		}
+		return code;
 	}
 
 	private WebElement elementById(String id) {
@@ -149,14 +167,12 @@ public class MoodleScraper {
 	}
 
 	private WebElement elementByXPath(String id) {
-		List<WebElement> elements = driver.findElements(By
-				.xpath("//*[@type='submit']"));
+		List<WebElement> elements = driver.findElements(By.xpath("//*[@type='submit']"));
 		return elements.isEmpty() ? null : elements.get(0);
 	}
 
 	private WebElement elementByCSS(String id) {
-		List<WebElement> elements = driver.findElements(By
-				.cssSelector("a[href*='" + id + "']"));
+		List<WebElement> elements = driver.findElements(By.cssSelector("a[href*='" + id + "']"));
 		return elements.isEmpty() ? null : elements.get(0);
 	}
 
