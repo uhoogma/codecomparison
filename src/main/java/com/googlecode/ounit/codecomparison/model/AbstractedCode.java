@@ -16,7 +16,15 @@ public class AbstractedCode {
 	private Long version_id;
 	@Column(columnDefinition = "TEXT")
 	private String abstractedCode;
+
 	public AbstractedCode() {
+	}
+
+	public AbstractedCode(Long taskId, Long boilerplateId, Long versionId, String abstractedCode) {
+		this.task_id = taskId;
+		this.attempt_id = boilerplateId;
+		this.version_id = versionId;
+		this.abstractedCode = abstractedCode;
 	}
 
 	public String getAbstractedCode() {

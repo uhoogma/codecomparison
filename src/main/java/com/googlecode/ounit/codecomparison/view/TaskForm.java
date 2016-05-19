@@ -1,7 +1,9 @@
 package com.googlecode.ounit.codecomparison.view;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.googlecode.ounit.codecomparison.model.Round;
 import com.googlecode.ounit.codecomparison.model.SavedComparison;
@@ -16,6 +18,7 @@ public class TaskForm {
 	private String lastSyncDifference;
 	private List<SavedComparison> comparisons = new ArrayList<>();
 	private Integer sequentialNumber = 0;
+	Map<Integer, Integer> pages = new LinkedHashMap<>();
 
 	public String getAddTaskButton() {
 		return addTaskButton;
@@ -33,6 +36,10 @@ public class TaskForm {
 			return String.format("%.3f h tagasi",
 					(System.currentTimeMillis() - task.getLastSyncTime().getTime()) / 3600000.0);
 		}
+	}
+
+	public Map<Integer, Integer> getPages() {
+		return pages;
 	}
 
 	public List<Round> getRoundsInTask() {
@@ -61,6 +68,10 @@ public class TaskForm {
 
 	public void setLastSyncDifference(String lastSyncDifference) {
 		this.lastSyncDifference = lastSyncDifference;
+	}
+
+	public void setPages(Map<Integer, Integer> pages) {
+		this.pages = pages;
 	}
 
 	public void setRoundsInTask(List<Round> roundsInTask) {

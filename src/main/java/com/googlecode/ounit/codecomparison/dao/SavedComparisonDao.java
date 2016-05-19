@@ -18,12 +18,12 @@ public class SavedComparisonDao {
 	@PersistenceContext
 	private EntityManager em;
 
-	public List<SavedComparison> fillTable(Long taskId) {
+	public List<SavedComparison> fillTable(Long taskId, Integer startId, Integer resultCount) {
 		TypedQuery<SavedComparison> query = em.createQuery(
 				"select r from SavedComparison r where r.task_id = :taskId order by r.id", SavedComparison.class);
 		query.setParameter("taskId", taskId);
-		query.setFirstResult(22);
-		query.setMaxResults(8);
+		query.setFirstResult(startId);
+		query.setMaxResults(resultCount);
 		List<SavedComparison> rounds = query.getResultList();
 		if (rounds == null) {
 			return new ArrayList<>();
@@ -54,4 +54,7 @@ public class SavedComparisonDao {
 			em.persist(sc);
 		}
 	}
+	
+	// select GREATEST(firstToSecondResult, secondToFirstResult) from savedcomparison where GREATEST(firstToSecondResult, secondToFirstResult) < '1.7976931348623157e308'
+	// ;
 }

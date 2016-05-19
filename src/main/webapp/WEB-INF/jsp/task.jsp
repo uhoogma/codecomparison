@@ -158,11 +158,18 @@
 				</table>
 				<div class="centered-text">
 					<ul class="pagination">
-						<li><a href="#">1</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">3</a></li>
-						<li><a href="#">4</a></li>
-						<li><a href="#">5</a></li>
+						<c:set var="num" scope="page" value="${taskForm.sequentialNumber}" />
+						<c:forEach items="${taskForm.pages}" var="page">
+							<c:set var="key" scope="page" value="${page.getKey()}" />
+							<li><a
+								href="<c:url value="/task/${taskForm.task.id}/${page.getValue()}"/>">
+									<c:if test="${num/8 == key}">
+										<b>
+									</c:if>${page.getKey()+1}<c:if test="${num/8 == key}">
+										</b>
+									</c:if>
+							</a></li>
+						</c:forEach>
 					</ul>
 				</div>
 			</div>

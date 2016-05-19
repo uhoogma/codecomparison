@@ -50,6 +50,14 @@ public class Attempt {
 		this.student_id = student_id;
 	}
 
+	public Attempt(Long taskId, String originalFilename, String code, boolean codeAcquired, boolean isBoilerplate) {
+		this.task_id = taskId;
+		this.fileName = originalFilename;
+		this.code = code;
+		this.codeAcquired = codeAcquired;
+		this.isBoilerplate = isBoilerplate;
+	}
+
 	public List<AbstractedCode> getAbstractedCodes() {
 		return abstractedCodes;
 	}
