@@ -40,8 +40,7 @@
 							</td>
 							<td class="rounds-td"><c:forEach
 									items="${taskForm.task.rounds}" var="round">
-									<p>${round.roundName}|${round.subject}|${round.year}|
-										${round.semester}</p>
+									<p>${round.roundName}|${round.subject}|${round.year}|${round.semester}</p>
 								</c:forEach></td>
 						</tr>
 					</tbody>
@@ -109,7 +108,7 @@
 					</table>
 				</div>
 				<div class="col-sm-2">
-					<button type="button" class="btn btn-primary"
+					<button type="button" class="btn btn-primary" id="analyzeTask"
 						data-target="#credentials">ANALÜÜSI</button>
 				</div>
 			</div>
@@ -130,139 +129,31 @@
 						</tr>
 					</thead>
 					<tbody class="myTbody">
-						<tr>
-							<td>1</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>Infinity</td>
-							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="/comparison"/>"><button type="button"
-										class="btn btn-info">Vaata</button></a></td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>Infinity</td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>Infinity</td>
-							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="/comparison"/>"><button type="button"
-										class="btn btn-info">Vaata</button></a></td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>Infinity</td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>Infinity</td>
-							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="/comparison"/>"><button type="button"
-										class="btn btn-info">Vaata</button></a></td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>Infinity</td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>Infinity</td>
-							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="/comparison"/>"><button type="button"
-										class="btn btn-info">Vaata</button></a></td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>Infinity</td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>Infinity</td>
-							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="/comparison"/>"><button type="button"
-										class="btn btn-info">Vaata</button></a></td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>Infinity</td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>Infinity</td>
-							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="/comparison"/>"><button type="button"
-										class="btn btn-info">Vaata</button></a></td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>Infinity</td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>Infinity</td>
-							<td rowspan="2" class="2rowButton"><a
-								href="<c:url value="/comparison"/>"><button type="button"
-										class="btn btn-info">Vaata</button></a></td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>135036</td>
-							<td>1479173</td>
-							<td>109782</td>
-							<td>1423695</td>
-							<td>Infinity</td>
-						</tr>
+						<c:set var="count" value="${taskForm.sequentialNumber}"
+							scope="page" />
+						<c:forEach items="${taskForm.comparisons}" var="comp">
+							<c:set var="count" value="${count + 1}" scope="page" />
+
+							<tr>
+								<td>${count}</td>
+								<td>${comp.firstStudentId}</td>
+								<td>${comp.firstAttemptId}</td>
+								<td>${comp.secondStudentId}</td>
+								<td>${comp.secondAttemptId}</td>
+								<td>${comp.firstToSecondResultAsString}</td>
+								<td rowspan="2" class="2rowButton"><a
+									href="<c:url value="/comparison/${comp.id}"/>"><button
+											type="button" class="btn btn-info">Vaata</button></a></td>
+							</tr>
+							<tr>
+								<td>${count}</td>
+								<td>${comp.secondStudentId}</td>
+								<td>${comp.secondAttemptId}</td>
+								<td>${comp.firstStudentId}</td>
+								<td>${comp.firstAttemptId}</td>
+								<td>${comp.secondToFirstResultAsString}</td>
+							</tr>
+						</c:forEach>
 					</tbody>
 				</table>
 				<div class="centered-text">

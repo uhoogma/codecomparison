@@ -33,6 +33,16 @@ $(document).ready(function() {
 
 		});
 	});
+
+	$("#analyzeTask").click(function(e) {
+		e.preventDefault();
+		var currentUrl = window.location.href;
+		var analyzeUrl = currentUrl.replace("task", "analyzetask");
+
+		$.post(analyzeUrl, function() {
+			window.location.href = currentUrl;
+		});
+	});
 });
 
 function addRoundToTask(id) {

@@ -68,5 +68,4 @@ public class TaskDao {
 		TypedQuery<Task> query = em.createQuery("select t from Task t where t.active = 0", Task.class);
 		return query.getResultList();
 	}
-
 }

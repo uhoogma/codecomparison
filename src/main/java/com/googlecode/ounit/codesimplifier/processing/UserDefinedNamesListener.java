@@ -8,44 +8,44 @@ import org.antlr.v4.runtime.misc.OrderedHashSet;
 
 public class UserDefinedNamesListener extends Java8BaseListener {
 
-    private Set<String> functions = new OrderedHashSet<>();
-    private Set<String> variables = new OrderedHashSet<>();
+	private Set<String> functions = new OrderedHashSet<>();
+	private Set<String> variables = new OrderedHashSet<>();
 
-    private boolean insideVariableDeclarator = false;
+	private boolean insideVariableDeclarator = false;
 
-    public Set<String> getFunctions() {
-        return functions;
-    }
+	@Override
+	public void enterMethodDeclarator(@NotNull Java8Parser.MethodDeclaratorContext ctx) {
+		String currentFunctionName = ctx.Identifier().getText();
+		functions.add(currentFunctionName);
+	}
 
-    public void setFunctions(Set<String> aFunctions) {
-        functions = aFunctions;
-    }
+	@Override
+	public void enterVariableDeclarator(@NotNull Java8Parser.VariableDeclaratorContext ctx) {
+		insideVariableDeclarator = true;
+	}
 
-    public Set<String> getVariables() {
-        return variables;
-    }
+	@Override
+	public void enterVariableDeclaratorId(@NotNull Java8Parser.VariableDeclaratorIdContext ctx) {
+		if (insideVariableDeclarator) {
+			variables.add(ctx.Identifier().getText());
+			insideVariableDeclarator = false;
+		}
+	}
 
-    public void setVariables(Set<String> variables) {
-        this.variables = variables;
-    }
+	public Set<String> getFunctions() {
+		return functions;
+	}
 
-    @Override
-    public void enterMethodDeclarator(@NotNull Java8Parser.MethodDeclaratorContext ctx) {
-        String currentFunctionName = ctx.Identifier().getText();
-        functions.add(currentFunctionName);
-    }
+	public Set<String> getVariables() {
+		return variables;
+	}
 
-    @Override
-    public void enterVariableDeclarator(@NotNull Java8Parser.VariableDeclaratorContext ctx) {
-        insideVariableDeclarator = true;
-    }
+	public void setFunctions(Set<String> aFunctions) {
+		functions = aFunctions;
+	}
 
-    @Override
-    public void enterVariableDeclaratorId(@NotNull Java8Parser.VariableDeclaratorIdContext ctx) {
-        if (insideVariableDeclarator) {
-            variables.add(ctx.Identifier().getText());
-            insideVariableDeclarator = false;
-        }
-    }
+	public void setVariables(Set<String> variables) {
+		this.variables = variables;
+	}
 
 }

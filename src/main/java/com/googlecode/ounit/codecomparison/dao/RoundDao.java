@@ -62,5 +62,12 @@ public class RoundDao {
 		}
 		return rounds;
 	}
-	
+
+	public Round findRoundForAttemptId(int attemptId) {
+		TypedQuery<Round> query = em.createQuery(
+				"select r from Round r where r.id = (SELECT a.round_id FROM Attempt a where a.moodleId = :attemptId)",
+				Round.class);
+		query.setParameter("attemptId", attemptId);
+		return getSingleRound(query);
+	}
 }

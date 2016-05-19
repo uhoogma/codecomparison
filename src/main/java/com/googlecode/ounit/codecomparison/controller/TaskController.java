@@ -4,7 +4,10 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -22,19 +25,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.googlecode.ounit.codecomparison.dao.AbstractedCodeDao;
 import com.googlecode.ounit.codecomparison.dao.AttemptDao;
 import com.googlecode.ounit.codecomparison.dao.RoundDao;
+import com.googlecode.ounit.codecomparison.dao.SavedComparisonDao;
 import com.googlecode.ounit.codecomparison.dao.StudentDao;
 import com.googlecode.ounit.codecomparison.dao.TaskDao;
 import com.googlecode.ounit.codecomparison.dao.VersionDao;
+import com.googlecode.ounit.codecomparison.model.AbstractedCode;
 import com.googlecode.ounit.codecomparison.model.Attempt;
 import com.googlecode.ounit.codecomparison.model.Login;
 import com.googlecode.ounit.codecomparison.model.Round;
+import com.googlecode.ounit.codecomparison.model.SavedComparison;
 import com.googlecode.ounit.codecomparison.model.Student;
 import com.googlecode.ounit.codecomparison.model.Task;
 import com.googlecode.ounit.codecomparison.util.CharsetUtil;
 import com.googlecode.ounit.codecomparison.view.FileForm;
 import com.googlecode.ounit.codecomparison.view.TaskForm;
+import com.googlecode.ounit.codesimilarity.Pair;
+import com.googlecode.ounit.codesimilarity.SimilarityRunnerAdvanced;
+import com.googlecode.ounit.codesimplifier.processing.Java2SimpleJava;
 import com.googlecode.ounit.moodlescraper.MoodleScraper;
 import com.googlecode.ounit.moodlescraper.MoodleScraperRunner;
 
@@ -51,6 +61,10 @@ public class TaskController {
 	private AttemptDao attemptDao = new AttemptDao();
 	@Resource
 	private StudentDao studentDao = new StudentDao();
+	@Resource
+	private AbstractedCodeDao abstractedCodeDao = new AbstractedCodeDao();
+	@Resource
+	private SavedComparisonDao savedComparisonDao = new SavedComparisonDao();
 
 	@ModelAttribute("taskForm")
 	public TaskForm getTaskForm() {
@@ -211,6 +225,8 @@ public class TaskController {
 		Task task = taskDao.findTaskForId(Long.parseLong(taskId));
 		TaskForm form = new TaskForm();
 		form.setTask(task);
+		List<SavedComparison> list = savedComparisonDao.fillTable(Long.parseLong(taskId));
+		form.setComparisons(list);
 		model.addAttribute("taskForm", form);
 		return "task";
 	}
@@ -228,6 +244,75 @@ public class TaskController {
 
 		ms.logout();
 		return "redirect:/task/" + taskId;
+	}
+
+	@RequestMapping(value = "/analyzetask/{taskId}", method = RequestMethod.POST)
+	public String analyzeTask(@PathVariable("taskId") String taskId) {
+		Long currentVersionId = versionDao.getCurrentVersion();
+		Java2SimpleJava j2sj = new Java2SimpleJava();
+		
+		abstractBoilerPlateCode(j2sj, taskId, currentVersionId);
+		abstractStudentCode(j2sj, taskId, currentVersionId);
+		
+		List<SavedComparison> csvResult = analyze(taskId);
+		System.out.println(csvResult.get(0).toString());
+		for(SavedComparison sc : csvResult){
+			sc.setTask_id(Long.parseLong(taskId));
+			sc.setVersion_id(currentVersionId);
+			savedComparisonDao.store(sc);
+		}
+		return "redirect:/task/" + taskId;
+	}
+
+	private List<SavedComparison> analyze(String taskId) {
+		int ngramsize = 13;
+		// calculate
+		int windowsize = 27;
+		double similarityThreshold = 0;
+		int modulus = 1;
+		SimilarityRunnerAdvanced sim = new SimilarityRunnerAdvanced(ngramsize, windowsize, similarityThreshold,
+				modulus);
+		String boilerPlate = "";
+		Map<Pair, String> studentSubmissions = new HashMap<Pair, String>();
+		List<Attempt> attempts = attemptDao.getAttemptsForTask(Long.parseLong(taskId));
+		for(Attempt attempt: attempts){// fishy
+			studentSubmissions.put(new Pair(attempt.getStudentId(), attempt.getMoodleId().intValue()), attempt.getAbstractedCodes().get(0).getAbstractedCode());
+		}
+		System.out.println(studentSubmissions.toString());
+		List<SavedComparison> csvResult = sim.run(boilerPlate, studentSubmissions);
+		return csvResult;
+	}
+
+	private void abstractStudentCode(Java2SimpleJava j2sj, String taskId, Long currentVersionId) {
+		List<Attempt> attempts = attemptDao.getAttemptsForTask(Long.parseLong(taskId));
+		List<AbstractedCode> abstractedAttempts = abstractedCodeDao.getAbstractedAttemptsForTask(Long.parseLong(taskId), currentVersionId);
+		List<Long> abstractedAttemptIds = abstractedAttempts.stream().map(a -> a.getAttempt_id()).collect(Collectors.toList());
+		for(Attempt attempt :  attempts ){
+			if (!attempt.getCode().isEmpty() && !abstractedAttemptIds.contains(attempt.getId())) {
+				String abstracted = j2sj.processString(attempt.getCode());
+				AbstractedCode ac = new AbstractedCode();
+				ac.setAttempt_id(attempt.getId());
+				ac.setTask_id(Long.parseLong(taskId));
+				ac.setAbstractedCode(abstracted);
+				ac.setVersion_id(currentVersionId);
+				abstractedCodeDao.store(ac);
+			}
+		}
+	}
+
+	private void abstractBoilerPlateCode(Java2SimpleJava j2sj, String taskId, Long versionId) {
+		Attempt boiler = attemptDao.getTaskBoilerPlateAttempt(Long.parseLong(taskId));
+		AbstractedCode abstractedBoiler = abstractedCodeDao.getCodeForAttempt(boiler.getId(), versionId);
+
+		if (boiler != null && abstractedBoiler == null && !boiler.getCode().isEmpty()) {
+			String abstracted = j2sj.processString(boiler.getCode());
+			AbstractedCode ac = new AbstractedCode();
+			ac.setAttempt_id(boiler.getId());
+			ac.setTask_id(Long.parseLong(taskId));
+			ac.setAbstractedCode(abstracted);
+			ac.setVersion_id(versionId);
+			abstractedCodeDao.store(ac);
+		}
 	}
 
 	private void saveNewStudents(List<Round> rounds, String taskId, MoodleScraper ms) {
@@ -253,8 +338,9 @@ public class TaskController {
 	private void saveAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
 		for (Round round : rounds) {
 			List<Attempt> attemptsNotFetched = attemptDao.findAttemptsNotFetched(round.getId());
-			List<Attempt> fetchedAttempts = ms.bulkDownload(round, attemptsNotFetched);
-			for (Attempt attempt : fetchedAttempts) {
+			for (Attempt attempt : attemptsNotFetched) {
+				String code = ms.download(attempt.getMoodleId(), attempt.getStudentId());
+				attempt.setCode(code);
 				attempt.setCodeAcquired(true);
 				attemptDao.store(attempt);
 			}

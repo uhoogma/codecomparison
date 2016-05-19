@@ -9,19 +9,19 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 class RemovePackageDeclaration extends Java8BaseListener {
 
-    public TokenStreamRewriter rewriter;
+	public TokenStreamRewriter rewriter;
 
-    public RemovePackageDeclaration(TokenStreamRewriter rewriter) {
-        this.rewriter = rewriter;
-    }
+	public RemovePackageDeclaration(TokenStreamRewriter rewriter) {
+		this.rewriter = rewriter;
+	}
 
-    @Override
-    public void enterPackageDeclaration(@NotNull Java8Parser.PackageDeclarationContext ctx) {
-        List<ParseTree> pt = ctx.children;
-        if (pt != null) {
-            pt.stream().forEach((pt1) -> {
-                Util.removeChild(pt1, rewriter);
-            });
-        }
-    }
+	@Override
+	public void enterPackageDeclaration(@NotNull Java8Parser.PackageDeclarationContext ctx) {
+		List<ParseTree> pt = ctx.children;
+		if (pt != null) {
+			pt.stream().forEach((pt1) -> {
+				Util.removeChild(pt1, rewriter);
+			});
+		}
+	}
 }

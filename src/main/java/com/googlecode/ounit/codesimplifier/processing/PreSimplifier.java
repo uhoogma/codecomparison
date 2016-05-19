@@ -21,17 +21,17 @@ public class PreSimplifier extends Java8BaseListener {
         rewriter = new TokenStreamRewriter(tokens);
     }
 
-    /*  
-     1. Annotation : annotations have no role in actual program execution
-     logic, they only increase the number of lines of the source code, which
-     may skew the similarity measures based on the number lines matched. 
-     Annotations are only the information useful and necessary for the 
-     programmers or people who need to look into the source code for 
-     understanding. Thus, we believe annotation should not intervene the 
-     similarity measure for the source code programs. Deleting annotations 
-     in source codes makes no effects on the execution of the program. Thus,
-     these annotations are eliminated by our abstractor.
-     */
+    /*
+	 * 1. Annotation : annotations have no role in actual program execution
+	 * logic, they only increase the number of lines of the source code, which
+	 * may skew the similarity measures based on the number lines matched.
+	 * Annotations are only the information useful and necessary for the
+	 * programmers or people who need to look into the source code for
+	 * understanding. Thus, we believe annotation should not intervene the
+	 * similarity measure for the source code programs. Deleting annotations in
+	 * source codes makes no effects on the execution of the program. Thus,
+	 * these annotations are eliminated by our abstractor.
+	 */
     @Override
     public void enterAnnotation(Java8Parser.AnnotationContext ctx) {
         List<Token> annotationTokens
@@ -39,33 +39,6 @@ public class PreSimplifier extends Java8BaseListener {
         if (annotationTokens != null) {
             annotationTokens.stream().filter((annotationToken) -> (annotationToken != null)).forEach((annotationToken) -> {
                 rewriter.delete(annotationToken.getTokenIndex());
-            });
-        }
-    }
-
-    /*
-     2. Variable declaration : variable declarations define the names of the
-     variables and their types. Variables are necessary items in source code
-     to store the status of program execution or the temporary values of 
-     calculations. However, they are very easy targets to be obfuscated by 
-     malicious duplicators, when software theft occurs. For example, 
-     changing variable names in source code does not change the overall 
-     logic and algorithm of the execution of the program. At binary level, 
-     the modified programs will perform almost the same functions, even if 
-     the names and types of variables are changed in the source code. Not 
-     only variable names but also locations of variable declarations in the 
-     source code can disturb the text/token-based similarity methods for 
-     source code, but these changes may rarely affect the functionalities 
-     of original programs. Therefore, our abstractor eliminates all of 
-     variable declarations, as they are less important features in source 
-     code similarity.
-     */
-    @Override
-    public void enterLocalVariableDeclarationStatement(Java8Parser.LocalVariableDeclarationStatementContext ctx) {
-        List<ParseTree> pt = ctx.children;
-        if (pt != null) {
-            pt.stream().forEach((pt1) -> {
-                Util.removeChild(pt1, rewriter);
             });
         }
     }
@@ -116,6 +89,33 @@ public class PreSimplifier extends Java8BaseListener {
                         // System.out.println("literaltoken" + literalToken);
                         rewriter.replace(literalToken.getTokenIndex(), "\"\"");
                     }); // matching (optional) String with following escapeSequence
+        }
+    }
+
+    /*
+     2. Variable declaration : variable declarations define the names of the
+     variables and their types. Variables are necessary items in source code
+     to store the status of program execution or the temporary values of 
+     calculations. However, they are very easy targets to be obfuscated by 
+     malicious duplicators, when software theft occurs. For example, 
+     changing variable names in source code does not change the overall 
+     logic and algorithm of the execution of the program. At binary level, 
+     the modified programs will perform almost the same functions, even if 
+     the names and types of variables are changed in the source code. Not 
+     only variable names but also locations of variable declarations in the 
+     source code can disturb the text/token-based similarity methods for 
+     source code, but these changes may rarely affect the functionalities 
+     of original programs. Therefore, our abstractor eliminates all of 
+     variable declarations, as they are less important features in source 
+     code similarity.
+     */
+    @Override
+    public void enterLocalVariableDeclarationStatement(Java8Parser.LocalVariableDeclarationStatementContext ctx) {
+        List<ParseTree> pt = ctx.children;
+        if (pt != null) {
+            pt.stream().forEach((pt1) -> {
+                Util.removeChild(pt1, rewriter);
+            });
         }
     }
 

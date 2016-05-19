@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.googlecode.ounit.codecomparison.model.SavedComparison;
+
 public class SimilarityRunnerAdvanced {
 
 	private static final String FS = System.getProperty("file.separator");
@@ -28,31 +30,22 @@ public class SimilarityRunnerAdvanced {
 	private Map<Integer, int[]> convertedHashes = new HashMap<Integer, int[]>();
 	private Map<Pair, ValueObject> comparisonResults = new HashMap<Pair, ValueObject>();
 
-	public SimilarityRunnerAdvanced(String filename, int ngramsize,
-			int windowsize, double similarityThreshold, int modulus) {
-		this.filename = filename;
+	public SimilarityRunnerAdvanced(int ngramsize, int windowsize, double similarityThreshold, int modulus) {
 		this.ngramSize = ngramsize;
 		this.windowSize = windowsize;
 		this.similarityThreshold = similarityThreshold;
 		this.modulus = modulus;
 	}
 
-	private List<Integer> generateBoilerPlateHashes(String path) {
-		String boilerplate = null;
-		try {
-			boilerplate = new String(Files.readAllBytes(Paths.get(path
-					+ TEACHER + FS + filename)));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	private List<Integer> generateBoilerPlateHashes(String boilerplate) {
 		return Similarity.generateHashes(boilerplate, ngramSize, modulus);
 	}
 
-	public String run(String path) {
-		listf(path + STUDENTS);
+	public List<SavedComparison> run(String boilerplate, Map<Pair, String> studentSubmissions) {
+		// listf(path + STUDENTS);
 		for (Map.Entry<Pair, String> entry : studentSubmissions.entrySet()) {
-			List<Integer> hashes = Similarity.generateHashes(
-					studentSubmissions.get(entry.getKey()), ngramSize, modulus);
+			List<Integer> hashes = Similarity.generateHashes(studentSubmissions.get(entry.getKey()), ngramSize,
+					modulus);
 			studentHashes.put(entry.getKey().getSecond(), hashes);
 		}
 
@@ -62,30 +55,22 @@ public class SimilarityRunnerAdvanced {
 		}
 		Integer[] attemptsArray = attemptsList.toArray(new Integer[1]);
 
-		List<Integer> hashesBoilerPlate = generateBoilerPlateHashes(path);
+		List<Integer> hashesBoilerPlate = generateBoilerPlateHashes(boilerplate);
 
 		convertHashes(hashesBoilerPlate);
+		System.out.println(convertedHashes.toString());
 
 		for (int i = 0; i < attemptsArray.length; i++) {
 			int firstAttempt = attemptsArray[i];
 			for (int j = 0; j < attemptsArray.length; j++) {
 				int secondAttempt = attemptsArray[j];
 				if (i < j) {
-					double firstToSecondComparison = Similarity
-							.JaccardCoefficientFromHashes(
-									convertedHashes.get(firstAttempt),
-									convertedHashes.get(secondAttempt),
-									windowSize);
-					double secondToFirstComparison = Similarity
-							.JaccardCoefficientFromHashes(
-									convertedHashes.get(secondAttempt),
-									convertedHashes.get(firstAttempt),
-									windowSize);
-					comparisonResults.put(
-							new Pair(firstAttempt, secondAttempt),
-							new ValueObject(firstAttempt, secondAttempt,
-									firstToSecondComparison,
-									secondToFirstComparison));
+					double firstToSecondComparison = Similarity.JaccardCoefficientFromHashes(
+							convertedHashes.get(firstAttempt), convertedHashes.get(secondAttempt), windowSize);
+					double secondToFirstComparison = Similarity.JaccardCoefficientFromHashes(
+							convertedHashes.get(secondAttempt), convertedHashes.get(firstAttempt), windowSize);
+					comparisonResults.put(new Pair(firstAttempt, secondAttempt), new ValueObject(firstAttempt,
+							secondAttempt, firstToSecondComparison, secondToFirstComparison));
 				}
 			}
 		}
@@ -97,7 +82,48 @@ public class SimilarityRunnerAdvanced {
 			attemptToStudent.put(entry.getSecond(), entry.getFirst());
 		}
 
-		return composeCsv(attemptToStudent);
+		return makeComparisons(attemptToStudent);
+	}
+
+	private List<SavedComparison> makeComparisons(Map<Integer, Integer> attemptToStudent) {
+		List<SavedComparison> scl = new ArrayList<>();
+		for (Map.Entry<Pair, ValueObject> entry : comparisonResults.entrySet()) {
+			SavedComparison sc = new SavedComparison();
+			int attempt1 = entry.getKey().getFirst();
+			int attempt2 = entry.getKey().getSecond();
+			int student1 = attemptToStudent.get(attempt1);
+			int student2 = attemptToStudent.get(attempt2);
+			if (student1 != student2 && entry.getValue().getLargestSimilarityResult() > similarityThreshold) {
+
+				sc.setFirstStudentId(student1);
+				sc.setSecondStudentId(student2);
+
+				sc.setFirstAttemptId( attempt1);
+				sc.setSecondAttemptId( attempt2);
+
+				Double fts = entry.getValue().getFirstToSecondComparison();
+				if (fts.isInfinite() // || fts.isNaN()
+				) {
+					sc.setFirstToSecondResult(Double.MAX_VALUE);
+					sc.setFirstToSecondIsInfinite(true);
+				} else {
+					sc.setFirstToSecondResult(fts);
+					sc.setFirstToSecondIsInfinite(false);
+				}
+
+				Double stf = entry.getValue().getSecondToFirstComparison();
+				if (stf.isInfinite() // || fts.isNaN()
+				) {
+					sc.setSecondToFirstResult(Double.MAX_VALUE);
+					sc.setSecondToFirstIsInfinite(true);
+				} else {
+					sc.setSecondToFirstResult(stf);
+					sc.setSecondToFirstIsInfinite(false);
+				}
+				scl.add(sc);
+			}
+		}
+		return scl;
 	}
 
 	private String composeCsv(Map<Integer, Integer> attemptToStudent) {
@@ -109,8 +135,7 @@ public class SimilarityRunnerAdvanced {
 			int attempt2 = entry.getKey().getSecond();
 			int student1 = attemptToStudent.get(attempt1);
 			int student2 = attemptToStudent.get(attempt2);
-			if (student1 != student2
-					&& entry.getValue().getLargestSimilarityResult() > similarityThreshold) {
+			if (student1 != student2 && entry.getValue().getLargestSimilarityResult() > similarityThreshold) {
 				sb.append(comparisonNumber);
 				sb.append("\t");
 				sb.append(student1);
@@ -145,17 +170,15 @@ public class SimilarityRunnerAdvanced {
 
 	/**
 	 * removing hashes that are common in attempt code and boilerplate code
-	 * */
+	 */
 	private void convertHashes(List<Integer> boilerPlateHashes) {
 		for (Integer key : studentHashes.keySet()) {
 			int[] converted = null;
 			if (boilerPlateHashes.size() == 0) {
-				studentHashes.get(key).stream().mapToInt(h -> h).toArray();
+				converted = studentHashes.get(key).stream().mapToInt(h -> h).toArray();
 			} else {
-				converted = Similarity
-						.removeBoilerplate(studentHashes.get(key),
-								boilerPlateHashes).stream().mapToInt(h -> h)
-						.toArray();
+				converted = Similarity.removeBoilerplate(studentHashes.get(key), boilerPlateHashes).stream()
+						.mapToInt(h -> h).toArray();
 			}
 			convertedHashes.put(key, converted);
 		}
@@ -173,14 +196,11 @@ public class SimilarityRunnerAdvanced {
 				String studentId = splitted[splitted.length - 2];
 				String attemptId = splitted[splitted.length - 1];
 				String submission;
-				if (studentId.matches(INTEGER_REGEX)
-						&& attemptId.matches(INTEGER_REGEX)) {
+				if (studentId.matches(INTEGER_REGEX) && attemptId.matches(INTEGER_REGEX)) {
 					try {
-						submission = new String(Files.readAllBytes(Paths
-								.get(directoryName + FS + filename)));
-						studentSubmissions.put(
-								new Pair(Integer.parseInt(studentId), Integer
-										.parseInt(attemptId)), submission);
+						submission = new String(Files.readAllBytes(Paths.get(directoryName + FS + filename)));
+						studentSubmissions.put(new Pair(Integer.parseInt(studentId), Integer.parseInt(attemptId)),
+								submission);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

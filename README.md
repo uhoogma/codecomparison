@@ -20,8 +20,8 @@ Instructors who have access to Moodle's programming courses that are being evalu
 4. DONE - display several rounds in one task in index view
 5. FINISH - either make Selenium Webdriver work properly or make sure it will gracefully degrade in case of an error
 6. TODO - user feedback
-7. FINISH - save data fetched with help of Selenium Webdriver into database
+7. DONE - save data fetched with help of Selenium Webdriver into database
 8. DONE - include codesimplifier and codesimilarity into this project
-9. TODO - make analysis work
+9. DONE - make analysis work
 10. TODO - make that in case of round or task deletion only relevant data is deleted (Cascade only when necessary)
-11. TODO - CSS and HTML cleanup
+11. FINISH - CSS and HTML cleanup

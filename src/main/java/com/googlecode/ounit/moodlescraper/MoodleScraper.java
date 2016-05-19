@@ -23,15 +23,45 @@ import com.googlecode.ounit.codecomparison.model.Student;
 
 public class MoodleScraper {
 
+	private static String user;
+	private static String pass;
 	private WebDriver driver = new HtmlUnitDriver();
 	private Map<String, Exception> exceptions = new HashMap<String, Exception>();
 	private Map<Integer, Student> pairs = new HashMap<Integer, Student>();
-	private static String user;
-	private static String pass;
 
 	public MoodleScraper(String userName, String password) {
 		user = userName;
 		pass = password;
+	}
+
+	@After
+	private void closeDriver() {
+		driver.close();
+	}
+
+	public String download(Integer attemptId, Integer studentId) {
+		driver.get("https://moodle.hitsa.ee/mod/quiz/review.php?attempt=" + attemptId);
+		List<WebElement> elements = driver.findElements(By.cssSelector("textarea[class='ou-codeeditor']"));
+		WebElement elem = elements.isEmpty() ? null : elements.get(0);
+		String code = elem == null ? "" : elem.getAttribute("value");
+		return code;
+	}
+
+	@Test
+	public List<Attempt> downloadAttempts(Round round, String fileName, List<Long> uniqueIdsFromDB) {
+		getReport(round.getUrl());
+		List<Attempt> newAttempts = new ArrayList<>();
+		for (Entry<Integer, Student> attempt : pairs.entrySet()) {
+			Attempt newAttempt = new Attempt(round.getTask_id(), round.getId(), attempt.getKey(),
+					attempt.getValue().getMoodleId());
+			if (uniqueIdsFromDB == null) {
+				newAttempts.add(newAttempt);
+			}
+			if (uniqueIdsFromDB != null && !uniqueIdsFromDB.contains(attempt)) {
+				newAttempts.add(newAttempt);
+			}
+		}
+		return newAttempts;
 	}
 
 	@Test
@@ -51,57 +81,28 @@ public class MoodleScraper {
 		return newStudents;
 	}
 
-	@Test
-	public List<Attempt> downloadAttempts(Round round, String fileName, List<Long> uniqueIdsFromDB) {
-		getReport(round.getUrl());
-		List<Attempt> newAttempts = new ArrayList<>();
-		for (Entry<Integer, Student> attempt : pairs.entrySet()) {
-			Attempt newAttempt = new Attempt(round.getTask_id(), round.getId(), new Long(attempt.getKey()), attempt.getValue().getMoodleId());
-			if (uniqueIdsFromDB == null) {
-				newAttempts.add(newAttempt);
-			}
-			if (uniqueIdsFromDB != null && !uniqueIdsFromDB.contains(attempt)) {
-				newAttempts.add(newAttempt);
-			}
-		}
-		return newAttempts;
+	private WebElement elementByCSS(String id) {
+		List<WebElement> elements = driver.findElements(By.cssSelector("a[href*='" + id + "']"));
+		return elements.isEmpty() ? null : elements.get(0);
 	}
 
-	public void prepare(Integer roundId) {
-		login();
+	private WebElement elementById(String id) {
+		List<WebElement> elements = driver.findElements(By.id(id));
+		return elements.isEmpty() ? null : elements.get(0);
 	}
 
-	private void login() {
-		driver.get("https://moodle.hitsa.ee/");
-		elementById("login_username").sendKeys(user);
-		elementById("login_password").sendKeys(pass);
-		elementByXPath("submit").click();
+	private WebElement elementByXPath(String id) {
+		List<WebElement> elements = driver.findElements(By.xpath("//*[@type='submit']"));
+		return elements.isEmpty() ? null : elements.get(0);
+	}
+
+	public Map<Integer, Student> getPairs() {
+		return pairs;
 	}
 
 	private void getReport(Integer roundId) {
 		getRound(roundId);
 		pairs = getReport("mod-quiz-report-overview-report");
-	}
-
-	private void getRound(Integer roundId) {
-		driver.get("https://moodle.hitsa.ee/mod/quiz/report.php?id=" + roundId + "&mode=overview");
-		System.out.println(driver.getPageSource());
-		// set params for example:
-		elementById("id_pagesize").sendKeys("1000");
-		elementById("id_submitbutton").click();
-	}
-	
-	public Map<Integer, Student> getPairs() {
-		return pairs;
-	}
-
-	public void setPairs(Map<Integer, Student> pairs) {
-		this.pairs = pairs;
-	}
-
-	public void logout() {
-		elementByCSS("https://moodle.hitsa.ee/login/logout.php?").click();
-		System.out.println("Done");
 	}
 
 	private Map<Integer, Student> getReport(String id) {
@@ -138,46 +139,32 @@ public class MoodleScraper {
 		}
 		return pairs;
 	}
-	
-	@Test
-	public List<Attempt> bulkDownload(Round round, List<Attempt> attempts) {
-		List<Attempt> retVal = new ArrayList<>();
-		for (Attempt attempt : attempts) {
-			String code = download(attempt.getMoodleId(), attempt.getStudentId());
-			attempt.setCode(code);
-			retVal.add(attempt);
-		}
-		return retVal;
+
+	private void getRound(Integer roundId) {
+		driver.get("https://moodle.hitsa.ee/mod/quiz/report.php?id=" + roundId + "&mode=overview");
+		System.out.println(driver.getPageSource());
+		// set params for example:
+		elementById("id_pagesize").sendKeys("1000");
+		elementById("id_submitbutton").click();
 	}
 
-	private String download(Long attemptId, Integer studentId) {
-		driver.get("https://moodle.hitsa.ee/mod/quiz/review.php?attempt=" + attemptId);
-		List<WebElement> elements = driver.findElements(By.cssSelector("textarea[class='ou-codeeditor']"));
-		WebElement elem = elements.isEmpty() ? null : elements.get(0);
-		if (elem == null) {
-			throw new RuntimeException("elem is null");
-		}
-		String code = elem == null ? "" : elem.getAttribute("value");
-		return code;
+	private void login() {
+		driver.get("https://moodle.hitsa.ee/");
+		elementById("login_username").sendKeys(user);
+		elementById("login_password").sendKeys(pass);
+		elementByXPath("submit").click();
 	}
 
-	private WebElement elementById(String id) {
-		List<WebElement> elements = driver.findElements(By.id(id));
-		return elements.isEmpty() ? null : elements.get(0);
+	public void logout() {
+		elementByCSS("https://moodle.hitsa.ee/login/logout.php?").click();
+		System.out.println("Done");
 	}
 
-	private WebElement elementByXPath(String id) {
-		List<WebElement> elements = driver.findElements(By.xpath("//*[@type='submit']"));
-		return elements.isEmpty() ? null : elements.get(0);
+	public void prepare(Integer roundId) {
+		login();
 	}
 
-	private WebElement elementByCSS(String id) {
-		List<WebElement> elements = driver.findElements(By.cssSelector("a[href*='" + id + "']"));
-		return elements.isEmpty() ? null : elements.get(0);
-	}
-
-	@After
-	private void closeDriver() {
-		driver.close();
+	public void setPairs(Map<Integer, Student> pairs) {
+		this.pairs = pairs;
 	}
 }

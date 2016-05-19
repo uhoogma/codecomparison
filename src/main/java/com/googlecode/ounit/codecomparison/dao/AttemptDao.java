@@ -32,6 +32,12 @@ public class AttemptDao {
 		return getSingleAttempt(query);
 	}
 
+	public Attempt findAttemptForId(Integer id) {
+		TypedQuery<Attempt> query = em.createQuery("select r from Attempt r where r.moodleId = :id", Attempt.class);
+		query.setParameter("id", id);
+		return getSingleAttempt(query);
+	}
+
 	private Attempt getSingleAttempt(TypedQuery<Attempt> query) {
 		List<Attempt> persons = query.getResultList();
 		if (persons.size() < 1)
@@ -48,6 +54,12 @@ public class AttemptDao {
 	public List<Attempt> findAttemptsNotFetched(Long roundId) {
 		TypedQuery<Attempt> query = em.createQuery("select a from Attempt a where a.round_id= :roundId and a.codeAcquired= 0 and a.isBoilerplate= 0", Attempt.class);
 		query.setParameter("roundId", roundId);
+		return query.getResultList();
+	}
+	
+	public List<Attempt> getAttemptsForTask(Long taskId) {
+		TypedQuery<Attempt> query = em.createQuery("select a from Attempt a where a.task_id= :taskId and a.codeAcquired= 1 and a.isBoilerplate= 0", Attempt.class);
+		query.setParameter("taskId", taskId);
 		return query.getResultList();
 	}
 }
