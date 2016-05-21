@@ -164,9 +164,9 @@
 							<c:set var="key" scope="page" value="${page.getKey()}" />
 							<li><a
 								href="<c:url value="/task/${taskForm.task.id}/${page.getValue()}"/>">
-									<c:if test="${num/8 == key}">
+									<c:if test="${num/taskForm.resultCount == key}">
 										<b>
-									</c:if>${page.getKey()+1}<c:if test="${num/8 == key}">
+									</c:if>${page.getKey()+1}<c:if test="${num/taskForm.resultCount == key}">
 										</b>
 									</c:if>
 							</a></li>

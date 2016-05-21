@@ -23,8 +23,8 @@ import com.googlecode.ounit.codecomparison.model.Student;
 
 public class MoodleScraper {
 
-	private static String user;
-	private static String pass;
+	private String user;
+	private String pass;
 	private WebDriver driver = new HtmlUnitDriver();
 	private Map<String, Exception> exceptions = new HashMap<String, Exception>();
 	private Map<Integer, Student> pairs = new HashMap<Integer, Student>();
@@ -57,7 +57,7 @@ public class MoodleScraper {
 			if (uniqueIdsFromDB == null) {
 				newAttempts.add(newAttempt);
 			}
-			if (uniqueIdsFromDB != null && !uniqueIdsFromDB.contains(attempt)) {
+			if (uniqueIdsFromDB != null && !uniqueIdsFromDB.contains(new Long(attempt.getKey()))) {
 				newAttempts.add(newAttempt);
 			}
 		}

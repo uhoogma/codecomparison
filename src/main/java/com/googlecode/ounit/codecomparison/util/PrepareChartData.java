@@ -20,8 +20,6 @@ public class PrepareChartData {
 				// correlate infinite values
 				correlatedSum = i == countOfInfiniteValues ? 0.0 : (i * sum) / (i - countOfInfiniteValues);
 				kvp.put(String.valueOf((int) i), correlatedSum / (i - endOfLastGroup));
-				// System.out.println(/* (int) i + "\t" + */correlatedSum
-				// / (i - endOfLastGroup));
 				powerOfTwo++;
 				countOfInfiniteValues = 0;
 				sum = 0;
@@ -38,9 +36,6 @@ public class PrepareChartData {
 		// correlate infinite values
 		correlatedSum = i == countOfInfiniteValues ? 0.0 : (i * sum) / (i - countOfInfiniteValues);
 		kvp.put(String.valueOf((int) i), correlatedSum / (i - endOfLastGroup));
-
-		// System.out.println(/* (int) i + "\t" + */correlatedSum
-		// / (i - endOfLastGroup));
 		return kvp;
 	}
 }

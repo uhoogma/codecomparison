@@ -9,6 +9,7 @@ import com.googlecode.ounit.codecomparison.model.SavedComparison;
 
 public class SimilarityRunnerAdvanced {
 
+	private static final int EXCESSIVE_DIFFERENCE = 5;
 	private int ngramSize;
 	private int windowSize;
 	private double similarityThreshold;
@@ -23,48 +24,24 @@ public class SimilarityRunnerAdvanced {
 		this.similarityThreshold = similarityThreshold;
 	}
 
-	private List<Integer> generateBoilerPlateHashes(String boilerplate) {
-		return Similarity.generateHashes(boilerplate, ngramSize);
+	/**
+	 * removing hashes that are common in attempt code and boilerplate code
+	 */
+	private void convertHashes(List<Integer> boilerPlateHashes) {
+		for (Integer key : studentHashes.keySet()) {
+			int[] converted = null;
+			if (boilerPlateHashes.size() == 0) {
+				converted = studentHashes.get(key).stream().mapToInt(h -> h).toArray();
+			} else {
+				converted = Similarity.removeBoilerplate(studentHashes.get(key), boilerPlateHashes).stream()
+						.mapToInt(h -> h).toArray();
+			}
+			convertedHashes.put(key, converted);
+		}
 	}
 
-	public List<SavedComparison> run(String boilerplate, Map<Pair, String> studentSubmissions) {
-		for (Map.Entry<Pair, String> entry : studentSubmissions.entrySet()) {
-			List<Integer> hashes = Similarity.generateHashes(studentSubmissions.get(entry.getKey()), ngramSize);
-			studentHashes.put(entry.getKey().getSecond(), hashes);
-		}
-
-		List<Integer> attemptsList = new ArrayList<Integer>();
-		for (Pair pair : studentSubmissions.keySet()) {
-			attemptsList.add(pair.getSecond());
-		}
-		Integer[] attemptsArray = attemptsList.toArray(new Integer[1]);
-
-		List<Integer> hashesBoilerPlate = generateBoilerPlateHashes(boilerplate);
-
-		convertHashes(hashesBoilerPlate);
-		for (int i = 0; i < attemptsArray.length; i++) {
-			int firstAttempt = attemptsArray[i];
-			for (int j = 0; j < attemptsArray.length; j++) {
-				int secondAttempt = attemptsArray[j];
-				if (i < j) {
-					double firstToSecondComparison = Similarity.JaccardCoefficientFromHashes(
-							convertedHashes.get(firstAttempt), convertedHashes.get(secondAttempt), windowSize);
-					double secondToFirstComparison = Similarity.JaccardCoefficientFromHashes(
-							convertedHashes.get(secondAttempt), convertedHashes.get(firstAttempt), windowSize);
-					comparisonResults.put(new Pair(firstAttempt, secondAttempt), new ValueObject(firstAttempt,
-							secondAttempt, firstToSecondComparison, secondToFirstComparison));
-				}
-			}
-		}
-		comparisonResults = MapUtil.sortByValue(comparisonResults);
-
-		// creating a lookup map where key is attempt and value is student
-		Map<Integer, Integer> attemptToStudent = new HashMap<Integer, Integer>();
-		for (Pair entry : studentSubmissions.keySet()) {
-			attemptToStudent.put(entry.getSecond(), entry.getFirst());
-		}
-
-		return makeComparisons(attemptToStudent);
+	private List<Integer> generateBoilerPlateHashes(String boilerplate) {
+		return Similarity.generateHashes(boilerplate, ngramSize);
 	}
 
 	private List<SavedComparison> makeComparisons(Map<Integer, Integer> attemptToStudent) {
@@ -100,7 +77,10 @@ public class SimilarityRunnerAdvanced {
 					sc.setSecondToFirstResult(stf);
 					sc.setSecondToFirstIsInfinite(false);
 				}
-				scl.add(sc);
+				if (entry.getValue().getLargestSimilarityResult()
+						/ entry.getValue().getSmallestSimilarityResult() < EXCESSIVE_DIFFERENCE) {
+					scl.add(sc);
+				}
 			}
 		}
 		return scl;
@@ -149,19 +129,43 @@ public class SimilarityRunnerAdvanced {
 	// return sb.toString();
 	// }
 
-	/**
-	 * removing hashes that are common in attempt code and boilerplate code
-	 */
-	private void convertHashes(List<Integer> boilerPlateHashes) {
-		for (Integer key : studentHashes.keySet()) {
-			int[] converted = null;
-			if (boilerPlateHashes.size() == 0) {
-				converted = studentHashes.get(key).stream().mapToInt(h -> h).toArray();
-			} else {
-				converted = Similarity.removeBoilerplate(studentHashes.get(key), boilerPlateHashes).stream()
-						.mapToInt(h -> h).toArray();
-			}
-			convertedHashes.put(key, converted);
+	public List<SavedComparison> run(String boilerplate, Map<Pair, String> studentSubmissions) {
+		for (Map.Entry<Pair, String> entry : studentSubmissions.entrySet()) {
+			List<Integer> hashes = Similarity.generateHashes(studentSubmissions.get(entry.getKey()), ngramSize);
+			studentHashes.put(entry.getKey().getSecond(), hashes);
 		}
+
+		List<Integer> attemptsList = new ArrayList<Integer>();
+		for (Pair pair : studentSubmissions.keySet()) {
+			attemptsList.add(pair.getSecond());
+		}
+		Integer[] attemptsArray = attemptsList.toArray(new Integer[1]);
+
+		List<Integer> hashesBoilerPlate = generateBoilerPlateHashes(boilerplate);
+
+		convertHashes(hashesBoilerPlate);
+		for (int i = 0; i < attemptsArray.length; i++) {
+			int firstAttempt = attemptsArray[i];
+			for (int j = 0; j < attemptsArray.length; j++) {
+				int secondAttempt = attemptsArray[j];
+				if (i < j) {
+					double firstToSecondComparison = Similarity.JaccardCoefficientFromHashes(
+							convertedHashes.get(firstAttempt), convertedHashes.get(secondAttempt), windowSize);
+					double secondToFirstComparison = Similarity.JaccardCoefficientFromHashes(
+							convertedHashes.get(secondAttempt), convertedHashes.get(firstAttempt), windowSize);
+					comparisonResults.put(new Pair(firstAttempt, secondAttempt), new ValueObject(firstAttempt,
+							secondAttempt, firstToSecondComparison, secondToFirstComparison));
+				}
+			}
+		}
+		comparisonResults = MapUtil.sortByValue(comparisonResults);
+
+		// creating a lookup map where key is attempt and value is student
+		Map<Integer, Integer> attemptToStudent = new HashMap<Integer, Integer>();
+		for (Pair entry : studentSubmissions.keySet()) {
+			attemptToStudent.put(entry.getSecond(), entry.getFirst());
+		}
+
+		return makeComparisons(attemptToStudent);
 	}
 }

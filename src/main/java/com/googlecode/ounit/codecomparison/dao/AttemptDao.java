@@ -27,7 +27,7 @@ public class AttemptDao {
 	}
 
 	public Attempt getTaskBoilerPlateAttempt(long id) {
-		TypedQuery<Attempt> query = em.createQuery("select r from Attempt r where r.task_id= :id", Attempt.class);
+		TypedQuery<Attempt> query = em.createQuery("select r from Attempt r where r.task_id= :id and r.isBoilerplate =1", Attempt.class);
 		query.setParameter("id", id);
 		return getSingleAttempt(query);
 	}
@@ -49,8 +49,8 @@ public class AttemptDao {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Long> getAttemptIds() {
-		return em.createNativeQuery("select distinct a.id from Attempt a").getResultList();
+	public List<Long> getAttemptMoodleIds() {
+		return em.createNativeQuery("select distinct a.moodleId from Attempt a").getResultList();
 	}
 
 	public List<Attempt> findAttemptsNotFetched(Long roundId) {

@@ -18,6 +18,7 @@ public class TaskForm {
 	private String lastSyncDifference;
 	private List<SavedComparison> comparisons = new ArrayList<>();
 	private Integer sequentialNumber = 0;
+	
 	Map<Integer, Integer> pages = new LinkedHashMap<>();
 	String chartScript;
 	int resultCount;

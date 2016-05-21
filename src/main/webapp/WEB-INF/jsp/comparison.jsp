@@ -28,7 +28,7 @@
 			<div class="page-bg">
 				<div class="top row">
 					<div class="col-sm-12">
-						<a href="<c:url value="index"/>"><button type="button"
+						<a href="<c:url value="/index"/>"><button type="button"
 								class="btn btn-default-left">AVALEHT</button></a> <a
 							href="<c:url value="${comparisonForm.returnLink}/0"/>">
 							<button type="button" class="btn btn-primary">TAGASI

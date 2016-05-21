@@ -29,6 +29,14 @@ public class Attempt {
 	private String fileName;
 	private boolean codeAcquired;
 	private boolean isBoilerplate;
+	public boolean isBoilerplate() {
+		return isBoilerplate;
+	}
+
+	public void setBoilerplate(boolean isBoilerplate) {
+		this.isBoilerplate = isBoilerplate;
+	}
+
 	@OneToMany(targetEntity = SavedComparison.class, mappedBy = "firstAttemptId", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
 	private List<SavedComparison> firstAttempt = new ArrayList<SavedComparison>();

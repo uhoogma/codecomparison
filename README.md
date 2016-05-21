@@ -18,7 +18,7 @@ Instructors who have access to Moodle's programming courses that are being evalu
 2. DONE - CRUD operations for Round
 3. FINISH - CRUD operations for Task
 4. DONE - display several rounds in one task in index view
-5. FINISH - either make Selenium Webdriver work properly or make sure it will gracefully degrade in case of an error
+5. DONE - either make Selenium Webdriver work properly or make sure it will gracefully degrade in case of an error
 6. TODO - user feedback
 7. DONE - save data fetched with help of Selenium Webdriver into database
 8. DONE - include codesimplifier and codesimilarity into this project

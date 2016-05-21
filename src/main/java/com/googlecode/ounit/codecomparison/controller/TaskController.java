@@ -74,11 +74,17 @@ public class TaskController {
 	private void abstractBoilerPlateCode(Java2SimpleJava j2sj, String taskId, Long versionId) {
 		Long taskIdLong = Long.parseLong(taskId);
 		Attempt boilerplate = attemptDao.getTaskBoilerPlateAttempt(taskIdLong);
-		Long boilerplateId = boilerplate.getId();
-		AbstractedCode abstractedBoiler = abstractedCodeDao.getCodeForAttempt(boilerplateId, versionId);
-		if (boilerplate != null && abstractedBoiler == null && !boilerplate.getCode().isEmpty()) {
-			String abstracted = j2sj.processString(boilerplate.getCode());
-			abstractedCodeDao.store(new AbstractedCode(taskIdLong, boilerplateId, versionId, abstracted));
+		if (boilerplate != null) {
+			Long boilerplateId = boilerplate.getId();
+			AbstractedCode abstractedBoiler = abstractedCodeDao.getCodeForAttempt(boilerplateId, versionId);
+			if (abstractedBoiler != null) {
+				String abstracted = j2sj.processString(boilerplate.getCode());
+				abstractedBoiler.setAbstractedCode(abstracted);
+				abstractedCodeDao.store(abstractedBoiler);
+			}else{
+				String abstracted = j2sj.processString(boilerplate.getCode());
+				abstractedCodeDao.store(new AbstractedCode(taskIdLong, boilerplateId, versionId, abstracted));
+			}
 		}
 	}
 
@@ -118,9 +124,12 @@ public class TaskController {
 		Map<Pair, String> studentSubmissions = new HashMap<Pair, String>();
 		List<Attempt> attempts = attemptDao.getAttemptsForTask(taskId);
 		for (Attempt attempt : attempts) {
-			studentSubmissions.put(new Pair(attempt.getStudentId(), attempt.getMoodleId().intValue()),
-					attempt.getAbstractedCodes().stream().filter(a -> a.getVersion_id() == versionId)
-							.collect(Collectors.toList()).get(0).getAbstractedCode());
+			List<AbstractedCode> list = attempt.getAbstractedCodes().stream()
+					.filter(a -> a.getVersion_id() == versionId).collect(Collectors.toList());
+			if (!list.isEmpty()) {
+				String code = list.get(0).getAbstractedCode();
+				studentSubmissions.put(new Pair(attempt.getStudentId(), attempt.getMoodleId().intValue()), code); // null
+			}
 		}
 		return sim.run(boilerPlate, studentSubmissions);
 	}
@@ -254,15 +263,17 @@ public class TaskController {
 			List<Attempt> attemptsNotFetched = attemptDao.findAttemptsNotFetched(round.getId());
 			for (Attempt attempt : attemptsNotFetched) {
 				String code = ms.download(attempt.getMoodleId(), attempt.getStudentId());
-				attempt.setCode(code);
-				attempt.setCodeAcquired(true);
-				attemptDao.store(attempt);
+				if (!code.isEmpty()) {
+					attempt.setCode(code);
+					attempt.setCodeAcquired(true);
+					attemptDao.store(attempt);
+				}
 			}
 		}
 	}
 
 	private void saveNewAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
-		List<Long> attemptIds = attemptDao.getAttemptIds();
+		List<Long> attemptIds = attemptDao.getAttemptMoodleIds();
 		for (Round round : rounds) {
 			List<Attempt> attempts = ms.downloadAttempts(round, "TreeNode.java", attemptIds);
 			for (Attempt attempt : attempts) {

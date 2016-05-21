@@ -32,6 +32,6 @@ public class Util {
 		} catch (MalformedURLException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		return new Integer(null);
+		return null;
 	}
 }
