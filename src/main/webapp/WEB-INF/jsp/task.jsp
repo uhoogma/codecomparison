@@ -13,16 +13,17 @@
 	src="<c:url value="/static/js/jquery.min.js"/>"></script>
 <script type="text/javascript"
 	src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/static/css/test.css"/>">
 <script type="text/javascript"
 	src="<c:url value="/static/js/Chart.min.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/static/js/MyChart.js"/>"></script>
+<script type="text/javascript">
+	${taskForm.chartScript}
+</script>
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/static/css/test.css"/>">
 <script type="text/javascript"
 	src="<c:url value="/static/js/general.js"/>"></script>
+<link rel="icon" type="image/png"
+	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
 	<div class="container">
@@ -56,7 +57,7 @@
 		</div>
 		<div class="row">
 			<div class="padding">
-				<div class="col-sm-3">
+				<div class="col-sm-4">
 					<p>VIIMANE SÜNKRONISEERIMINE ${taskForm.lastSyncDifference}</p>
 				</div>
 				<div class="col-sm-3">
@@ -91,18 +92,18 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 					<table>
 						<tr>
 							<td>Eira</td>
 							<td style="padding: 5px;"><input type="text" name="k"
-								value="${taskForm.task.k}" /></td>
+								id="noise" value="${taskForm.task.k}" /></td>
 							<td>märki</td>
 						</tr>
 						<tr>
 							<td>Sobita</td>
 							<td style="padding: 5px;"><input type="text" name="t"
-								value="${taskForm.task.t}" /></td>
+								id="match" value="${taskForm.task.t}" /></td>
 							<td>märki</td>
 						</tr>
 					</table>
@@ -140,18 +141,18 @@
 								<td>${comp.firstAttemptId}</td>
 								<td>${comp.secondStudentId}</td>
 								<td>${comp.secondAttemptId}</td>
-								<td>${comp.firstToSecondResultAsString}</td>
-								<td rowspan="2" class="2rowButton"><a
+								<td>${comp.largestSimilarityResultAsString}</td>
+								<td rowspan="2" class="twoRowButton comparison-separator"><a
 									href="<c:url value="/comparison/${comp.id}"/>"><button
 											type="button" class="btn btn-info">Vaata</button></a></td>
 							</tr>
 							<tr>
-								<td>${count}</td>
-								<td>${comp.secondStudentId}</td>
-								<td>${comp.secondAttemptId}</td>
-								<td>${comp.firstStudentId}</td>
-								<td>${comp.firstAttemptId}</td>
-								<td>${comp.secondToFirstResultAsString}</td>
+								<td class="comparison-separator">${count}</td>
+								<td class="comparison-separator">${comp.secondStudentId}</td>
+								<td class="comparison-separator">${comp.secondAttemptId}</td>
+								<td class="comparison-separator">${comp.firstStudentId}</td>
+								<td class="comparison-separator">${comp.firstAttemptId}</td>
+								<td class="comparison-separator">${comp.smallestSimilarityResultAsString}</td>
 							</tr>
 						</c:forEach>
 					</tbody>

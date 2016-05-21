@@ -1,34 +1,44 @@
-tr {
-width: 100%;
-}
-
-.page-container {
-  .page-bg {
-    padding: 15px;
-    background-color: #EFEFEF;
-  }
-}
-
 body {
-  background-color: #e6e6e6
-}
-.padding{
-    margin:15px;
-}
-.top{
-    margin-top:15px;
-}
-.centered-text {
-    text-align:center
+	background-color: #e6e6e6
 }
 
-.tbody{
-height: 400px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  width: auto;
-position: absolute;
+.page-container { .page-bg { padding:15px;
+	background-color: #EFEFEF;
 }
-.2rowButton{
-    vertical-align: middle!important;
+
+}
+.tbody {
+	height: 400px;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	width: auto;
+	position: absolute;
+}
+
+tr {
+	width: 100%;
+}
+
+.comparison-separator {
+	border-bottom: 1px solid black;
+}
+
+.twoRowButton {
+	vertical-align: middle !important;
+}
+
+.padding {
+	margin: 15px;
+}
+
+.top {
+	margin-top: 15px;
+}
+
+.centered-text {
+	text-align: center
+}
+
+input {
+	width: 40px;
 }

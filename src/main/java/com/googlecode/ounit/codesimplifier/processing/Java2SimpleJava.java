@@ -32,14 +32,14 @@ public class Java2SimpleJava {
 		RuleContext tree = parser.compilationUnit();
 		ParseTreeWalker walker = new ParseTreeWalker();
 
-		// composing a list from userdefined function- and variablenames
+		// composing a list from user defined function- and variable names
 		UserDefinedNamesListener collector = new UserDefinedNamesListener();
 		walker.walk(collector, tree);
 
 		List<String> declaredMethods = removeMainMethod(collector.getFunctions());
 		Set<String> declaredVariables = collector.getVariables();
-		System.out.println("declaredMethods:\n" + declaredMethods.toString());
-		System.out.println("declaredVariables:\n" + declaredVariables.toString());
+		// System.out.println("declaredMethods:\n" + declaredMethods.toString());
+		// System.out.println("declaredVariables:\n" + declaredVariables.toString());
 		/*
 		 * PreSimplifier 1. annotations - remove including "@" 2. variable
 		 * declarations - remove 3. format string -remove 4. string argument -
@@ -47,23 +47,23 @@ public class Java2SimpleJava {
 		 */
 		PreSimplifier preSimplifier = new PreSimplifier(tokens);
 		walker.walk(preSimplifier, tree);
-		String afterPresimplifier = preSimplifier.rewriter.getText();
-		System.out.println("afterPresimplifier:\n" + afterPresimplifier);
+		// String afterPresimplifier = preSimplifier.rewriter.getText();
+		// System.out.println("afterPresimplifier:\n" + afterPresimplifier);
 
 		/*
 		 * RemoveConditionals 8. conditionals -keep only control flow structures
 		 */
 		RemoveConditionals removeConditionals = new RemoveConditionals(tokens, preSimplifier.rewriter);
 		walker.walk(removeConditionals, tree);
-		String afterRemoveConditionals = removeConditionals.rewriter.getText();
-		System.out.println("afterRemoveConditionals:\n" + afterRemoveConditionals);
+		// String afterRemoveConditionals = removeConditionals.rewriter.getText();
+		// System.out.println("afterRemoveConditionals:\n" + afterRemoveConditionals);
 		/*
 		 * RemoveLoops 9. loops - remove conditions
 		 */
 		RemoveLoops removeLoops = new RemoveLoops(tokens, removeConditionals.rewriter);
 		walker.walk(removeLoops, tree);
-		String afterRemoveLoops = removeLoops.rewriter.getText();
-		System.out.println("afterRemoveLoops:\n" + afterRemoveLoops);
+		// String afterRemoveLoops = removeLoops.rewriter.getText();
+		// System.out.println("afterRemoveLoops:\n" + afterRemoveLoops);
 		/*
 		 * RemoveUserDefinedNames 7a. user defined functions -remove all 7b.
 		 * system calls - keep intact
@@ -71,8 +71,8 @@ public class Java2SimpleJava {
 		RemoveUserDefinedNames removeUserDefinedNames = new RemoveUserDefinedNames(removeLoops.rewriter,
 				declaredMethods, declaredVariables);
 		walker.walk(removeUserDefinedNames, tree);
-		String afterRemoveUserDefinedNames = removeUserDefinedNames.rewriter.getText();
-		System.out.println("removeUserDefinedNames:\n" + afterRemoveUserDefinedNames);
+		// String afterRemoveUserDefinedNames = removeUserDefinedNames.rewriter.getText();
+		// System.out.println("removeUserDefinedNames:\n" + afterRemoveUserDefinedNames);
 		/*
 		 * RemoveExpressionStatements (InUserFunctionCalls) 5a. expression
 		 * statement in system call - keep 5b. expression statement other -
@@ -81,22 +81,22 @@ public class Java2SimpleJava {
 		RemoveExpressionStatements removeExpressionStatements = new RemoveExpressionStatements(
 				removeUserDefinedNames.rewriter);
 		walker.walk(removeExpressionStatements, tree);
-		String afterRemoveExpressionStatements = removeExpressionStatements.rewriter.getText();
-		System.out.println("afterRemoveExpressionStatements:\n" + afterRemoveExpressionStatements);
+		// String afterRemoveExpressionStatements = removeExpressionStatements.rewriter.getText();
+		// System.out.println("afterRemoveExpressionStatements:\n" + afterRemoveExpressionStatements);
 
 		// we also need abstract user-defined methods keeping only return type
 		AbstractUsersMethods abstractUsersMethods = new AbstractUsersMethods(removeExpressionStatements.rewriter,
 				declaredMethods);
 		walker.walk(abstractUsersMethods, tree);
-		String afterAbstractUsersMethods = abstractUsersMethods.rewriter.getText();
-		System.out.println("afterAbstractUsersMethods:\n" + afterAbstractUsersMethods);
+		// String afterAbstractUsersMethods = abstractUsersMethods.rewriter.getText();
+		// System.out.println("afterAbstractUsersMethods:\n" + afterAbstractUsersMethods);
 
-		// we also need to remove packagedeclaration
+		// we also need to remove package declaration
 		RemovePackageDeclaration removePackageDeclaration = new RemovePackageDeclaration(
 				removeExpressionStatements.rewriter);
 		walker.walk(removePackageDeclaration, tree);
 		String afterRemovePackageDeclaration = removePackageDeclaration.rewriter.getText();
-		System.out.println("afterRemovePackageDeclaration:\n" + afterRemovePackageDeclaration);
+		// System.out.println("afterRemovePackageDeclaration:\n" + afterRemovePackageDeclaration);
 
 		// remove leftover semicolons
 		String stripped = afterRemovePackageDeclaration.replaceAll(SEMICOLON_REMOVAL_PATTERN, "");

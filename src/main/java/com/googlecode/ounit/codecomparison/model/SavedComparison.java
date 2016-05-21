@@ -22,17 +22,17 @@ public class SavedComparison {
 	private boolean firstToSecondIsInfinite;
 	private boolean secondToFirstIsInfinite;
 	@Transient
-	private String firstToSecondResultAsString;
+	private String largestSimilarityResultAsString;
 	@Transient
-	private String secondToFirstResultAsString;
-
+	private String smallestSimilarityResultAsString;
+	
 	public SavedComparison() {
 	}
 
 	public Integer getFirstAttemptId() {
 		return firstAttemptId;
 	}
-
+	
 	public Integer getFirstStudentId() {
 		return firstStudentId;
 	}
@@ -49,6 +49,14 @@ public class SavedComparison {
 		return id;
 	}
 
+	public Double getLargestSimilarityResult() {
+		return (secondToFirstResult > firstToSecondResult) ? secondToFirstResult : firstToSecondResult;
+	}
+
+	public String getLargestSimilarityResultAsString() {
+		return String.valueOf(getLargestSimilarityResult());
+	}
+
 	public Integer getSecondAttemptId() {
 		return secondAttemptId;
 	}
@@ -63,6 +71,14 @@ public class SavedComparison {
 
 	public String getSecondToFirstResultAsString() {
 		return secondToFirstIsInfinite ? "Infinity" : String.valueOf(secondToFirstResult);
+	}
+
+	public Double getSmallestSimilarityResult() {
+		return (firstToSecondResult < secondToFirstResult) ? firstToSecondResult : secondToFirstResult ;
+	}
+
+	public String getSmallestSimilarityResultAsString() {
+		return String.valueOf(getSmallestSimilarityResult());
 	}
 
 	public Long getTask_id() {
@@ -89,6 +105,7 @@ public class SavedComparison {
 		this.firstStudentId = firstStudentId;
 	}
 
+
 	public void setFirstToSecondIsInfinite(boolean firstToSecondIsInfinite) {
 		this.firstToSecondIsInfinite = firstToSecondIsInfinite;
 	}
@@ -97,12 +114,12 @@ public class SavedComparison {
 		this.firstToSecondResult = firstToSecondResult;
 	}
 
-	public void setFirstToSecondResultAsString(String firstToSecondResultAsString) {
-		this.firstToSecondResultAsString = firstToSecondResultAsString;
-	}
-
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public void setLargestSimilarityResultAsString(String largestSimilarityResultAsString) {
+		this.largestSimilarityResultAsString = largestSimilarityResultAsString;
 	}
 
 	public void setSecondAttemptId(Integer secondAttemptId) {
@@ -121,8 +138,8 @@ public class SavedComparison {
 		this.secondToFirstResult = secondToFirstResult;
 	}
 
-	public void setSecondToFirstResultAsString(String secondToFirstResultAsString) {
-		this.secondToFirstResultAsString = secondToFirstResultAsString;
+	public void setSmallestSimilarityResultAsString(String smallestSimilarityResultAsString) {
+		this.smallestSimilarityResultAsString = smallestSimilarityResultAsString;
 	}
 
 	public void setTask_id(Long task_id) {
@@ -140,8 +157,7 @@ public class SavedComparison {
 				+ ", secondAttemptId=" + secondAttemptId + ", firstToSecondResult=" + firstToSecondResult
 				+ ", secondToFirstResult=" + secondToFirstResult + ", firstToSecondIsInfinite="
 				+ firstToSecondIsInfinite + ", secondToFirstIsInfinite=" + secondToFirstIsInfinite
-				+ ", firstToSecondResultAsString=" + firstToSecondResultAsString + ", secondToFirstResultAsString="
-				+ secondToFirstResultAsString + "]";
+				+ ", firstToSecondResultAsString="  + ", secondToFirstResultAsString="
+				 + "]";
 	}
-
 }

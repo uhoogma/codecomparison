@@ -32,12 +32,14 @@ public class AttemptDao {
 		return getSingleAttempt(query);
 	}
 
-	public Attempt findAttemptForId(Integer id) {
-		TypedQuery<Attempt> query = em.createQuery("select r from Attempt r where r.moodleId = :id", Attempt.class);
-		query.setParameter("id", id);
-		return getSingleAttempt(query);
+	public List<Attempt> findAttemptsForIds(int firstAttemptId, int secondAttemptId) {
+		TypedQuery<Attempt> query = em.createQuery("select r from Attempt r where r.moodleId = :firstAttemptId or r.moodleId = :secondAttemptId",
+				Attempt.class);
+		query.setParameter("firstAttemptId", firstAttemptId);
+		query.setParameter("secondAttemptId", secondAttemptId);
+		return query.getResultList();
 	}
-
+	
 	private Attempt getSingleAttempt(TypedQuery<Attempt> query) {
 		List<Attempt> persons = query.getResultList();
 		if (persons.size() < 1)

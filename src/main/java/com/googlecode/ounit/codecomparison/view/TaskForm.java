@@ -19,9 +19,15 @@ public class TaskForm {
 	private List<SavedComparison> comparisons = new ArrayList<>();
 	private Integer sequentialNumber = 0;
 	Map<Integer, Integer> pages = new LinkedHashMap<>();
-
+	String chartScript;
+	int resultCount;
+	
 	public String getAddTaskButton() {
 		return addTaskButton;
+	}
+
+	public String getChartScript() {
+		return chartScript;
 	}
 
 	public List<SavedComparison> getComparisons() {
@@ -38,8 +44,13 @@ public class TaskForm {
 		}
 	}
 
+
 	public Map<Integer, Integer> getPages() {
 		return pages;
+	}
+
+	public int getResultCount() {
+		return resultCount;
 	}
 
 	public List<Round> getRoundsInTask() {
@@ -62,6 +73,10 @@ public class TaskForm {
 		this.addTaskButton = addTaskButton;
 	}
 
+	public void setChartScript(String chartScript) {
+		this.chartScript = chartScript;
+	}
+
 	public void setComparisons(List<SavedComparison> comparisons) {
 		this.comparisons = comparisons;
 	}
@@ -72,6 +87,10 @@ public class TaskForm {
 
 	public void setPages(Map<Integer, Integer> pages) {
 		this.pages = pages;
+	}
+
+	public void setResultCount(int resultCount) {
+		this.resultCount = resultCount;
 	}
 
 	public void setRoundsInTask(List<Round> roundsInTask) {

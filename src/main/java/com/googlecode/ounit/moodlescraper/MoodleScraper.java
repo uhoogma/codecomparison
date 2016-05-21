@@ -65,7 +65,7 @@ public class MoodleScraper {
 	}
 
 	@Test
-	public List<Student> downloadStudents(Round round, String fileName, List<Long> uniqueIdsFromDB) {
+	public List<Student> downloadStudents(Round round, String fileName, List<Integer> uniqueIdsFromDB) {
 		getReport(round.getUrl());
 		Set<Student> uniqueStudentsFromMoodle = (pairs.values()).stream().collect(Collectors
 				.toCollection(() -> new TreeSet<Student>((p1, p2) -> p1.getMoodleId().compareTo(p2.getMoodleId()))));
@@ -144,7 +144,7 @@ public class MoodleScraper {
 		driver.get("https://moodle.hitsa.ee/mod/quiz/report.php?id=" + roundId + "&mode=overview");
 		System.out.println(driver.getPageSource());
 		// set params for example:
-		elementById("id_pagesize").sendKeys("1000");
+		// elementById("id_pagesize").sendKeys("1000");
 		elementById("id_submitbutton").click();
 	}
 

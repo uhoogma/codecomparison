@@ -9,6 +9,9 @@ import java.nio.charset.CharsetDecoder;
 import org.springframework.web.multipart.MultipartFile;
 
 // https://gmigdos.wordpress.com/2010/04/08/java-how-to-auto-detect-a-files-encoding/
+/**
+ * @author Georgios Migdos
+ * */
 public class CharsetUtil {
 
 	public Charset detectCharset(MultipartFile f, Charset charset) {

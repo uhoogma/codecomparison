@@ -18,16 +18,12 @@ public class Similarity {
 		return (common == 0) ? 0.0 : common / different;
 	}
 
-	/**
-	 * If modulus is 1 returns all hashes otherwise returns only those hashes
-	 * which are divisible by modulus
-	 */
-	public static List<Integer> generateHashes(String input, int ngramSize, int modulus) {
-		return moduloHashes(generateHashes(generateNGrams(input, ngramSize)), modulus);
+	public static List<Integer> generateHashes(String input, int ngramSize) {
+		return generateHashes(generateNGrams(input, ngramSize));
 	}
 
 	/**
-	 * Generating hashes with built-in (inefficient) method
+	 * Generating hashes with built-in (possibly inefficient) method
 	 */
 	public static List<Integer> generateHashes(String[] input) {
 		List<Integer> res = new ArrayList<>();
@@ -60,8 +56,8 @@ public class Similarity {
 	 */
 	public static double JaccardCoefficient(String first, String second, String boilerPlate, int ngramSize,
 			int windowSize, int modulus) {
-		List<Integer> hashes1 = generateHashes(first, ngramSize, modulus);
-		List<Integer> hashes2 = generateHashes(second, ngramSize, modulus);
+		List<Integer> hashes1 = generateHashes(first, ngramSize);
+		List<Integer> hashes2 = generateHashes(second, ngramSize);
 		List<Integer> hashesBoilerPlate;
 
 		int[] convertedHashes1;
@@ -71,7 +67,7 @@ public class Similarity {
 			convertedHashes1 = hashes1.stream().mapToInt(i -> i).toArray();
 			convertedHashes2 = hashes2.stream().mapToInt(i -> i).toArray();
 		} else {
-			hashesBoilerPlate = generateHashes(boilerPlate, ngramSize, modulus);
+			hashesBoilerPlate = generateHashes(boilerPlate, ngramSize);
 			convertedHashes1 = removeBoilerplate(hashes1, hashesBoilerPlate).stream().mapToInt(i -> i).toArray();
 			convertedHashes2 = removeBoilerplate(hashes2, hashesBoilerPlate).stream().mapToInt(i -> i).toArray();
 		}
@@ -104,17 +100,6 @@ public class Similarity {
 				.collect(Collectors.toList());
 
 		return calculateJaccardCoefficient(collection1, collection2, commonCollection);
-	}
-
-	/**
-	 * Select small subset of all hashes, in this case divisible by modulus
-	 */
-	private static List<Integer> moduloHashes(List<Integer> generateHashes, int modulus) {
-		if (modulus == 1) {
-			return generateHashes;
-		} else {
-			return generateHashes.stream().filter(h -> h % modulus == 0).collect(Collectors.toList());
-		}
 	}
 
 	public static List<Integer> removeBoilerplate(List<Integer> submissionHashes, List<Integer> boilerPlateHashes) {

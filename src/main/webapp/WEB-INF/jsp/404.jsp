@@ -6,6 +6,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>404 page</title>
+<link rel="icon" type="image/png"
+	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
 	<p>

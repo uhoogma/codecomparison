@@ -18,6 +18,8 @@
 	src="<c:url value="/static/js/general.js"/>"></script>
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/static/css/edittest.css"/>">
+	<link rel="icon" type="image/png"
+	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
 	<div class="page-container">

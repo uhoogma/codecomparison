@@ -24,6 +24,8 @@
 		$("#tabs").tabs();
 	});
 </script>
+<link rel="icon" type="image/png"
+	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
 	<div class="page-container">
@@ -60,7 +62,7 @@
 														<p>${round.roundName}|${round.subject}|${round.year}|
 															${round.semester}</p>
 													</c:forEach></td>
-												<td class="button-td"><a href="<c:url value="task/${task.id}"/>"><button
+												<td class="button-td"><a href="<c:url value="task/${task.id}/0"/>"><button
 															type="button" class="btn btn-info">Info</button></a></td>
 											</tr>
 										</c:forEach>
@@ -81,7 +83,7 @@
 															${round.semester}</p>
 													</c:forEach></td>
 												<td class="button-td"><a
-													href="<c:url value="task/${task.id}"/>">
+													href="<c:url value="task/${task.id}/0"/>">
 														<button type="button" class="btn btn-info">Info</button>
 												</a></td>
 											</tr>

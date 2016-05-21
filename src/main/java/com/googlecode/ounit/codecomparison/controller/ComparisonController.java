@@ -39,30 +39,43 @@ public class ComparisonController {
 		model.addAttribute("comparisonForm", comparisonForm);
 		return "comparison";
 	}
-	
+
 	private SavedComparison setComparison(String comparisonId, ComparisonForm comparisonForm) {
 		SavedComparison comparison = savedComparisonDao.findComparisonForId(Long.parseLong(comparisonId));
 		comparisonForm.setSavedComparison(comparison);
 		return comparison;
 	}
-	
+
 	private void setAttempts(ComparisonForm comparisonForm, SavedComparison comparison) {
-		Attempt firstAttempt = attemptDao.findAttemptForId(comparison.getFirstAttemptId());
-		Attempt secondAttempt = attemptDao.findAttemptForId(comparison.getSecondAttemptId());
-		comparisonForm.setFirstCode(firstAttempt.getCode());
-		comparisonForm.setSecondCode(secondAttempt.getCode());
+		Integer firstAttemptId = comparison.getFirstAttemptId();
+		Integer secondAttemptId = comparison.getSecondAttemptId();
+		for (Attempt student : attemptDao.findAttemptsForIds(firstAttemptId, secondAttemptId)) {
+			if (student.getMoodleId().equals(firstAttemptId)) {
+				comparisonForm.setFirstCode(student.getCode());
+			}
+			if (student.getMoodleId().equals(secondAttemptId)) {
+				comparisonForm.setSecondCode(student.getCode());
+			}
+		}
 	}
 
 	private void setStudents(ComparisonForm comparisonForm, SavedComparison comparison) {
-		Student firstStudent = studentDao.findStudentForMoodleId(comparison.getFirstStudentId());
-		Student secondStudent = studentDao.findStudentForMoodleId(comparison.getSecondStudentId());
-		comparisonForm.setFirstStudent(firstStudent);
-		comparisonForm.setSecondStudent(secondStudent);
+		Integer firstStudentId = comparison.getFirstStudentId();
+		Integer secondStudentId = comparison.getSecondStudentId();
+		for (Student student : studentDao.findStudentsForMoodleIds(firstStudentId, secondStudentId)) {
+			if (student.getMoodleId().equals(firstStudentId)) {
+				comparisonForm.setFirstStudent(student);
+			}
+			if (student.getMoodleId().equals(secondStudentId)) {
+				comparisonForm.setSecondStudent(student);
+			}
+		}
 	}
 
 	private void setRounds(ComparisonForm comparisonForm, SavedComparison comparison) {
 		Round firstRound = roundDao.findRoundForAttemptId(comparison.getFirstAttemptId());
 		Round secondRound = roundDao.findRoundForAttemptId(comparison.getSecondAttemptId());
+
 		comparisonForm.setFirstRound(firstRound);
 		comparisonForm.setSecondRound(secondRound);
 		setReturnLink(comparisonForm, firstRound);

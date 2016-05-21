@@ -37,8 +37,11 @@ $(document).ready(function() {
 	$("#analyzeTask").click(function(e) {
 		e.preventDefault();
 		var currentUrl = window.location.href;
-		var analyzeUrl = currentUrl.replace("task", "analyzetask");
+		var changedUrl = currentUrl.replace("task", "analyzetask");
 
+		var noise=$("#noise").val();
+		var match=$("#match").val();
+		var analyzeUrl = changedUrl+"/"+noise+"/"+match;
 		$.post(analyzeUrl, function() {
 			window.location.href = currentUrl;
 		});

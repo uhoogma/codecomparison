@@ -27,22 +27,16 @@ public class StudentDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Long> getAllMoodleIds() {
+	public List<Integer> getAllMoodleIds() {
 		return em.createNativeQuery("select distinct s.moodleId from Student s").getResultList();
 	}
 
-	public Student findStudentForMoodleId(int moodleId) {
-		TypedQuery<Student> query = em.createQuery("select r from Student r where r.moodleId = :moodleId",
+	public List<Student> findStudentsForMoodleIds(int firstStudentId, int secondStudentId) {
+		TypedQuery<Student> query = em.createQuery(
+				"select r from Student r where r.moodleId = :firstStudentId or r.moodleId = :secondStudentId",
 				Student.class);
-		query.setParameter("moodleId", moodleId);
-		return getSingleRound(query);
-	}
-
-	private Student getSingleRound(TypedQuery<Student> query) {
-		List<Student> students = query.getResultList();
-		if (students.size() < 1)
-			return null;
-		else
-			return students.get(0);
+		query.setParameter("firstStudentId", firstStudentId);
+		query.setParameter("secondStudentId", secondStudentId);
+		return query.getResultList();
 	}
 }

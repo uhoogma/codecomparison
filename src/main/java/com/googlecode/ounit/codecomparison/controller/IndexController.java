@@ -18,6 +18,11 @@ public class IndexController {
 	@Resource
 	private TaskDao taskDao = new TaskDao();
 	
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String redirect() {
+		return "redirect:/index";
+	}
+	
 	@RequestMapping(value = "/index", method = RequestMethod.GET, produces = "text/html; charset=utf-8")
 	public String newRound(Model model) {
 		List<Task> active = taskDao.findActiveTasks();

@@ -19,6 +19,8 @@
 	href="<c:url value="/static/codemirror/lib/codemirror.css"/>">
 <script src="<c:url value="/static/codemirror/mode/clike/clike.js"/>"></script>
 <script src="<c:url value="/static/js/codemirror.js"/>"></script>
+<link rel="icon" type="image/png"
+	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
 	<div class="page-container">
@@ -28,7 +30,7 @@
 					<div class="col-sm-12">
 						<a href="<c:url value="index"/>"><button type="button"
 								class="btn btn-default-left">AVALEHT</button></a> <a
-							href="<c:url value="${comparisonForm.returnLink}"/>">
+							href="<c:url value="${comparisonForm.returnLink}/0"/>">
 							<button type="button" class="btn btn-primary">TAGASI
 								ANALÜÜSI JUURDE</button>
 						</a>
@@ -42,12 +44,10 @@
 					</div>
 				</div>
 				<div class="row">
-					<h3 class="col-sm-12 centered-text">
-						<b>Jaccardi koefitsent ->
-							${comparisonForm.savedComparison.firstToSecondResultAsString}</b> |
+					<h3 class="col-sm-12 centered-text">Jaccardi koefitsent ->
+						${comparisonForm.savedComparison.firstToSecondResultAsString} |
 						Jaccardi koefitsent
-						<-${comparisonForm.savedComparison.secondToFirstResultAsString}
-					</h3>
+						<-${comparisonForm.savedComparison.secondToFirstResultAsString}</h3>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
