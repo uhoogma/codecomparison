@@ -37,13 +37,6 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="padding alert alert-danger">
-						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-						<strong>Danger!</strong> This alert box could indicate a dangerous
-						or potentially negative action.
-					</div>
-				</div>
-				<div class="row">
 					<h3 class="col-sm-12 centered-text">Jaccardi koefitsent ->
 						${comparisonForm.savedComparison.firstToSecondResultAsString} |
 						Jaccardi koefitsent

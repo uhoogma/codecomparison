@@ -81,7 +81,7 @@ public class TaskController {
 				String abstracted = j2sj.processString(boilerplate.getCode());
 				abstractedBoiler.setAbstractedCode(abstracted);
 				abstractedCodeDao.store(abstractedBoiler);
-			}else{
+			} else {
 				String abstracted = j2sj.processString(boilerplate.getCode());
 				abstractedCodeDao.store(new AbstractedCode(taskIdLong, boilerplateId, versionId, abstracted));
 			}
@@ -202,19 +202,21 @@ public class TaskController {
 				t.setK(versionDao.getDefaultK());
 				t.setT(versionDao.getDefaultT());
 			}
+			t.setTaskName(form.getTask().getTaskName());
+			t.setActive(form.getTask().isActive());
 			taskDao.store(t);
 			return "redirect:/index";
 		}
 	}
 
 	@RequestMapping(value = "/edittask/{id}", method = RequestMethod.POST)
-	public String editRound(@Valid @ModelAttribute("taskForm") TaskForm form, BindingResult result,
+	public String editTask(@Valid @ModelAttribute("taskForm") TaskForm form, BindingResult result,
 			@PathVariable("id") String id, Model model) {
 		return editingResponse(form, result, Long.parseLong(id), model);
 	}
 
 	@RequestMapping(value = "/edittask/{id}", method = RequestMethod.GET, produces = "text/html; charset=utf-8")
-	public String edittask(@ModelAttribute("taskForm") TaskForm taskForm, @ModelAttribute("fileForm") FileForm fileForm,
+	public String editTask(@ModelAttribute("taskForm") TaskForm taskForm, @ModelAttribute("fileForm") FileForm fileForm,
 			@PathVariable("id") String id) {
 		Task task = taskDao.findTaskForId(Long.parseLong(id));
 		if (task != null) {
@@ -318,7 +320,7 @@ public class TaskController {
 			values = values + item.getValue() + " ,";
 		}
 		String beginning = "$(window).load(function() {var ctx = document.getElementById('canvas').getContext('2d');var data = {labels: [";
-		String middle = "],datasets: [{label: \"Chart dataset\",fillColor: \"rgba(151,187,205,0.2)\",strokeColor: \"rgba(151,187,205,1)\",pointColor: \"rgba(151,187,205,1)\",pointStrokeColor: \"#fff\",pointHighlightFill: \"#fff\",pointHighlightStroke: \"rgba(151,187,205,1)\",data: [";
+		String middle = "],datasets: [{label: \"Chart dataset\",fillColor: \"#99ff99\",strokeColor: \"#33cc33\",pointColor: \"#0066ff\",pointStrokeColor: \"#fff\",pointHighlightFill: \"#fff\",pointHighlightStroke: \"rgba(151,187,205,1)\",data: [";
 		String end = "]}]};var myLineChart  = new Chart(ctx).Line(data, null);});";
 		String result = beginning + labels.substring(0, labels.length() - 2) + middle
 				+ values.substring(0, values.length() - 2) + end;

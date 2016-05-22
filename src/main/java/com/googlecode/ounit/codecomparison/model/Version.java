@@ -33,44 +33,44 @@ public class Version {
 	public Version() {
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public int getAbstractionVersionId() {
 		return abstractionVersionId;
-	}
-
-	public void setAbstractionVersionId(int abstractionVersionId) {
-		this.abstractionVersionId = abstractionVersionId;
-	}
-
-	public int getSimilarityVersionId() {
-		return similarityVersionId;
-	}
-
-	public void setSimilarityVersionId(int similarityVersionId) {
-		this.similarityVersionId = similarityVersionId;
-	}
-
-	public int getDefaultT() {
-		return defaultT;
-	}
-
-	public void setDefaultT(int defaultT) {
-		this.defaultT = defaultT;
 	}
 
 	public int getDefaultK() {
 		return defaultK;
 	}
 
+	public int getDefaultT() {
+		return defaultT;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public int getSimilarityVersionId() {
+		return similarityVersionId;
+	}
+
+	public void setAbstractionVersionId(int abstractionVersionId) {
+		this.abstractionVersionId = abstractionVersionId;
+	}
+
 	public void setDefaultK(int defaultK) {
 		this.defaultK = defaultK;
+	}
+
+	public void setDefaultT(int defaultT) {
+		this.defaultT = defaultT;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setSimilarityVersionId(int similarityVersionId) {
+		this.similarityVersionId = similarityVersionId;
 	}
 
 	@Override

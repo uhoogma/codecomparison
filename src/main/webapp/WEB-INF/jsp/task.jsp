@@ -142,7 +142,7 @@
 								<td>${comp.secondStudentId}</td>
 								<td>${comp.secondAttemptId}</td>
 								<td>${comp.largestSimilarityResultAsString}</td>
-								<td rowspan="2" class="twoRowButton comparison-separator"><a
+								<td rowspan="2" class="twoRowButton comparison-separator"><a target="_blank"
 									href="<c:url value="/comparison/${comp.id}"/>"><button
 											type="button" class="btn btn-info">Vaata</button></a></td>
 							</tr>
@@ -176,7 +176,7 @@
 			</div>
 			<div class="col-sm-4">
 				<h2 class="centered-text">Tulemused</h2>
-				<canvas id="canvas" width="400" height="500"></canvas>
+				<canvas id="canvas" width="370" height="500"></canvas>
 			</div>
 		</div>
 	</div>

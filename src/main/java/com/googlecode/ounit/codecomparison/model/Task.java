@@ -31,14 +31,6 @@ public class Task {
 	@Transient
 	private String fileName;
 
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
 	@OneToMany(targetEntity = Round.class, mappedBy = "task_id", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
 	private List<Round> rounds = new ArrayList<Round>();
@@ -51,39 +43,47 @@ public class Task {
 	@JoinColumn(name = "id")
 	private Attempt attempt;
 
+	public Task() {
+	}
+
+	public void addRound(Round r1) {
+		rounds.add(r1);
+	}
+
 	public Attempt getAttempt() {
 		return attempt;
 	}
 
-	public void setAttempt(Attempt attempt) {
-		this.attempt = attempt;
+	public Timestamp getCreationTime() {
+		return creationTime;
 	}
 
-	public Task() {
+	public String getFileName() {
+		return fileName;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public int getK() {
+		return k;
+	}
+
+	public Timestamp getLastSyncTime() {
+		return lastSyncTime;
 	}
 
 	public List<Round> getRounds() {
 		return rounds;
 	}
 
-	public void setRounds(List<Round> rounds) {
-		this.rounds = rounds;
+	public int getT() {
+		return t;
 	}
 
 	public String getTaskName() {
 		return taskName;
-	}
-
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
 	}
 
 	public boolean isActive() {
@@ -94,40 +94,40 @@ public class Task {
 		this.active = active;
 	}
 
-	public Timestamp getCreationTime() {
-		return creationTime;
+	public void setAttempt(Attempt attempt) {
+		this.attempt = attempt;
 	}
 
 	public void setCreationTime(Timestamp creationTime) {
 		this.creationTime = creationTime;
 	}
 
-	public Timestamp getLastSyncTime() {
-		return lastSyncTime;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
-	public void setLastSyncTime(Timestamp lastSyncTime) {
-		this.lastSyncTime = lastSyncTime;
-	}
-
-	public int getT() {
-		return t;
-	}
-
-	public void setT(int t) {
-		this.t = t;
-	}
-
-	public int getK() {
-		return k;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public void setK(int k) {
 		this.k = k;
 	}
 
-	public void addRound(Round r1) {
-		rounds.add(r1);
+	public void setLastSyncTime(Timestamp lastSyncTime) {
+		this.lastSyncTime = lastSyncTime;
+	}
+
+	public void setRounds(List<Round> rounds) {
+		this.rounds = rounds;
+	}
+
+	public void setT(int t) {
+		this.t = t;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
 	}
 
 	@Override

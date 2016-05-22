@@ -18,7 +18,7 @@
 	href="<c:url value="/static/css/edittest.css"/>">
 <script type="text/javascript"
 	src="<c:url value="/static/js/general.js"/>"></script>
-	<link rel="icon" type="image/png"
+<link rel="icon" type="image/png"
 	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
@@ -96,14 +96,14 @@
 										<form:input class="col-sm-8" id="nameBox" path="task.taskName" />
 									</div>
 								</div>
-								<div class="row" style="margin: 10px; clear: both;">
+								<!--div class="row" style="margin: 10px; clear: both;">
 									<div class="form-group">
 										<form:checkbox class="col-sm-3" id="removeBox" path=""
 											value="false" />
 										<label class="col-sm-9" for="active">Algkoodi
 											eemaldamine võrdlusest on vajalik</label>
 									</div>
-								</div>
+								</div-->
 								<div class="row" style="margin: 10px; clear: both;">
 									<div class="form-group">
 										<form:checkbox class="col-sm-3" id="activeBox"

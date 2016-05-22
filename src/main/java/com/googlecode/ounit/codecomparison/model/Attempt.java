@@ -18,9 +18,7 @@ public class Attempt {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	private Integer moodleId;
-
 	private Long task_id;
 	private Long round_id;
 	private Integer student_id;
@@ -29,17 +27,11 @@ public class Attempt {
 	private String fileName;
 	private boolean codeAcquired;
 	private boolean isBoilerplate;
-	public boolean isBoilerplate() {
-		return isBoilerplate;
-	}
-
-	public void setBoilerplate(boolean isBoilerplate) {
-		this.isBoilerplate = isBoilerplate;
-	}
-
+	
 	@OneToMany(targetEntity = SavedComparison.class, mappedBy = "firstAttemptId", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
 	private List<SavedComparison> firstAttempt = new ArrayList<SavedComparison>();
+
 	@OneToMany(targetEntity = SavedComparison.class, mappedBy = "secondAttemptId", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
 	private List<SavedComparison> secondAttempt = new ArrayList<SavedComparison>();
@@ -47,7 +39,6 @@ public class Attempt {
 	@OneToMany(targetEntity = AbstractedCode.class, mappedBy = "attempt_id", fetch = FetchType.EAGER, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
 	private List<AbstractedCode> abstractedCodes = new ArrayList<AbstractedCode>();
-
 	public Attempt() {
 	}
 
@@ -98,6 +89,10 @@ public class Attempt {
 		return task_id;
 	}
 
+	public boolean isBoilerplate() {
+		return isBoilerplate;
+	}
+
 	public boolean isBoilerPlate() {
 		return isBoilerplate;
 	}
@@ -108,6 +103,10 @@ public class Attempt {
 
 	public void setAbstractedCodes(List<AbstractedCode> abstractedCodes) {
 		this.abstractedCodes = abstractedCodes;
+	}
+
+	public void setBoilerplate(boolean isBoilerplate) {
+		this.isBoilerplate = isBoilerplate;
 	}
 
 	public void setBoilerPlate(boolean isBoilerPlate) {

@@ -57,7 +57,7 @@ public class MoodleScraper {
 			if (uniqueIdsFromDB == null) {
 				newAttempts.add(newAttempt);
 			}
-			if (uniqueIdsFromDB != null && !uniqueIdsFromDB.contains(new Long(attempt.getKey()))) {
+			if (uniqueIdsFromDB != null && !uniqueIdsFromDB.contains(attempt.getKey())) {
 				newAttempts.add(newAttempt);
 			}
 		}

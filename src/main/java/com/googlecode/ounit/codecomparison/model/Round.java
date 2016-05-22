@@ -19,112 +19,103 @@ public class Round {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private Long task_id;
-	public Long getTask_id() {
-		return task_id;
-	}
-
-	public void setTask_id(Long task_id) {
-		this.task_id = task_id;
-	}
-
 	private String year;
 	private String semester;
 	private String subject;
 	private String roundName;
 	private int url;
-
-	@Transient
-	private String saveRoundButton;
-	@Transient
-	private String deleteRoundButton;
-	
-	public String getDeleteRoundButton() {
-		return deleteRoundButton;
-	}
-
-	public void setDeleteRoundButton(String deleteRoundButton) {
-		this.deleteRoundButton = deleteRoundButton;
-	}
-
-	public String getSaveRoundButton() {
-		return saveRoundButton;
-	}
-
-	public void setSaveRoundButton(String saveRoundButton) {
-		this.saveRoundButton = saveRoundButton;
-	}
-	
 	@Transient
 	private boolean checked;
+	@Transient
+	private String saveRoundButton;
+	@OneToMany(targetEntity = Attempt.class, mappedBy = "round_id", fetch = FetchType.EAGER, cascade = {
+			CascadeType.ALL }, orphanRemoval = true)
+	private List<Attempt> attempts = new ArrayList<Attempt>();
+	
+	public Round() {
+	}
+
+	public String formData() {
+		return subject;
+	}
 
 	public boolean getChecked() {
 		return checked;
 	}
-
-	public void setChecked(boolean checked) {
-		this.checked = checked;
-	}
-
-	public Round() {
-	}
-
-	@OneToMany(targetEntity = Attempt.class, mappedBy = "round_id", fetch = FetchType.EAGER, cascade = {
-			CascadeType.ALL }, orphanRemoval = true)
-	private List<Attempt> attempts = new ArrayList<Attempt>();
-
+	
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getYear() {
-		return year;
-	}
-
-	public void setYear(String year) {
-		this.year = year;
-	}
-
-	public String getSemester() {
-		return semester;
-	}
-
-	public void setSemester(String semester) {
-		this.semester = semester;
-	}
-
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
 	}
 
 	public String getRoundName() {
 		return roundName;
 	}
 
-	public void setRoundName(String roundName) {
-		this.roundName = roundName;
+	public String getSaveRoundButton() {
+		return saveRoundButton;
+	}
+	
+	public String getSemester() {
+		return semester;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public Long getTask_id() {
+		return task_id;
 	}
 
 	public int getUrl() {
 		return url;
 	}
 
+	public String getYear() {
+		return year;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setRoundName(String roundName) {
+		this.roundName = roundName;
+	}
+
+	public void setSaveRoundButton(String saveRoundButton) {
+		this.saveRoundButton = saveRoundButton;
+	}
+
+	public void setSemester(String semester) {
+		this.semester = semester;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public void setTask_id(Long task_id) {
+		this.task_id = task_id;
+	}
+
 	public void setUrl(int url) {
 		this.url = url;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
 	}
 
 	@Override
 	public String toString() {
 		return "Round [id=" + id + ", task_id=" + task_id + ", year=" + year + ", semester=" + semester + ", subject="
-				+ subject + ", roundName=" + roundName + ", url=" + url + ", saveRoundButton=" + saveRoundButton
-				+ ", deleteRoundButton=" + deleteRoundButton + ", checked=" + checked + ", attempts=" + attempts + "]";
+				+ subject + ", roundName=" + roundName + ", url=" + url + ", checked=" + checked + ", attempts="
+				+ attempts + "]";
 	}
 	
 }

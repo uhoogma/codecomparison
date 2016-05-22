@@ -25,10 +25,6 @@ public class RoundController {
 	@Resource
 	private RoundDao roundDao = new RoundDao();
 
-	/*
-	 * @ModelAttribute("taskForm") public TaskForm getTaskForm() { return new
-	 * TaskForm(); }
-	 */
 	@ModelAttribute("roundForm")
 	public RoundForm getRoundForm() {
 		return new RoundForm();
@@ -53,13 +49,13 @@ public class RoundController {
 
 	@RequestMapping(value = "/editround", method = RequestMethod.POST)
 	public String saveRound(@Valid @ModelAttribute("roundForm") RoundForm form, BindingResult result, Model model) {
-		return editingResponse(form, result, model);
+		return editingResponse(form, result, model, null);
 	}
 
 	@RequestMapping(value = "/editround/{id}", method = RequestMethod.POST)
 	public String editRound(@Valid @ModelAttribute("roundForm") RoundForm form, BindingResult result,
 			@PathVariable("id") String id, Model model) {
-		return editingResponse(form, result, model);
+		return editingResponse(form, result, model, id);
 	}
 
 	@RequestMapping(value = "/deleteround/{id}")
@@ -73,20 +69,49 @@ public class RoundController {
 		}
 	}
 
-	private String editingResponse(RoundForm form, BindingResult result, Model model) {
+	private String editingResponse(RoundForm form, BindingResult result, Model model, String id) {
 		List<String> customErrors = form.validate(form.getRound());
 		if (result.hasErrors() || !customErrors.isEmpty()) {
-			List<String> errors = new ArrayList<>();
-			for (FieldError error : result.getFieldErrors()) {
-				errors.add(error.getObjectName() + " - " + error.getDefaultMessage());
+			if (id == null) {
+				List<String> errors = new ArrayList<>();
+				for (FieldError error : result.getFieldErrors()) {
+					errors.add(error.getObjectName() + " - " + error.getDefaultMessage());
+				}
+				errors.addAll(customErrors);
+				form.setRound(form.getRound());
+				model.addAttribute("errors", errors);
+				return "editround";
+			} else {
+				List<String> errors = new ArrayList<>();
+				for (FieldError error : result.getFieldErrors()) {
+					errors.add(error.getObjectName() + " - " + error.getDefaultMessage());
+				}
+				errors.addAll(customErrors);
+				form.setRound(form.getRound());
+				model.addAttribute("errors", errors);
+				return "editround";
 			}
-			errors.addAll(customErrors);
-			form.setRound(form.getRound());
-			model.addAttribute("errors", errors);
-			return "editround";
 		} else {
-			roundDao.store(form.getRound());
-			return "redirect:/index";
+			if (id == null) {
+				Round newRound = new Round();
+				setRoundData(form, newRound);
+				roundDao.store(newRound);
+				return "redirect://index";
+			} else {
+				Round round = roundDao.findRoundForId(Long.parseLong(id));
+				setRoundData(form, round);
+				roundDao.store(round);
+				return "redirect://editround/" + id;
+			}
 		}
+	}
+
+	private void setRoundData(RoundForm form, Round round) {
+		Round formData = form.getRound();
+		round.setRoundName(formData.getRoundName());
+		round.setSemester(formData.getSemester());
+		round.setSubject(formData.getSubject());
+		round.setYear(formData.getYear());
+		round.setUrl(formData.getUrl());
 	}
 }
