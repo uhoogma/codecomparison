@@ -35,14 +35,18 @@
 								class="btn btn-info pull-right">LISA VOOR</button></a>
 					</div>
 				</div>
-				<div class="row">
-					<div class="padding alert alert-danger">
-						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-						<strong>Danger!</strong> This alert box could indicate a dangerous
-						or potentially negative action.
+				<c:if test="${not empty errors}">
+					<div class="row bottom">
+						<div class="padding alert alert-danger">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Oht!<br></strong>
+							<c:forEach items="${errors}" var="error">
+								<c:out value="${error}"></c:out>
+								<br>
+							</c:forEach>
+						</div>
 					</div>
-				</div>
-
+				</c:if>
 				<div class="row" style="margin-right: 20px !important;">
 					<table class="table" style="margin: 20px;">
 						<tbody class="tbody">
@@ -96,14 +100,6 @@
 										<form:input class="col-sm-8" id="nameBox" path="task.taskName" />
 									</div>
 								</div>
-								<!--div class="row" style="margin: 10px; clear: both;">
-									<div class="form-group">
-										<form:checkbox class="col-sm-3" id="removeBox" path=""
-											value="false" />
-										<label class="col-sm-9" for="active">Algkoodi
-											eemaldamine võrdlusest on vajalik</label>
-									</div>
-								</div-->
 								<div class="row" style="margin: 10px; clear: both;">
 									<div class="form-group">
 										<form:checkbox class="col-sm-3" id="activeBox"
@@ -142,7 +138,7 @@
 											<div class="modal-body">
 												<button type="button" class="btn btn-default"
 													data-dismiss="modal">Loobu</button>
-												<button type="button" class="btn btn-danger pull-right"
+												<button type="button" id="deleteTaskButton" class="btn btn-danger pull-right"
 													data-dismiss="modal">Kustuta</button>
 											</div>
 										</div>

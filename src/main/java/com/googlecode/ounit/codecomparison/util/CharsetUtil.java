@@ -1,3 +1,7 @@
+/**
+ * @author Georgios Migdos
+ * @source https://gmigdos.wordpress.com/2010/04/08/java-how-to-auto-detect-a-files-encoding/
+ * */
 package com.googlecode.ounit.codecomparison.util;
 
 import java.io.BufferedInputStream;
@@ -8,10 +12,6 @@ import java.nio.charset.CharsetDecoder;
 
 import org.springframework.web.multipart.MultipartFile;
 
-// https://gmigdos.wordpress.com/2010/04/08/java-how-to-auto-detect-a-files-encoding/
-/**
- * @author Georgios Migdos
- * */
 public class CharsetUtil {
 
 	public Charset detectCharset(MultipartFile f, Charset charset) {
@@ -51,6 +51,7 @@ public class CharsetUtil {
 
 	public Charset getCharSetInUse(MultipartFile file) {
 		Charset charset = null;
+		// TODO remove all but "UTF-8"
 		String[] charsetsToBeTested = { "UTF-8", "windows-1253", "ISO-8859-7", "UCS-2 LE BOM" };
 
 		for (String charsetName : charsetsToBeTested) {

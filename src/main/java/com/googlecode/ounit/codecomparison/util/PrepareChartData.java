@@ -17,7 +17,7 @@ public class PrepareChartData {
 		double currentInput;
 		for (i = 0; i < input.size(); i++) {
 			if (i == Math.pow(2, powerOfTwo)) {
-				// correlate infinite values
+				// TODO correlate infinite values
 				correlatedSum = i == countOfInfiniteValues ? 0.0 : (i * sum) / (i - countOfInfiniteValues);
 				kvp.put(String.valueOf((int) i), correlatedSum / (i - endOfLastGroup));
 				powerOfTwo++;

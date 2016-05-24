@@ -1,3 +1,6 @@
+/**
+ * @source http://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
+ * */
 package com.googlecode.ounit.moodlescraper;
 
 import java.io.UnsupportedEncodingException;
@@ -10,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Util {
-
-	// http://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
+	
 	public static Integer splitQuery(String url, String parameter) {
 		final Map<String, List<String>> query_pairs = new LinkedHashMap<String, List<String>>();
 		String[] pairs;

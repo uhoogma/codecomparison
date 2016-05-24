@@ -16,7 +16,9 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.springframework.ui.Model;
 
+import com.googlecode.ounit.codecomparison.util.Message;
 import com.googlecode.ounit.codecomparison.model.Attempt;
 import com.googlecode.ounit.codecomparison.model.Round;
 import com.googlecode.ounit.codecomparison.model.Student;
@@ -28,10 +30,14 @@ public class MoodleScraper {
 	private WebDriver driver = new HtmlUnitDriver();
 	private Map<String, Exception> exceptions = new HashMap<String, Exception>();
 	private Map<Integer, Student> pairs = new HashMap<Integer, Student>();
+	private Model model;
+	private Message message;
 
-	public MoodleScraper(String userName, String password) {
+	public MoodleScraper(String userName, String password, Model model, Message message) {
 		user = userName;
 		pass = password;
+		this.model = model;
+		this.message = message;
 	}
 
 	@After
@@ -96,6 +102,10 @@ public class MoodleScraper {
 		return elements.isEmpty() ? null : elements.get(0);
 	}
 
+	public Model getModel() {
+		return model;
+	}
+
 	public Map<Integer, Student> getPairs() {
 		return pairs;
 	}
@@ -153,6 +163,7 @@ public class MoodleScraper {
 		elementById("login_username").sendKeys(user);
 		elementById("login_password").sendKeys(pass);
 		elementByXPath("submit").click();
+		message.storeMessage(model, "Kasutaja \"" + user + "\" on õnnelikult sisse loginud.");
 	}
 
 	public void logout() {

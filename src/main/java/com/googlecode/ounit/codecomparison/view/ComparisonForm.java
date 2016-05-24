@@ -7,17 +7,14 @@ import com.googlecode.ounit.codecomparison.model.Student;
 public class ComparisonForm {
 
 	private Student firstStudent;
-
 	private Student secondStudent;
-
 	private Round firstRound;
-
 	private Round secondRound;
 	private String returnLink;
-	
 	private SavedComparison savedComparison;
 	private String firstCode;
 	private String secondCode;
+	
 	public String getFirstCode() {
 		return firstCode;
 	}

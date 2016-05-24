@@ -135,6 +135,6 @@ public class Task {
 		return "Task [id=" + id + ", taskName=" + taskName + ", active=" + active + ", creationTime=" + creationTime
 				+ ", lastSyncTime=" + lastSyncTime + ", t=" + t + ", k=" + k + ", fileName=" + fileName + ", rounds="
 				+ rounds + ", savedComparisons=" + savedComparisons + ", attempt=" + attempt + "]";
-	}
+	}	
 
 }

@@ -157,7 +157,8 @@ public class SavedComparison {
 				+ ", secondAttemptId=" + secondAttemptId + ", firstToSecondResult=" + firstToSecondResult
 				+ ", secondToFirstResult=" + secondToFirstResult + ", firstToSecondIsInfinite="
 				+ firstToSecondIsInfinite + ", secondToFirstIsInfinite=" + secondToFirstIsInfinite
-				+ ", firstToSecondResultAsString="  + ", secondToFirstResultAsString="
-				 + "]";
+				+ ", largestSimilarityResultAsString=" + largestSimilarityResultAsString
+				+ ", smallestSimilarityResultAsString=" + smallestSimilarityResultAsString + "]";
 	}
+	
 }

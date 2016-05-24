@@ -9,7 +9,7 @@ public class MultipartConfigElement {
 	public CommonsMultipartResolver multipartResolver(){
 	    CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
 	    commonsMultipartResolver.setDefaultEncoding("utf-8");
-	    commonsMultipartResolver.setMaxUploadSize(65536);
+	    commonsMultipartResolver.setMaxUploadSize(65536); // maximum code length
 	    return commonsMultipartResolver;
 	}
 }

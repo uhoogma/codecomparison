@@ -75,7 +75,7 @@ public class Version {
 
 	@Override
 	public String toString() {
-		return "Version [id=" + id + ", abstractionVersionId=" + abstractionVersionId + ", SimilarityVersionId="
+		return "Version [id=" + id + ", abstractionVersionId=" + abstractionVersionId + ", similarityVersionId="
 				+ similarityVersionId + ", defaultT=" + defaultT + ", defaultK=" + defaultK + ", savedComparisons="
 				+ savedComparisons + ", abstractedCodes=" + abstractedCodes + "]";
 	}

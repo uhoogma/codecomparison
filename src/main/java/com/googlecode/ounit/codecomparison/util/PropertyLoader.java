@@ -11,25 +11,7 @@ import java.util.Properties;
 public class PropertyLoader {
 
     private static final String PROPERTIES_FILENAME = "application.properties";
-
     private static Properties cache;
-
-    public HashMap<String, String> getPropertiesAsMap() {
-        Properties properties = getProperties();
-
-        HashMap<String, String> hashMap = new HashMap<String, String>();
-
-        for (Entry<Object, Object> each : properties.entrySet()) {
-            String value = each.getValue().toString();
-            hashMap.put(each.getKey().toString(), replaceSystemVariables(value));
-        }
-
-        return hashMap;
-    }
-
-    public String getProperty(String key) {
-        return getProperties().getProperty(key);
-    }
 
     public Properties getProperties() {
         if (cache != null) {
@@ -47,6 +29,23 @@ public class PropertyLoader {
         cache = properties;
 
         return properties;
+    }
+
+    public HashMap<String, String> getPropertiesAsMap() {
+        Properties properties = getProperties();
+
+        HashMap<String, String> hashMap = new HashMap<String, String>();
+
+        for (Entry<Object, Object> each : properties.entrySet()) {
+            String value = each.getValue().toString();
+            hashMap.put(each.getKey().toString(), replaceSystemVariables(value));
+        }
+
+        return hashMap;
+    }
+
+    public String getProperty(String key) {
+        return getProperties().getProperty(key);
     }
 
     private String replaceSystemVariables(String value) {

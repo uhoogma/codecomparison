@@ -7,6 +7,12 @@ $(document).ready(function() {
 		var deleteUrl = currentUrl.replace("editround", "deleteround");
 		window.location.href = deleteUrl;
 	});
+	
+	$("#deleteTaskButton").click(function(e) {
+		var currentUrl = window.location.href;
+		var deleteUrl = currentUrl.replace("edittask", "deletetask");
+		window.location.href = deleteUrl;
+	});
 
 	$("#synchronize").click(function(e) {
 		e.preventDefault();

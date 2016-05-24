@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.googlecode.ounit.codecomparison.dao.AbstractedCodeDao;
 import com.googlecode.ounit.codecomparison.dao.AttemptDao;
@@ -41,6 +44,7 @@ import com.googlecode.ounit.codecomparison.model.SavedComparison;
 import com.googlecode.ounit.codecomparison.model.Student;
 import com.googlecode.ounit.codecomparison.model.Task;
 import com.googlecode.ounit.codecomparison.util.CharsetUtil;
+import com.googlecode.ounit.codecomparison.util.Message;
 import com.googlecode.ounit.codecomparison.util.Paging;
 import com.googlecode.ounit.codecomparison.util.PrepareChartData;
 import com.googlecode.ounit.codecomparison.view.FileForm;
@@ -52,8 +56,10 @@ import com.googlecode.ounit.moodlescraper.MoodleScraper;
 import com.googlecode.ounit.moodlescraper.MoodleScraperRunner;
 
 @Controller
+@SessionAttributes("messages")
 public class TaskController {
 
+	private static final int UTF8_TEXT_MAX_LENGTH = 32766;
 	private static final int MAX_COMPARISONS_PER_TASK = 500;
 	private static final Integer RESULT_COUNT = 8;
 	@Resource
@@ -70,6 +76,10 @@ public class TaskController {
 	private AbstractedCodeDao abstractedCodeDao = new AbstractedCodeDao();
 	@Resource
 	private SavedComparisonDao savedComparisonDao = new SavedComparisonDao();
+
+	private int lastMessageIndex = 0;
+
+	private Message message = new Message();
 
 	private void abstractBoilerPlateCode(Java2SimpleJava j2sj, String taskId, Long versionId) {
 		Long taskIdLong = Long.parseLong(taskId);
@@ -156,42 +166,24 @@ public class TaskController {
 		return "redirect:/task/" + taskId + "/0";
 	}
 
-	private void deletePreviousAnalysis(Long taskIdLong, Long currentVersionId) {
-		savedComparisonDao.deletePreviousAnalysis(taskIdLong, currentVersionId);
-	}
-
-	private void updateConstants(int noiseInt, int matchInt, Long taskIdLong) {
-		Task currentTask = taskDao.findTaskForId(taskIdLong);
-		currentTask.setK(noiseInt);
-		currentTask.setT(matchInt);
-		taskDao.store(currentTask);
-	}
-
-	private void saveNewComparisons(Long taskIdLong, Long currentVersionId, List<SavedComparison> csvResult) {
-		int count = 0;
-		for (SavedComparison sc : csvResult) {
-			sc.setTask_id(taskIdLong);
-			sc.setVersion_id(currentVersionId);
-			savedComparisonDao.store(sc);
-			count++;
-			if (count == MAX_COMPARISONS_PER_TASK) {
-				break;
-			}
-		}
-	}
-
 	private void createBoilerplateCode(MultipartFile file, String taskId, String code) {
 		Long taskIdLong = Long.parseLong(taskId);
 		attemptDao.store(new Attempt(taskIdLong, file.getOriginalFilename(), code, true, true));
 	}
 
+	private void deletePreviousAnalysis(Long taskIdLong, Long currentVersionId) {
+		savedComparisonDao.deletePreviousAnalysis(taskIdLong, currentVersionId);
+	}
+
 	private String editingResponse(TaskForm form, BindingResult result, Long id, Model model) {
 		Task t = taskDao.findTaskForId(id);
-		if (result.hasErrors()) {
+		List<String> customErrors = form.validate(form.getTask());
+		if (result.hasErrors() || !customErrors.isEmpty()) {
 			List<String> errors = new ArrayList<>();
 			for (FieldError error : result.getFieldErrors()) {
 				errors.add(error.getObjectName() + " - " + error.getDefaultMessage());
 			}
+			errors.addAll(customErrors);
 			form.setTask(t);
 			model.addAttribute("errors", errors);
 			return "edittask";
@@ -229,9 +221,42 @@ public class TaskController {
 		}
 	}
 
+	public void genTestData(Model model) {
+		message.storeMessage(model, "Initval");
+		/*
+		 * int[] intervals = new int[] { 2, 3, 4, 10 }; for (int i = 0; i <
+		 * intervals.length; i++) { try { Thread.sleep(intervals[i] * 1000);
+		 * 
+		 * System.out.println("i on " + i); Map<String, Object> modelMap =
+		 * model.asMap(); CircularBuffer modelValue =
+		 * (CircularBuffer)modelMap.get("messages"); modelValue.store("Väärtus"
+		 * + String.valueOf(intervals[i])); if (intervals[i] == 10) { i = 0; } }
+		 * catch (InterruptedException e) { e.printStackTrace(); } }
+		 */
+	}
+
 	@ModelAttribute("fileForm")
 	public FileForm getFileForm() {
 		return new FileForm();
+	}
+
+	@RequestMapping(value = "/messages", method = RequestMethod.GET)
+	public @ResponseBody String getMessages(Model model) {
+		Map<String, Object> modelMap = model.asMap();
+		CircularBuffer buffer = (CircularBuffer) modelMap.get("messages");
+		if (buffer != null) {
+			while (lastMessageIndex == buffer.getTail()) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		lastMessageIndex = buffer.getTail();
+		return buffer.read();
+		}else{
+			return "";
+		}
 	}
 
 	@ModelAttribute("taskForm")
@@ -239,8 +264,19 @@ public class TaskController {
 		return new TaskForm();
 	}
 
+	private MoodleScraper login(Login login, Model model, MoodleScraperRunner msr, List<Round> rounds) {
+		message.storeMessage(model, "Alustame logimist");
+		MoodleScraper ms = msr.login(rounds.get(0), login, model, message);
+		return ms;
+	}
+
+	private void logout(Model model, MoodleScraper ms) {
+		ms.logout();
+		message.storeMessage(model, "Oleme välja loginud");
+	}
+
 	@RequestMapping(value = "/edittask", method = RequestMethod.GET, produces = "text/html; charset=utf-8")
-	public String newRound(Model model) {
+	public String newTask(Model model) {
 		List<Round> rounds = roundDao.findAllRoundsNotInAnyTask();
 		TaskForm form = new TaskForm();
 		form.setRoundsNotInTask(rounds);
@@ -260,38 +296,77 @@ public class TaskController {
 		}
 	}
 
+	private void renewConstants(Model model, Long taskIdLong) {
+		Task task = taskDao.findTaskForId(taskIdLong);
+		java.util.Date date = new java.util.Date();
+		task.setLastSyncTime(new Timestamp(date.getTime()));
+		taskDao.store(task);
+		message.storeMessage(model, "Konstandid uuendatud");
+	}
+
 	private void saveAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
+		int attempts = 0;
+		int attemptsNotFetchedCount = 0;
 		for (Round round : rounds) {
+			int attemptsNotFetchedInThisRound = 0;
 			List<Attempt> attemptsNotFetched = attemptDao.findAttemptsNotFetched(round.getId());
+			attemptsNotFetchedInThisRound = attemptsNotFetched.size();
 			for (Attempt attempt : attemptsNotFetched) {
 				String code = ms.download(attempt.getMoodleId(), attempt.getStudentId());
 				if (!code.isEmpty()) {
 					attempt.setCode(code);
 					attempt.setCodeAcquired(true);
 					attemptDao.store(attempt);
+					attempts++;
+					attemptsNotFetchedInThisRound--;
 				}
 			}
+			attemptsNotFetchedCount += attemptsNotFetchedInThisRound;
+		}
+		message.storeMessage(ms.getModel(), "On salvestatud " + attempts + " uut tudengi koodi.");
+		if (attemptsNotFetchedCount > 0) {
+			message.storeMessage(ms.getModel(), attemptsNotFetchedCount + " koodi on salvestamata. Proovige uuesti.");
 		}
 	}
 
 	private void saveNewAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
 		List<Long> attemptIds = attemptDao.getAttemptMoodleIds();
+		int newAttempts = 0;
 		for (Round round : rounds) {
 			List<Attempt> attempts = ms.downloadAttempts(round, "TreeNode.java", attemptIds);
 			for (Attempt attempt : attempts) {
 				attemptDao.store(attempt);
+				newAttempts++;
+			}
+		}
+		message.storeMessage(ms.getModel(), "On salvestatud " + newAttempts + " uut esitust eelmisest korrast saati.");
+
+	}
+
+	private void saveNewComparisons(Long taskIdLong, Long currentVersionId, List<SavedComparison> csvResult) {
+		int count = 0;
+		for (SavedComparison sc : csvResult) {
+			sc.setTask_id(taskIdLong);
+			sc.setVersion_id(currentVersionId);
+			savedComparisonDao.store(sc);
+			count++;
+			if (count == MAX_COMPARISONS_PER_TASK) {
+				break;
 			}
 		}
 	}
 
 	private void saveNewStudents(List<Round> rounds, String taskId, MoodleScraper ms) {
 		List<Integer> studentIds = studentDao.getAllMoodleIds();
+		int newStudents = 0;
 		for (Round round : rounds) {
 			List<Student> students = ms.downloadStudents(round, "TreeNode.java", studentIds);
 			for (Student student : students) {
 				studentDao.store(student);
+				newStudents++;
 			}
 		}
+		message.storeMessage(ms.getModel(), "On salvestatud " + newStudents + " uut tudengit");
 	}
 
 	@RequestMapping(value = "/edittask", method = RequestMethod.POST)
@@ -319,9 +394,9 @@ public class TaskController {
 			labels = labels + "\"" + item.getKey() + "\" ,";
 			values = values + item.getValue() + " ,";
 		}
-		String beginning = "$(window).load(function() {var ctx = document.getElementById('canvas').getContext('2d');var data = {labels: [";
+		String beginning = "$(window).load(function() {if (document.getElementById('canvas') != null) {var ctx = document.getElementById('canvas').getContext('2d');var data = {labels: [";
 		String middle = "],datasets: [{label: \"Chart dataset\",fillColor: \"#99ff99\",strokeColor: \"#33cc33\",pointColor: \"#0066ff\",pointStrokeColor: \"#fff\",pointHighlightFill: \"#fff\",pointHighlightStroke: \"rgba(151,187,205,1)\",data: [";
-		String end = "]}]};var myLineChart  = new Chart(ctx).Line(data, null);});";
+		String end = "]}]};var myLineChart  = new Chart(ctx).Line(data, null);}});";
 		String result = beginning + labels.substring(0, labels.length() - 2) + middle
 				+ values.substring(0, values.length() - 2) + end;
 		form.setChartScript(result);
@@ -351,8 +426,13 @@ public class TaskController {
 	}
 
 	@RequestMapping(value = "/task/{taskId}/{startId}", method = RequestMethod.GET)
-	public String showTask(@PathVariable("taskId") String taskId, @PathVariable("startId") String startId,
+	public ModelAndView showTask(@PathVariable("taskId") String taskId, @PathVariable("startId") String startId,
 			Model model) {
+		if (!model.containsAttribute("messages")) {
+			model.addAttribute("messages", new CircularBuffer(20));
+		}
+		new Thread(() -> genTestData(model)).start();
+
 		Long taskIdLong = Long.parseLong(taskId);
 		Long currentVersionId = versionDao.getCurrentVersion();
 		Integer startFromId = new Integer(startId);
@@ -367,27 +447,22 @@ public class TaskController {
 		form.setResultCount(RESULT_COUNT);
 		form.setSequentialNumber(startFromId);
 		model.addAttribute("taskForm", form);
-		return "task";
+		return new ModelAndView("task", "message", getMessages(model));
 	}
 
 	@RequestMapping(value = "/synchronizetask/{taskId}/{dummy}", method = RequestMethod.POST)
-	public String synchronizeTask(@PathVariable("taskId") String taskId, @RequestBody Login login) {
+	public String synchronizeTask(@PathVariable("taskId") String taskId, @RequestBody Login login, Model model) {
 		MoodleScraperRunner msr = new MoodleScraperRunner();
 		Long taskIdLong = Long.parseLong(taskId);
 		List<Round> rounds = roundDao.findAllRoundsInTask(taskIdLong);
 
-		MoodleScraper ms = msr.login(rounds.get(0), login);
-
+		MoodleScraper ms = login(login, model, msr, rounds);
 		saveNewStudents(rounds, taskId, ms);
 		saveNewAttempts(rounds, taskId, ms);
 		saveAttempts(rounds, taskId, ms);
+		renewConstants(model, taskIdLong);
+		logout(model, ms);
 
-		Task task = taskDao.findTaskForId(taskIdLong);
-		java.util.Date date = new java.util.Date();
-		task.setLastSyncTime(new Timestamp(date.getTime()));
-		taskDao.store(task);
-
-		ms.logout();
 		return "redirect:/task/" + taskId + "/0";
 	}
 
@@ -395,6 +470,25 @@ public class TaskController {
 		attempt.setCode(code);
 		attempt.setFileName(file.getOriginalFilename());
 		attemptDao.store(attempt);
+	}
+
+	private void updateConstants(int noiseInt, int matchInt, Long taskIdLong) {
+		Task currentTask = taskDao.findTaskForId(taskIdLong);
+		currentTask.setK(noiseInt);
+		currentTask.setT(matchInt);
+		taskDao.store(currentTask);
+	}
+
+	@RequestMapping(value = "/deletetask/{taskId}")
+	public String deleteTask(@PathVariable("taskId") String taskId) {
+		Long taskIdLong = Long.parseLong(taskId);
+		Task round = taskDao.findTaskForId(taskIdLong);
+		if (round != null) {
+			taskDao.delete(taskIdLong);
+			return "redirect:/index";
+		} else {
+			return "404";
+		}
 	}
 
 	@RequestMapping(value = "/edittask/{taskId}/uploadFile", method = RequestMethod.POST)
@@ -411,11 +505,11 @@ public class TaskController {
 					String code = writer.toString();
 
 					Attempt attempt = attemptDao.getTaskBoilerPlateAttempt(Long.parseLong(taskId));
-
+					String dbCode = cropLongCode(code);
 					if (attempt != null) {
-						updateBoilerplateCode(file, code, attempt);
+						updateBoilerplateCode(file, dbCode, attempt);
 					} else {
-						createBoilerplateCode(file, taskId, code);
+						createBoilerplateCode(file, taskId, dbCode);
 					}
 				}
 				return "redirect:/edittask/" + taskId;
@@ -425,5 +519,9 @@ public class TaskController {
 		} else {
 			return "404";
 		}
+	}
+
+	private String cropLongCode(String code) {
+		return code.length() > UTF8_TEXT_MAX_LENGTH ? code.substring(0, UTF8_TEXT_MAX_LENGTH) : code;
 	}
 }

@@ -18,10 +18,9 @@ public class TaskForm {
 	private String lastSyncDifference;
 	private List<SavedComparison> comparisons = new ArrayList<>();
 	private Integer sequentialNumber = 0;
-	
-	Map<Integer, Integer> pages = new LinkedHashMap<>();
-	String chartScript;
-	int resultCount;
+	private Map<Integer, Integer> pages = new LinkedHashMap<>();
+	private String chartScript;
+	private int resultCount;
 	
 	public String getAddTaskButton() {
 		return addTaskButton;
@@ -108,6 +107,14 @@ public class TaskForm {
 
 	public void setTask(Task task) {
 		this.task = task;
+	}
+	
+	public List<String> validate(Task task) {
+		List<String> errors = new ArrayList<>();
+		if (task.getTaskName().length() > 50) {
+			errors.add("Testi nimi liiga pikk, ei tohi ületada 50 tähemärki");
+		}
+		return errors;
 	}
 
 }

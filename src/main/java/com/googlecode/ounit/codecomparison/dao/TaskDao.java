@@ -68,4 +68,12 @@ public class TaskDao {
 		TypedQuery<Task> query = em.createQuery("select t from Task t where t.active = 0", Task.class);
 		return query.getResultList();
 	}
+	
+	@Transactional
+	public void delete(Long id) {
+		Task task = findTaskForId(id);
+		if (task != null) {
+			em.remove(task);
+		}
+	}
 }

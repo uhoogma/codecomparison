@@ -72,38 +72,39 @@ public class RoundController {
 	private String editingResponse(RoundForm form, BindingResult result, Model model, String id) {
 		List<String> customErrors = form.validate(form.getRound());
 		if (result.hasErrors() || !customErrors.isEmpty()) {
-			if (id == null) {
-				List<String> errors = new ArrayList<>();
-				for (FieldError error : result.getFieldErrors()) {
-					errors.add(error.getObjectName() + " - " + error.getDefaultMessage());
-				}
-				errors.addAll(customErrors);
-				form.setRound(form.getRound());
-				model.addAttribute("errors", errors);
-				return "editround";
-			} else {
-				List<String> errors = new ArrayList<>();
-				for (FieldError error : result.getFieldErrors()) {
-					errors.add(error.getObjectName() + " - " + error.getDefaultMessage());
-				}
-				errors.addAll(customErrors);
-				form.setRound(form.getRound());
-				model.addAttribute("errors", errors);
-				return "editround";
-			}
+			return errorsOnNewRound(form, result, model, customErrors);
 		} else {
 			if (id == null) {
-				Round newRound = new Round();
-				setRoundData(form, newRound);
-				roundDao.store(newRound);
-				return "redirect://index";
+				return storeNewRound(form);
 			} else {
-				Round round = roundDao.findRoundForId(Long.parseLong(id));
-				setRoundData(form, round);
-				roundDao.store(round);
-				return "redirect://editround/" + id;
+				return storeExistingRound(form, id);
 			}
 		}
+	}
+
+	private String storeExistingRound(RoundForm form, String id) {
+		Round round = roundDao.findRoundForId(Long.parseLong(id));
+		setRoundData(form, round);
+		roundDao.store(round);
+		return "redirect://editround/" + id;
+	}
+
+	private String storeNewRound(RoundForm form) {
+		Round newRound = new Round();
+		setRoundData(form, newRound);
+		roundDao.store(newRound);
+		return "redirect://index";
+	}
+
+	private String errorsOnNewRound(RoundForm form, BindingResult result, Model model, List<String> customErrors) {
+		List<String> errors = new ArrayList<>();
+		for (FieldError error : result.getFieldErrors()) {
+			errors.add(error.getObjectName() + " - " + error.getDefaultMessage());
+		}
+		errors.addAll(customErrors);
+		form.setRound(form.getRound());
+		model.addAttribute("errors", errors);
+		return "editround";
 	}
 
 	private void setRoundData(RoundForm form, Round round) {

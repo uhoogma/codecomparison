@@ -16,8 +16,8 @@ public class ApplicationInitializer implements WebApplicationInitializer {
 
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
-
-		new SetUpDao().createSchema();
+		// TODO uncomment for production
+		// new SetUpDao().createSchema();
 
 		AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
 		rootContext.register(SpringConfig.class);
@@ -29,7 +29,7 @@ public class ApplicationInitializer implements WebApplicationInitializer {
 		dispatcher.setLoadOnStartup(0);
 		dispatcher.addMapping("/");
 
-		// UTF-8 Encoding
+		// enforce UTF-8 Encoding
 		FilterRegistration.Dynamic fr = servletContext.addFilter("encodingFilter", new CharacterEncodingFilter());
 		fr.setInitParameter("encoding", "UTF-8");
 		fr.setInitParameter("forceEncoding", "true");

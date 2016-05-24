@@ -114,8 +114,8 @@ public class Round {
 	@Override
 	public String toString() {
 		return "Round [id=" + id + ", task_id=" + task_id + ", year=" + year + ", semester=" + semester + ", subject="
-				+ subject + ", roundName=" + roundName + ", url=" + url + ", checked=" + checked + ", attempts="
-				+ attempts + "]";
+				+ subject + ", roundName=" + roundName + ", url=" + url + ", checked=" + checked + ", saveRoundButton="
+				+ saveRoundButton + ", attempts=" + attempts + "]";
 	}
 	
 }

@@ -18,6 +18,18 @@
 <script type="text/javascript">
 	${taskForm.chartScript}
 </script>
+<script type="text/javascript">
+	(function ajaxLongPoll() {
+		$.ajax({
+			url : '/CodeComparison/messages',
+			success : function(data) {
+				$('#messages').html(data);
+			},
+			complete : ajaxLongPoll,
+			timeout : 30000
+		});
+	})();
+</script>
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/static/css/test.css"/>">
 <script type="text/javascript"
@@ -51,8 +63,7 @@
 		<div class="row">
 			<div class="padding alert alert-danger">
 				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-				<strong>Danger!</strong> This alert box could indicate a dangerous
-				or potentially negative action.
+				<p id="messages">Teated</p>
 			</div>
 		</div>
 		<div class="row">
@@ -83,7 +94,7 @@
 								<div class="modal-footer">
 									<div class="form-group">
 										<button type="button" id="synchronize"
-											class="btn btn-primary col-sm-2 pull-right"
+											class="btn btn-primary col-sm-2 pull-right top"
 											data-dismiss="modal">Logi</button>
 									</div>
 								</div>
@@ -114,71 +125,78 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-sm-8">
-				<table class="table table-striped table-hover"
-					style="border: 2px solid black;">
-					<thead>
-						<tr>
-							<th>Jrkn</th>
-							<th>Tudeng1</th>
-							<th>Katse1</th>
-							<th>Tudeng2</th>
-							<th>Katse2</th>
-							<th>Tulemus</th>
-							<th>Tegevus</th>
-						</tr>
-					</thead>
-					<tbody class="myTbody">
-						<c:set var="count" value="${taskForm.sequentialNumber}"
-							scope="page" />
-						<c:forEach items="${taskForm.comparisons}" var="comp">
-							<c:set var="count" value="${count + 1}" scope="page" />
+		<c:if test="${not empty taskForm.comparisons}">
+			<div class="row">
+				<div class="col-sm-8">
+					<table class="table table-striped table-hover"
+						style="border: 2px solid black;">
+						<thead>
+							<tr>
+								<th>Jrkn</th>
+								<th>Tudeng1</th>
+								<th>Katse1</th>
+								<th>Tudeng2</th>
+								<th>Katse2</th>
+								<th>Tulemus</th>
+								<th>Tegevus</th>
+							</tr>
+						</thead>
+						<tbody class="myTbody">
+							<c:set var="count" value="${taskForm.sequentialNumber}"
+								scope="page" />
+							<c:forEach items="${taskForm.comparisons}" var="comp">
+								<c:set var="count" value="${count + 1}" scope="page" />
 
-							<tr>
-								<td>${count}</td>
-								<td>${comp.firstStudentId}</td>
-								<td>${comp.firstAttemptId}</td>
-								<td>${comp.secondStudentId}</td>
-								<td>${comp.secondAttemptId}</td>
-								<td>${comp.largestSimilarityResultAsString}</td>
-								<td rowspan="2" class="twoRowButton comparison-separator"><a target="_blank"
-									href="<c:url value="/comparison/${comp.id}"/>"><button
-											type="button" class="btn btn-info">Vaata</button></a></td>
-							</tr>
-							<tr>
-								<td class="comparison-separator">${count}</td>
-								<td class="comparison-separator">${comp.secondStudentId}</td>
-								<td class="comparison-separator">${comp.secondAttemptId}</td>
-								<td class="comparison-separator">${comp.firstStudentId}</td>
-								<td class="comparison-separator">${comp.firstAttemptId}</td>
-								<td class="comparison-separator">${comp.smallestSimilarityResultAsString}</td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-				<div class="centered-text">
-					<ul class="pagination">
-						<c:set var="num" scope="page" value="${taskForm.sequentialNumber}" />
-						<c:forEach items="${taskForm.pages}" var="page">
-							<c:set var="key" scope="page" value="${page.getKey()}" />
-							<li><a
-								href="<c:url value="/task/${taskForm.task.id}/${page.getValue()}"/>">
-									<c:if test="${num/taskForm.resultCount == key}">
-										<b>
-									</c:if>${page.getKey()+1}<c:if test="${num/taskForm.resultCount == key}">
-										</b>
-									</c:if>
-							</a></li>
-						</c:forEach>
-					</ul>
+								<tr>
+									<td>${count}</td>
+									<td>${comp.firstStudentId}</td>
+									<td>${comp.firstAttemptId}</td>
+									<td>${comp.secondStudentId}</td>
+									<td>${comp.secondAttemptId}</td>
+									<td>${comp.largestSimilarityResultAsString}</td>
+									<td rowspan="2" class="twoRowButton comparison-separator"><a
+										target="_blank" href="<c:url value="/comparison/${comp.id}"/>"><button
+												type="button" class="btn btn-info">Vaata</button></a></td>
+								</tr>
+								<tr>
+									<td class="comparison-separator">${count}</td>
+									<td class="comparison-separator">${comp.secondStudentId}</td>
+									<td class="comparison-separator">${comp.secondAttemptId}</td>
+									<td class="comparison-separator">${comp.firstStudentId}</td>
+									<td class="comparison-separator">${comp.firstAttemptId}</td>
+									<td class="comparison-separator">${comp.smallestSimilarityResultAsString}</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+					<div class="centered-text">
+						<ul class="pagination">
+							<c:set var="num" scope="page"
+								value="${taskForm.sequentialNumber}" />
+							<c:forEach items="${taskForm.pages}" var="page">
+								<c:set var="key" scope="page" value="${page.getKey()}" />
+								<li><a
+									href="<c:url value="/task/${taskForm.task.id}/${page.getValue()}"/>">
+										<c:if test="${num/taskForm.resultCount == key}">
+											<b>
+										</c:if>${page.getKey()+1}<c:if
+											test="${num/taskForm.resultCount == key}">
+											</b>
+										</c:if>
+								</a></li>
+							</c:forEach>
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<h2 class="centered-text">Tulemused</h2>
+					<canvas id="canvas" width="370" height="500"></canvas>
 				</div>
 			</div>
-			<div class="col-sm-4">
-				<h2 class="centered-text">Tulemused</h2>
-				<canvas id="canvas" width="370" height="500"></canvas>
-			</div>
-		</div>
+		</c:if>
+		<c:if test="${empty taskForm.comparisons}">
+			<p>Sünkroniseeri ja soorita analüüs</p>
+		</c:if>
 	</div>
 </body>
 </html>

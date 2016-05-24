@@ -11,7 +11,7 @@
 </head>
 <body>
 	<p>
-		<a href="<c:url value="/index"/>">Resource not found</a>
+		<a href="<c:url value="/index"/>">Ressurssi ei leitud</a>
 	</p>
 </body>
 </html>
