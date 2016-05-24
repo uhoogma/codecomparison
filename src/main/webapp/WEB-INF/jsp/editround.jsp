@@ -54,34 +54,34 @@
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="year">aasta</label>
-								<form:input class="col-sm-9" id="yearBox" path="round.year" />
+								<form:input class="col-sm-9" id="yearBox" placeholder="2015/2016 (max 9 märki)" path="round.year" />
 							</div>
 						</div>
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="semester">semester</label>
-								<form:input class="col-sm-9" id="semesterBox"
+								<form:input class="col-sm-9" id="semesterBox" placeholder="Kevadsemester (max 20 märki)"
 									path="round.semester" />
 							</div>
 						</div>
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="subject">aine nimi</label>
-								<form:input class="col-sm-9" id="subjectBox"
+								<form:input class="col-sm-9" id="subjectBox" placeholder="I231 (max 6 märki)"
 									path="round.subject" />
 							</div>
 						</div>
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="round">vooru nimi</label>
-								<form:input class="col-sm-9" id="roundNameBox"
+								<form:input class="col-sm-9" id="roundNameBox" placeholder="Algoritmid ja andmestruktuurid IA17 IA18 (max 100 märki)"
 									path="round.roundName" />
 							</div>
 						</div>
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="moodle_id">Moodle id</label>
-								<form:input class="col-sm-9" id="urlBox" path="round.url" />
+								<form:input class="col-sm-9" id="urlBox" placeholder="123456 (vaid URL-i numbriline osa)" path="round.url" />
 							</div>
 						</div>
 						<div class="row">

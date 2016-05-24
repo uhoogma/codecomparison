@@ -97,7 +97,9 @@
 								<div class="row">
 									<div class="form-group">
 										<label class="col-sm-4" for="taskName">Testi nimi</label>
-										<form:input class="col-sm-8" id="nameBox" path="task.taskName" />
+										<form:input class="col-sm-8" id="nameBox"
+											placeholder="Testi nimi vabas vormis (max 50 märki)"
+											path="task.taskName" />
 									</div>
 								</div>
 								<div class="row" style="margin: 10px; clear: both;">
@@ -113,17 +115,19 @@
 										class="btn btn-info pull-right" type="submit" value="SALVESTA" />
 								</div>
 							</form:form>
-							<div style="margin: 10px;">
-								<form:form method="POST" action="${fileForm.taskId}/uploadFile"
-									id="fileForm" modelAttribute="fileForm"
-									enctype="multipart/form-data">
-									<form:input style="margin-bottom: 20px;" path="fileName"
-										disabled="true"></form:input>
-									<form:input path="" type="file" name="file" />
-									<br />
-									<form:input path="" type="submit" value="Lae üles kooditoorik" />
-								</form:form>
-							</div>
+							<c:if test="${0 < taskForm.task.id}">
+								<div style="margin: 10px;">
+									<form:form method="POST" action="${fileForm.taskId}/uploadFile"
+										id="fileForm" modelAttribute="fileForm"
+										enctype="multipart/form-data">
+										<form:input style="margin-bottom: 20px;" path="fileName"
+											disabled="true"></form:input>
+										<form:input path="" type="file" name="file" />
+										<br />
+										<form:input path="" type="submit" value="Lae üles kooditoorik" />
+									</form:form>
+								</div>
+							</c:if>
 							<div style="margin-top: 30px;">
 								<button type="button" class="btn btn-danger" data-toggle="modal"
 									data-target="#confirmDelete">KUSTUTA TEST JA KOGU
@@ -138,8 +142,8 @@
 											<div class="modal-body">
 												<button type="button" class="btn btn-default"
 													data-dismiss="modal">Loobu</button>
-												<button type="button" id="deleteTaskButton" class="btn btn-danger pull-right"
-													data-dismiss="modal">Kustuta</button>
+												<button type="button" id="deleteTaskButton"
+													class="btn btn-danger pull-right" data-dismiss="modal">Kustuta</button>
 											</div>
 										</div>
 									</div>
