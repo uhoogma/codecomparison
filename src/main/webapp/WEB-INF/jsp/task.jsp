@@ -38,6 +38,7 @@
 	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
+<img src="<c:url value="/static/css/images/page-loader.gif"/>" id="loader" class="loader" style="display:none"/ >
 	<div class="container">
 		<div class="top row">
 			<div class="col-sm-2">
@@ -126,7 +127,7 @@
 			</div>
 		</div>
 		<c:if test="${not empty taskForm.comparisons}">
-			<div class="row">
+			<div class="row top">
 				<div class="col-sm-8">
 					<table class="table table-striped table-hover"
 						style="border: 2px solid black;">

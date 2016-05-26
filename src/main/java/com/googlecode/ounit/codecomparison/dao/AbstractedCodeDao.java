@@ -46,11 +46,11 @@ public class AbstractedCodeDao {
 	}
 
 	private AbstractedCode getSingleAbstractedCode(TypedQuery<AbstractedCode> query) {
-		List<AbstractedCode> persons = query.getResultList();
-		if (persons.size() < 1)
+		List<AbstractedCode> codeList = query.getResultList();
+		if (codeList.size() < 1)
 			return null;
 		else
-			return persons.get(0);
+			return codeList.get(0);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -153,9 +153,15 @@ public class MoodleScraper {
 	private void getRound(Integer roundId) {
 		driver.get("https://moodle.hitsa.ee/mod/quiz/report.php?id=" + roundId + "&mode=overview");
 		System.out.println(driver.getPageSource());
-		// set params for example:
-		// elementById("id_pagesize").sendKeys("1000");
-		elementById("id_submitbutton").click();
+		WebElement submitButton = elementById("id_submitbutton");
+		WebElement pageSize = elementById("id_pagesize");
+		if (submitButton != null && pageSize!= null) {
+			pageSize.clear();
+			pageSize.sendKeys("1000");
+			submitButton.click();
+		} else {
+			message.storeMessage(model, "Ei leia \"Esita\" nuppu või ei saa raporti suurust määrata");
+		}
 	}
 
 	private void login() {

@@ -244,7 +244,7 @@ public class TaskController {
 		if (!model.containsAttribute("messages")) {
 			model.addAttribute("messages", new CircularBuffer(20));
 		}
-		new Thread(() -> genTestData(model)).start();
+		new Thread(() -> setInitialValue(model)).start();
 
 		Long taskIdLong = Long.parseLong(taskId);
 		Long currentVersionId = versionDao.getCurrentVersion();
@@ -263,8 +263,8 @@ public class TaskController {
 		return new ModelAndView("task", "message", getMessages(model));
 	}
 
-	public void genTestData(Model model) {
-		message.storeMessage(model, "Initval");
+	public void setInitialValue(Model model) {
+		message.storeMessage(model, "Teated");
 	}
 
 	@RequestMapping(value = "/messages", method = RequestMethod.GET)
@@ -344,9 +344,14 @@ public class TaskController {
 		renewConstants(model, taskIdLong);
 		logout(model, ms);
 
-		return "redirect:/task/" + taskId + "/0";
+		return "redirect:/redirectto/" + taskId;
 	}
 
+	@RequestMapping(value = "/redirectto/{taskId}")
+	public String redirectTask(@PathVariable("taskId") String taskId) {
+		return "redirect:/task/" + taskId + "/0";
+	}
+	
 	private MoodleScraper login(Login login, Model model, MoodleScraperRunner msr, List<Round> rounds) {
 		message.storeMessage(model, "Alustame logimist");
 		MoodleScraper ms = msr.login(rounds.get(0), login, model, message);

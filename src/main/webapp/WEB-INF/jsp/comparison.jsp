@@ -45,7 +45,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div>
-							<p>${comparisonForm.firstRound.roundName}|${comparisonForm.firstRound.subject}|
+							<p>Voor: ${comparisonForm.firstRound.roundName}|${comparisonForm.firstRound.subject}|
 								${comparisonForm.firstRound.year}|
 								${comparisonForm.firstRound.semester}</p>
 						</div>
@@ -59,7 +59,7 @@
 
 					<div class="col-sm-6">
 						<div>
-							<p>${comparisonForm.secondRound.roundName}|${comparisonForm.secondRound.subject}|
+							<p>Voor: ${comparisonForm.secondRound.roundName}|${comparisonForm.secondRound.subject}|
 								${comparisonForm.secondRound.year}|
 								${comparisonForm.secondRound.semester}</p>
 						</div>

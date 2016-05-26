@@ -13,7 +13,7 @@ public class Util {
 
 	public static void removeChildsTokens(Interval interval, TokenStreamRewriter rewriter) {
 		if (interval != null) {
-			for (int i = interval.a; i < interval.b + 1; i++) {
+			for (int i = interval.a; i < interval.b; i++) {
 				rewriter.delete(i);
 			}
 		}

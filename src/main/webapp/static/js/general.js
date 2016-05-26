@@ -7,7 +7,7 @@ $(document).ready(function() {
 		var deleteUrl = currentUrl.replace("editround", "deleteround");
 		window.location.href = deleteUrl;
 	});
-	
+
 	$("#deleteTaskButton").click(function(e) {
 		var currentUrl = window.location.href;
 		var deleteUrl = currentUrl.replace("edittask", "deletetask");
@@ -36,7 +36,6 @@ $(document).ready(function() {
 			error : function(data) {
 				console.log("Error");
 			}
-
 		});
 	});
 
@@ -45,11 +44,21 @@ $(document).ready(function() {
 		var currentUrl = window.location.href;
 		var changedUrl = currentUrl.replace("task", "analyzetask");
 
-		var noise=$("#noise").val();
-		var match=$("#match").val();
-		var analyzeUrl = changedUrl+"/"+noise+"/"+match;
-		$.post(analyzeUrl, function() {
-			window.location.href = currentUrl;
+		var noise = $("#noise").val();
+		var match = $("#match").val();
+		var analyzeUrl = changedUrl + "/" + noise + "/" + match;
+		$("#loader").show();
+		$.ajax({
+			url : analyzeUrl,
+			type : 'post',
+			success : function(e) {
+				$("#loader").hide();
+				window.location.href = currentUrl;
+			},
+			error : function(data) {
+				$("#loader").hide();
+				window.location.href = currentUrl;
+			}
 		});
 	});
 });

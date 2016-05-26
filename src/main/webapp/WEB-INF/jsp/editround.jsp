@@ -74,7 +74,7 @@
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="round">vooru nimi</label>
-								<form:input class="col-sm-9" id="roundNameBox" placeholder="Algoritmid ja andmestruktuurid IA17 IA18 (max 100 märki)"
+								<form:input class="col-sm-9" id="roundNameBox" placeholder="Puude ülesanne - Algoritmid ja andmestruktuurid IA17 IA18 (max 100 märki)"
 									path="round.roundName" />
 							</div>
 						</div>

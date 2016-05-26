@@ -23,5 +23,5 @@ Instructors who have access to Moodle's programming courses that are being evalu
 7. DONE - save data fetched with help of Selenium Webdriver into database
 8. DONE - include codesimplifier and codesimilarity into this project
 9. DONE - make analysis work
-10. TODO - make that in case of round or task deletion only relevant data is deleted (Cascade only when necessary)
+10. DONE - make that in case of round or task deletion only relevant data is deleted (Cascade only when necessary)
 11. DONE - CSS and HTML cleanup

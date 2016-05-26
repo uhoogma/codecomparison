@@ -34,11 +34,11 @@ public class RoundDao {
 	}
 
 	private Round getSingleRound(TypedQuery<Round> query) {
-		List<Round> persons = query.getResultList();
-		if (persons.size() < 1)
+		List<Round> roundList = query.getResultList();
+		if (roundList.size() < 1)
 			return null;
 		else
-			return persons.get(0);
+			return roundList.get(0);
 	}
 
 	@Transactional

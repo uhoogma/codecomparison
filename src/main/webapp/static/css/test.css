@@ -42,3 +42,13 @@ tr {
 input {
 	width: 40px;
 }
+
+.loader {
+	position: fixed;
+	left: 25%;
+	top: 25%;
+	width: 50%;
+	height: 50%;
+	z-index: 9999;
+	background: 100% 100% no-repeat rgba(249, 249, 249, 0);
+}

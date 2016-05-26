@@ -41,11 +41,11 @@ public class AttemptDao {
 	}
 	
 	private Attempt getSingleAttempt(TypedQuery<Attempt> query) {
-		List<Attempt> persons = query.getResultList();
-		if (persons.size() < 1)
+		List<Attempt> attemptList = query.getResultList();
+		if (attemptList.size() < 1)
 			return null;
 		else
-			return persons.get(0);
+			return attemptList.get(0);
 	}
 	
 	@SuppressWarnings("unchecked")
