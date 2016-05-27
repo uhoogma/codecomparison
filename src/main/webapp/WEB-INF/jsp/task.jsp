@@ -18,18 +18,8 @@
 <script type="text/javascript">
 	${taskForm.chartScript}
 </script>
-<script type="text/javascript">
-	(function ajaxLongPoll() {
-		$.ajax({
-			url : '/CodeComparison/messages',
-			success : function(data) {
-				$('#messages').html(data);
-			},
-			complete : ajaxLongPoll,
-			timeout : 30000
-		});
-	})();
-</script>
+<script type="text/javascript"
+	src="<c:url value="/static/js/poll.js"/>"></script>
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/static/css/test.css"/>">
 <script type="text/javascript"

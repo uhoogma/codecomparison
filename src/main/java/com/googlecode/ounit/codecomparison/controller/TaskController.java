@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -78,8 +77,6 @@ public class TaskController {
 	private AbstractedCodeDao abstractedCodeDao = new AbstractedCodeDao();
 	@Resource
 	private SavedComparisonDao savedComparisonDao = new SavedComparisonDao();
-
-	private int lastMessageIndex = 0;
 
 	private Message message = new Message();
 
@@ -245,7 +242,6 @@ public class TaskController {
 		if (!model.containsAttribute("messages")) {
 			model.addAttribute("messages", new CircularBuffer(20));
 		}
-		new Thread(() -> setInitialValue(model)).start();
 
 		Long taskIdLong = Long.parseLong(taskId);
 		Long currentVersionId = versionDao.getCurrentVersion();
@@ -264,29 +260,19 @@ public class TaskController {
 		return new ModelAndView("task", "message", getMessages(model));
 	}
 
-	public void setInitialValue(Model model) {
-		message.storeMessage(model, "Teated");
-	}
-
 	@RequestMapping(value = "/messages", method = RequestMethod.GET)
 	public @ResponseBody String getMessages(Model model) {
 		Map<String, Object> modelMap = model.asMap();
 		CircularBuffer buffer = (CircularBuffer) modelMap.get("messages");
-		synchronized (this) {
-			if (buffer != null) {
-				while (lastMessageIndex == buffer.getTail()) {
-					try {
-						// Thread.sleep(1000);
-						TimeUnit.SECONDS.sleep(1);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				lastMessageIndex = buffer.getTail();
-				return buffer.read();
-			} else {
+		if (buffer != null) {
+			String response = buffer.read();
+			if (response == null || response.isEmpty()) {
 				return "";
+			} else {
+				return response+" => ";
 			}
+		} else {
+			return "";
 		}
 	}
 
@@ -347,7 +333,9 @@ public class TaskController {
 		saveAttempts(rounds, taskId, ms);
 		renewConstants(model, taskIdLong);
 		logout(model, ms);
-
+		if (model.containsAttribute("messages")) {
+			model.asMap().remove("messages");
+		}
 		return "redirect:/redirectto/" + taskId;
 	}
 
@@ -385,7 +373,8 @@ public class TaskController {
 				newAttempts++;
 			}
 		}
-		message.storeMessage(ms.getModel(), "On registreeritud " + newAttempts + " uut esitust eelmisest korrast saati.");
+		message.storeMessage(ms.getModel(),
+				"On registreeritud " + newAttempts + " uut esitust eelmisest korrast saati.");
 	}
 
 	private void saveAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
@@ -403,8 +392,8 @@ public class TaskController {
 					attemptDao.store(attempt);
 					attempts++;
 					attemptsNotFetchedInThisRound--;
-					message.storeMessage(ms.getModel(), "On salvestatud tudengi id-ga: " + attempt.getStudentId() + 
-							" esitus id-ga: "+ attempt.getMoodleId());
+					message.storeMessage(ms.getModel(), "On salvestatud tudengi id-ga: " + attempt.getStudentId()
+							+ " esitus id-ga: " + attempt.getMoodleId());
 				}
 			}
 			attemptsNotFetchedCount += attemptsNotFetchedInThisRound;
