@@ -71,8 +71,11 @@ CREATE TABLE ABSTRACTEDCODE(
 -- codecomparison constraints
 
 ALTER TABLE STUDENT ADD INDEX (moodleId);
-ALTER TABLE SAVEDCOMPARISON ADD INDEX (firstAttemptId);
+ALTER TABLE ATTEMPT ADD INDEX (moodleId);
+-- ALTER TABLE SAVEDCOMPARISON ADD INDEX (firstAttemptId);
 ALTER TABLE SAVEDCOMPARISON ADD INDEX (secondAttemptId);
+-- ALTER TABLE SAVEDCOMPARISON ADD INDEX (firstStudentId);
+-- ALTER TABLE SAVEDCOMPARISON ADD INDEX (secondStudentId);
 
 ALTER TABLE ROUND 
     ADD CONSTRAINT FK_round_task FOREIGN KEY(task_id)
@@ -147,4 +150,4 @@ ALTER TABLE ABSTRACTEDCODE
     ON UPDATE CASCADE;
     
 -- data
-insert into VERSION (abstractionVersionId,SimilarityVersionId,defaultK,defaultT) values(1,1,13,39);
+insert into Version (abstractionVersionId,SimilarityVersionId,defaultK,defaultT) values(1,1,13,39);

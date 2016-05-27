@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -271,18 +272,21 @@ public class TaskController {
 	public @ResponseBody String getMessages(Model model) {
 		Map<String, Object> modelMap = model.asMap();
 		CircularBuffer buffer = (CircularBuffer) modelMap.get("messages");
-		if (buffer != null) {
-			while (lastMessageIndex == buffer.getTail()) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+		synchronized (this) {
+			if (buffer != null) {
+				while (lastMessageIndex == buffer.getTail()) {
+					try {
+						// Thread.sleep(1000);
+						TimeUnit.SECONDS.sleep(1);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
+				lastMessageIndex = buffer.getTail();
+				return buffer.read();
+			} else {
+				return "";
 			}
-			lastMessageIndex = buffer.getTail();
-			return buffer.read();
-		} else {
-			return "";
 		}
 	}
 
@@ -351,7 +355,7 @@ public class TaskController {
 	public String redirectTask(@PathVariable("taskId") String taskId) {
 		return "redirect:/task/" + taskId + "/0";
 	}
-	
+
 	private MoodleScraper login(Login login, Model model, MoodleScraperRunner msr, List<Round> rounds) {
 		message.storeMessage(model, "Alustame logimist");
 		MoodleScraper ms = msr.login(rounds.get(0), login, model, message);
@@ -381,7 +385,7 @@ public class TaskController {
 				newAttempts++;
 			}
 		}
-		message.storeMessage(ms.getModel(), "On salvestatud " + newAttempts + " uut esitust eelmisest korrast saati.");
+		message.storeMessage(ms.getModel(), "On registreeritud " + newAttempts + " uut esitust eelmisest korrast saati.");
 	}
 
 	private void saveAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
@@ -399,6 +403,8 @@ public class TaskController {
 					attemptDao.store(attempt);
 					attempts++;
 					attemptsNotFetchedInThisRound--;
+					message.storeMessage(ms.getModel(), "On salvestatud tudengi id-ga: " + attempt.getStudentId() + 
+							" esitus id-ga: "+ attempt.getMoodleId());
 				}
 			}
 			attemptsNotFetchedCount += attemptsNotFetchedInThisRound;
@@ -441,7 +447,7 @@ public class TaskController {
 			saveNewComparisons(taskIdLong, currentVersionId, csvResult);
 			updateConstants(noiseInt, matchInt, taskIdLong);
 		}
-		return "redirect:/task/" + taskId + "/0";
+		return "redirect:/redirectto/" + taskId;
 	}
 
 	private void abstractBoilerPlateCode(Java2SimpleJava j2sj, String taskId, Long versionId) {
