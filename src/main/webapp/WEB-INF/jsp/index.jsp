@@ -28,7 +28,7 @@
 	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
-	<div class="page-container">
+	<div class="container">
 		<div class="container-fluid">
 			<div class="page-bg">
 				<div class="top row">
@@ -62,7 +62,7 @@
 														<p>${round.roundName}|${round.subject}|${round.year}|
 															${round.semester}</p>
 													</c:forEach></td>
-												<td class="button-td"><a href="<c:url value="task/${task.id}/0"/>"><button
+												<td class="button-td"><a target="_blank" href="<c:url value="task/${task.id}/0"/>"><button
 															type="button" class="btn btn-info">Info</button></a></td>
 											</tr>
 										</c:forEach>
@@ -82,7 +82,7 @@
 														<p>${round.roundName}|${round.subject}|${round.year}|
 															${round.semester}</p>
 													</c:forEach></td>
-												<td class="button-td"><a
+												<td class="button-td"><a target="_blank"
 													href="<c:url value="task/${task.id}/0"/>">
 														<button type="button" class="btn btn-info">Info</button>
 												</a></td>

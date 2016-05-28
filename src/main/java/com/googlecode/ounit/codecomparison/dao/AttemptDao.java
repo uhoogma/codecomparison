@@ -1,9 +1,11 @@
 package com.googlecode.ounit.codecomparison.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -63,5 +65,32 @@ public class AttemptDao {
 		TypedQuery<Attempt> query = em.createQuery("select a from Attempt a where a.task_id= :taskId and a.codeAcquired= 1 and a.isBoilerplate= 0", Attempt.class);
 		query.setParameter("taskId", taskId);
 		return query.getResultList();
+	}
+
+	public Integer getTasksStudentCount(Long taskId) {
+		Query query = em.createNativeQuery(
+				"select count(distinct(a.student_id)) from Attempt a where a.task_id= :taskId");
+		query.setParameter("taskId", taskId);
+		@SuppressWarnings("unchecked")
+		List<BigInteger> result = query.getResultList();
+		return result.isEmpty() ? 0 : result.get(0).intValue();
+	}
+
+	public Integer getTasksAttemptCount(Long taskId) {
+		Query query = em.createNativeQuery(
+				"select count(a.id) from Attempt a where a.task_id= :taskId and a.codeAcquired= 1 and a.isBoilerplate= 0");
+		query.setParameter("taskId", taskId);
+		@SuppressWarnings("unchecked")
+		List<BigInteger> result = query.getResultList();
+		return result.isEmpty() ? 0 : result.get(0).intValue();
+	}
+	
+	public Integer getUnfetchedTasksAttemptCount(Long taskId) {
+		Query query = em.createNativeQuery(
+				"select count(a.id) from Attempt a where a.task_id= :taskId and a.codeAcquired= 0");
+		query.setParameter("taskId", taskId);
+		@SuppressWarnings("unchecked")
+		List<BigInteger> result = query.getResultList();
+		return result.isEmpty() ? 0 : result.get(0).intValue();
 	}
 }

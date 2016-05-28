@@ -60,41 +60,50 @@
 		<div class="row">
 			<div class="padding">
 				<div class="col-sm-4">
-					<p>VIIMANE SÜNKRONISEERIMINE ${taskForm.lastSyncDifference}</p>
+					<table>
+						<tr><td>Seda ülesannet on esitanud </td><td class="datacell">${taskForm.studentCount}</td><td> erinevat tudengit</td></tr>
+						<tr><td>kes on teinud kokku </td><td class="datacell">${taskForm.attemptCount}</td><td> erinevat katset</td></tr>
+						<tr><td>Katsetest </td><td class="datacell">${taskForm.unfetchedAttemptCount}</td><td> on hankimata</td></tr>
+					</table>
 				</div>
 				<div class="col-sm-3">
-					<button type="button" class="btn btn-primary" data-toggle="modal"
-						data-target="#credentials">SÜNKRONISEERI NÜÜD</button>
-					<div class="modal fade" id="credentials" role="dialog">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">Sisesta Moodle logimisandmed</h4>
-								</div>
-								<div class="modal-body">
-									<div class="form-group">
-										<label class="col-sm-5" for="year">Kasutajanimi</label> <input
-											class="col-sm-7 form-control" id="user" type="text">
+					<div>
+						<p>VIIMANE SÜNKRONISEERIMINE ${taskForm.lastSyncDifference}</p>
+					</div>				
+					<div>
+						<button type="button" class="btn btn-primary" data-toggle="modal"
+							data-target="#credentials">SÜNKRONISEERI NÜÜD</button>
+						<div class="modal fade" id="credentials" role="dialog">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">Sisesta Moodle logimisandmed</h4>
 									</div>
-									<div class="form-group">
-										<label class="col-sm-5" for="year">Salasõna</label> <input
-											class="col-sm-7 form-control" id="password" type="password">
+									<div class="modal-body">
+										<div class="form-group">
+											<label class="col-sm-5" for="year">Kasutajanimi</label> <input
+												class="col-sm-7 form-control" id="user" type="text">
+										</div>
+										<div class="form-group">
+											<label class="col-sm-5" for="year">Salasõna</label> <input
+												class="col-sm-7 form-control" id="password" type="password">
+										</div>
 									</div>
-								</div>
-								<div class="modal-footer">
-									<div class="form-group">
-										<button type="button" id="synchronize"
-											class="btn btn-primary col-sm-2 pull-right top"
-											data-dismiss="modal">Logi</button>
+									<div class="modal-footer">
+										<div class="form-group">
+											<button type="button" id="synchronize"
+												class="btn btn-primary col-sm-2 pull-right top"
+												data-dismiss="modal">Logi</button>
+										</div>
 									</div>
+	
 								</div>
-
 							</div>
 						</div>
-					</div>
 				</div>
-				<div class="col-sm-3">
+				</div>				
+				<div class="col-sm-2">
 					<table>
 						<tr>
 							<td>Eira</td>

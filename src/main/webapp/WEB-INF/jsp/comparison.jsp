@@ -38,9 +38,9 @@
 				</div>
 				<div class="row">
 					<h3 class="col-sm-12 centered-text">Jaccardi koefitsent ->
-						${comparisonForm.savedComparison.firstToSecondResultAsString} |
+						${comparisonForm.savedComparison.largestSimilarityResultAsString} |
 						Jaccardi koefitsent
-						<-${comparisonForm.savedComparison.secondToFirstResultAsString}</h3>
+						<-${comparisonForm.savedComparison.smallestSimilarityResultAsString}</h3>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">

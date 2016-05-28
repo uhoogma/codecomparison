@@ -21,7 +21,34 @@ public class TaskForm {
 	private Map<Integer, Integer> pages = new LinkedHashMap<>();
 	private String chartScript;
 	private int resultCount;
-	
+	private int studentCount;
+	private int attemptCount;
+	private int unfetchedAttemptCount;
+
+	public int getStudentCount() {
+		return studentCount;
+	}
+
+	public void setStudentCount(int studentCount) {
+		this.studentCount = studentCount;
+	}
+
+	public int getAttemptCount() {
+		return attemptCount;
+	}
+
+	public void setAttemptCount(int attemptCount) {
+		this.attemptCount = attemptCount;
+	}
+
+	public int getUnfetchedAttemptCount() {
+		return unfetchedAttemptCount;
+	}
+
+	public void setUnfetchedAttemptCount(int unfetchedAttemptCount) {
+		this.unfetchedAttemptCount = unfetchedAttemptCount;
+	}
+
 	public String getAddTaskButton() {
 		return addTaskButton;
 	}
@@ -43,7 +70,6 @@ public class TaskForm {
 					(System.currentTimeMillis() - task.getLastSyncTime().getTime()) / 3600000.0);
 		}
 	}
-
 
 	public Map<Integer, Integer> getPages() {
 		return pages;
@@ -108,7 +134,7 @@ public class TaskForm {
 	public void setTask(Task task) {
 		this.task = task;
 	}
-	
+
 	public List<String> validate(Task task) {
 		List<String> errors = new ArrayList<>();
 		if (task.getTaskName().length() > 50) {

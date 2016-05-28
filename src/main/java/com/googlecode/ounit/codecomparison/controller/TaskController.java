@@ -256,6 +256,9 @@ public class TaskController {
 
 		form.setResultCount(RESULT_COUNT);
 		form.setSequentialNumber(startFromId);
+		form.setStudentCount(attemptDao.getTasksStudentCount(taskIdLong));
+		form.setAttemptCount(attemptDao.getTasksAttemptCount(taskIdLong));
+		form.setUnfetchedAttemptCount(attemptDao.getUnfetchedTasksAttemptCount(taskIdLong));
 		model.addAttribute("taskForm", form);
 		return new ModelAndView("task", "message", getMessages(model));
 	}

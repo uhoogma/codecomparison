@@ -52,3 +52,9 @@ input {
 	z-index: 9999;
 	background: 100% 100% no-repeat rgba(249, 249, 249, 0);
 }
+
+.datacell {
+	padding-right: 0.5em;
+	padding-left: 0.5em;
+	text-align: right;
+}
