@@ -51,8 +51,7 @@ public class CharsetUtil {
 
 	public Charset getCharSetInUse(MultipartFile file) {
 		Charset charset = null;
-		// TODO remove all but "UTF-8"
-		String[] charsetsToBeTested = { "UTF-8", "windows-1253", "ISO-8859-7", "UCS-2 LE BOM" };
+		String[] charsetsToBeTested = { "UTF-8" };
 
 		for (String charsetName : charsetsToBeTested) {
 			charset = detectCharset(file, Charset.forName(charsetName));

@@ -60,12 +60,12 @@ public class TaskDao {
 	}
 
 	public List<Task> findActiveTasks() {
-		TypedQuery<Task> query = em.createQuery("select t from Task t where t.active = 1", Task.class);
+		TypedQuery<Task> query = em.createQuery("select t from Task t where t.active = 1 order by t.creationTime desc", Task.class);
 		return query.getResultList();
 	}
 
 	public List<Task> findHiddenTasks() {
-		TypedQuery<Task> query = em.createQuery("select t from Task t where t.active = 0", Task.class);
+		TypedQuery<Task> query = em.createQuery("select t from Task t where t.active = 0 order by t.creationTime desc", Task.class);
 		return query.getResultList();
 	}
 	

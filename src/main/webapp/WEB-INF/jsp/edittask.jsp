@@ -22,7 +22,7 @@
 	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
-	<div class="page-container">
+	<div class="container">
 		<div class="container-fluid">
 			<div class="page-bg">
 				<div class="top row">
