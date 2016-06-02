@@ -51,8 +51,10 @@ public class AttemptDao {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Long> getAttemptMoodleIds() {
-		return em.createNativeQuery("select distinct a.moodleId from Attempt a").getResultList();
+	public List<Long> getAttemptMoodleIds(Long taskId) {
+		Query query = em.createNativeQuery("select distinct a.moodleId from Attempt a where a.task_id= :taskId"); // .getResultList();
+		query.setParameter("taskId", taskId);
+		return query.getResultList();
 	}
 
 	public List<Attempt> findAttemptsNotFetched(Long roundId) {

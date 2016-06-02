@@ -163,18 +163,21 @@ public class MoodleScraper {
 			message.storeMessage(model, "Ei leia \"Esita\" nuppu või ei saa raporti suurust määrata");
 		}
 	}
-
+	
 	private void login() {
 		driver.get("https://moodle.hitsa.ee/");
 		elementById("login_username").sendKeys(user);
 		elementById("login_password").sendKeys(pass);
 		elementByXPath("submit").click();
-		message.storeMessage(model, "Kasutaja \"" + user + "\" on õnnelikult sisse loginud.");
+		if (elementById("loginerrormessage") != null) {
+			message.storeMessage(model, "Vigane sisenemine, palun proovi uuesti.");
+		} else {
+			message.storeMessage(model, "Kasutaja \"" + user + "\" on sisse loginud.");
+		}
 	}
 
 	public void logout() {
 		elementByCSS("https://moodle.hitsa.ee/login/logout.php?").click();
-		System.out.println("Done");
 	}
 
 	public void prepare(Integer roundId) {

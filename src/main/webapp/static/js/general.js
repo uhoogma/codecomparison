@@ -14,6 +14,18 @@ $(document).ready(function() {
 		window.location.href = deleteUrl;
 	});
 
+	$("#user").keyup(function(event) {
+        if (event.keyCode == 13) {
+        	$("#synchronize").click();
+        }
+    });
+	
+	$("#password").keyup(function(event) {
+        if (event.keyCode == 13) {
+        	$("#synchronize").click();
+        }
+    });
+	
 	$("#synchronize").click(function(e) {
 		e.preventDefault();
 		var currentUrl = window.location.href;

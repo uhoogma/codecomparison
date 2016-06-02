@@ -73,8 +73,8 @@ public class ComparisonController {
 	}
 
 	private void setRounds(ComparisonForm comparisonForm, SavedComparison comparison) {
-		Round firstRound = roundDao.findRoundForAttemptId(comparison.getFirstAttemptId());
-		Round secondRound = roundDao.findRoundForAttemptId(comparison.getSecondAttemptId());
+		Round firstRound = roundDao.findRoundForAttemptId(comparison.getFirstAttemptId(), comparison.getTask_id());
+		Round secondRound = roundDao.findRoundForAttemptId(comparison.getSecondAttemptId(), comparison.getTask_id());
 
 		comparisonForm.setFirstRound(firstRound);
 		comparisonForm.setSecondRound(secondRound);

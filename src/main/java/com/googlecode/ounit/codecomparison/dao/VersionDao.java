@@ -24,6 +24,6 @@ public class VersionDao {
 
 	public Long getCurrentVersion() {
 		// Query query = em.createQuery("SELECT max(v.id) FROM Version v");
-		return 1L; //(Long) query.getSingleResult();
+		return 2L; //(Long) query.getSingleResult();
 	}
 }

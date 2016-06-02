@@ -315,8 +315,11 @@ public class TaskController {
 	@RequestMapping(value = "/deletetask/{taskId}")
 	public String deleteTask(@PathVariable("taskId") String taskId) {
 		Long taskIdLong = Long.parseLong(taskId);
-		Task round = taskDao.findTaskForId(taskIdLong);
-		if (round != null) {
+		Task task = taskDao.findTaskForId(taskIdLong);
+		if (task != null) {
+			for(Round round : task.getRounds()){
+				roundDao.delete(round.getId());
+			}
 			taskDao.delete(taskIdLong);
 			return "redirect:/index";
 		} else {
@@ -367,7 +370,8 @@ public class TaskController {
 	}
 
 	private void saveNewAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
-		List<Long> attemptIds = attemptDao.getAttemptMoodleIds();
+		Long taskIdLong = Long.parseLong(taskId);
+		List<Long> attemptIds = attemptDao.getAttemptMoodleIds(taskIdLong);
 		int newAttempts = 0;
 		for (Round round : rounds) {
 			List<Attempt> attempts = ms.downloadAttempts(round, "TreeNode.java", attemptIds);

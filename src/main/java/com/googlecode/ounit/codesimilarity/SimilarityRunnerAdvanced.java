@@ -1,6 +1,7 @@
 package com.googlecode.ounit.codesimilarity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,12 +144,14 @@ public class SimilarityRunnerAdvanced {
 
 		List<Integer> hashesBoilerPlate = generateBoilerPlateHashes(boilerplate);
 
+		Collection<Integer> newestAttempts = selectNewestAttempts(studentSubmissions);
+
 		convertHashes(hashesBoilerPlate);
 		for (int i = 0; i < attemptsArray.length; i++) {
 			int firstAttempt = attemptsArray[i];
 			for (int j = 0; j < attemptsArray.length; j++) {
 				int secondAttempt = attemptsArray[j];
-				if (i < j) {
+				if (i < j && newestAttempts.contains(firstAttempt) && newestAttempts.contains(secondAttempt)) {
 					double firstToSecondComparison = Similarity.JaccardCoefficientFromHashes(
 							convertedHashes.get(firstAttempt), convertedHashes.get(secondAttempt), windowSize);
 					double secondToFirstComparison = Similarity.JaccardCoefficientFromHashes(
@@ -167,5 +170,20 @@ public class SimilarityRunnerAdvanced {
 		}
 
 		return makeComparisons(attemptToStudent);
+	}
+
+	private Collection<Integer> selectNewestAttempts(Map<Pair, String> studentSubmissions) {
+		Map<Integer, Integer> newestAttempts = new HashMap<>();
+		for (Pair entry : studentSubmissions.keySet()) {
+			if (newestAttempts.containsKey(entry.getFirst())) {// student already exists
+				Integer value = newestAttempts.get(entry.getFirst()); // student's current maximal attempt value
+				if (value < entry.getSecond()) { // current entry has bigger value
+					newestAttempts.put(entry.getFirst(), entry.getSecond()); // replace
+				}
+			} else {
+				newestAttempts.put(entry.getFirst(), entry.getSecond()); // create student entry
+			}
+		}
+		return newestAttempts.values();
 	}
 }
