@@ -60,7 +60,7 @@ import com.googlecode.ounit.moodlescraper.MoodleScraperRunner;
 public class TaskController {
 
 	private static final int UTF8_TEXT_MAX_LENGTH = 32766;
-	private static final int MAX_COMPARISONS_PER_TASK = 500;
+	private static final int MAX_COMPARISONS_PER_TASK = 100;
 	private static final Integer RESULT_COUNT = 8;
 
 	@Resource

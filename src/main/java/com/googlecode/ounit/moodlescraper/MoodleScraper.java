@@ -187,4 +187,10 @@ public class MoodleScraper {
 	public void setPairs(Map<Integer, Student> pairs) {
 		this.pairs = pairs;
 	}
+
+	public String getRoundName(Integer url) {
+		login();
+		getRound(url);
+		return elementById("region-main").findElements(By.tagName("h2")).get(0).getText();
+	}
 }

@@ -1,10 +1,12 @@
 package com.googlecode.ounit.codecomparison.dao;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -19,12 +21,21 @@ public class RoundDao {
 	private EntityManager em;
 
 	@Transactional
-	public void store(Round round) {
+	public Long store(Round round) {
 		if (round != null) {
 			em.merge(round);
+			return getId();
 		} else {
 			em.persist(round);
+			return getId();
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Long getId() {
+		Query query = em.createNativeQuery( "select last_insert_id()" );
+		List<BigInteger> result = query.getResultList();
+		return result.isEmpty() ? -1L : result.get(0).longValue();
 	}
 
 	public Round findRoundForId(Long id) {

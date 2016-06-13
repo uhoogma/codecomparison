@@ -11,6 +11,10 @@ public class Message {
 	public void storeMessage(Model model, String message) {
 		Map<String, Object> modelMap = model.asMap();
 		CircularBuffer modelValue = (CircularBuffer) modelMap.get("messages");
+		if (modelValue != null) {
+			
+		
 		modelValue.store(message);
+		}
 	}
 }

@@ -18,7 +18,9 @@
 	src="<c:url value="/static/js/general.js"/>"></script>
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/static/css/edittest.css"/>">
-	<link rel="icon" type="image/png"
+<script type="text/javascript"
+	src="<c:url value="/static/js/general.js"/>"></script>
+<link rel="icon" type="image/png"
 	href="<c:url value="/static/css/images/Penguin_3.png"/>" />
 </head>
 <body>
@@ -54,34 +56,39 @@
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="year">aasta</label>
-								<form:input class="col-sm-9" id="yearBox" placeholder="2015/2016 (max 9 märki)" path="round.year" />
+								<form:input class="col-sm-9" id="yearBox"
+									placeholder="2015/2016 (max 9 märki)" path="round.year" />
 							</div>
 						</div>
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="semester">semester</label>
-								<form:input class="col-sm-9" id="semesterBox" placeholder="Kevadsemester (max 20 märki)"
+								<form:input class="col-sm-9" id="semesterBox"
+									placeholder="Kevadsemester (max 20 märki)"
 									path="round.semester" />
 							</div>
 						</div>
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="subject">aine nimi</label>
-								<form:input class="col-sm-9" id="subjectBox" placeholder="I231 (max 6 märki)"
-									path="round.subject" />
+								<form:input class="col-sm-9" id="subjectBox"
+									placeholder="I231 (max 6 märki)" path="round.subject" />
 							</div>
 						</div>
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="round">vooru nimi</label>
-								<form:input class="col-sm-9" id="roundNameBox" placeholder="Puude ülesanne - Algoritmid ja andmestruktuurid IA17 IA18 (max 100 märki)"
+								<form:input class="col-sm-9" id="roundNameBox"
+									placeholder="Puude ülesanne - Algoritmid ja andmestruktuurid IA17 IA18 (max 100 märki)"
 									path="round.roundName" />
 							</div>
 						</div>
 						<div class="row bottom">
 							<div class="form-group">
 								<label class="col-sm-3" for="moodle_id">Moodle id</label>
-								<form:input class="col-sm-9" id="urlBox" placeholder="123456 (vaid URL-i numbriline osa)" path="round.url" />
+								<form:input class="col-sm-9" id="urlBox"
+									placeholder="123456 (vaid URL-i numbriline osa)"
+									path="round.url" />
 							</div>
 						</div>
 						<div class="row">
@@ -109,8 +116,36 @@
 											</div>
 										</div>
 									</div>
-									<form:input path="round.saveRoundButton" class="btn btn-info"
-										type="submit" value="Salvesta" />
+									<form:input path="round.saveRoundButton" id="saveRoundButton"
+										class="btn btn-info" type="submit" value="Salvesta" />
+								</div>
+								<div class="modal fade" id="credentials" role="dialog">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<h4 class="modal-title">Sisesta Moodle logimisandmed vooru nime hankimiseks</h4>
+											</div>
+											<div class="modal-body">
+												<div class="form-group">
+													<label class="col-sm-5" for="year">Kasutajanimi</label> <input
+														class="col-sm-7 form-control" id="user" type="text">
+												</div>
+												<div class="form-group">
+													<label class="col-sm-5" for="year">Salasõna</label> <input
+														class="col-sm-7 form-control" id="password"
+														type="password">
+												</div>
+											</div>
+											<div class="modal-footer">
+												<div class="form-group">
+													<button type="button" id="getRoundName"
+														class="btn btn-primary col-sm-2 pull-right top"
+														data-dismiss="modal">Logi</button>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

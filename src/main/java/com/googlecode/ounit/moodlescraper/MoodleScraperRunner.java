@@ -13,4 +13,9 @@ public class MoodleScraperRunner {
 		ms.prepare(round.getUrl());
 		return ms;
 	}
+	
+	public String getRoundName(Login login, Model model, Round round, Message message) {
+		MoodleScraper ms = new MoodleScraper("uhoogma","74656Borg", model, message);
+		return ms.getRoundName(round.getUrl());
+	}
 }

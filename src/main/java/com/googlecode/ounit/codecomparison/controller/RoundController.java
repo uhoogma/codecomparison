@@ -12,14 +12,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.googlecode.ounit.codecomparison.dao.RoundDao;
+import com.googlecode.ounit.codecomparison.model.Login;
 import com.googlecode.ounit.codecomparison.model.Round;
+import com.googlecode.ounit.codecomparison.util.Message;
 import com.googlecode.ounit.codecomparison.view.RoundForm;
+import com.googlecode.ounit.moodlescraper.MoodleScraperRunner;
 
 @Controller
+@SessionAttributes("messages")
 public class RoundController {
 
 	@Resource
@@ -36,12 +42,33 @@ public class RoundController {
 		return "editround";
 	}
 
+	private Message message = new Message();
+
 	@RequestMapping(value = "/editround/{id}", method = RequestMethod.GET, produces = "text/html; charset=utf-8")
-	public String viewRoundForId(@ModelAttribute("roundForm") RoundForm form, @PathVariable("id") String id) {
+	public String viewRoundForId(@ModelAttribute("roundForm") RoundForm form, @PathVariable("id") String id,
+			Model model) {
 		Round round = roundDao.findRoundForId(Long.parseLong(id));
 		if (round != null) {
 			form.setRound(round);
 			return "editround";
+		} else {
+			return "404";
+		}
+	}
+
+	@RequestMapping(value = "/getroundname/{id}", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
+	public String getRoundName(@RequestBody Login login, @PathVariable("id") String id, Model model) {
+		Long roundId = Long.parseLong(id);
+		Round round = roundDao.findRoundForId(roundId);
+		if (round != null) {
+			if (round.getRoundName().isEmpty()) {
+				MoodleScraperRunner msr = new MoodleScraperRunner();
+				message.storeMessage(model, "Alustame logimist");
+				String name = msr.getRoundName(login, model, round, message);
+				round.setRoundName(name);
+				roundDao.store(round);
+			}
+			return "redirect:/editround/" + roundId;
 		} else {
 			return "404";
 		}
@@ -92,8 +119,8 @@ public class RoundController {
 	private String storeNewRound(RoundForm form) {
 		Round newRound = new Round();
 		setRoundData(form, newRound);
-		roundDao.store(newRound);
-		return "redirect://index";
+		Long id = roundDao.store(newRound);
+		return "redirect://editround/" + id;
 	}
 
 	private String errorsOnNewRound(RoundForm form, BindingResult result, Model model, List<String> customErrors) {
