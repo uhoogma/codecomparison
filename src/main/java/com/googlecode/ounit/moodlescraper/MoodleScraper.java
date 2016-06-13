@@ -32,12 +32,14 @@ public class MoodleScraper {
 	private Map<Integer, Student> pairs = new HashMap<Integer, Student>();
 	private Model model;
 	private Message message;
+	private Long taskId;
 
-	public MoodleScraper(String userName, String password, Model model, Message message) {
+	public MoodleScraper(Long taskId, String userName, String password, Model model, Message message) {
 		user = userName;
 		pass = password;
 		this.model = model;
 		this.message = message;
+		this.taskId = taskId;
 	}
 
 	@After
@@ -160,7 +162,7 @@ public class MoodleScraper {
 			pageSize.sendKeys("1000");
 			submitButton.click();
 		} else {
-			message.storeMessage(model, "Ei leia \"Esita\" nuppu või ei saa raporti suurust määrata");
+			message.storeMessage(taskId, model, "Ei leia \"Esita\" nuppu või ei saa raporti suurust määrata");
 		}
 	}
 	
@@ -170,9 +172,9 @@ public class MoodleScraper {
 		elementById("login_password").sendKeys(pass);
 		elementByXPath("submit").click();
 		if (elementById("loginerrormessage") != null) {
-			message.storeMessage(model, "Vigane sisenemine, palun proovi uuesti.");
+			message.storeMessage(taskId, model, "Vigane sisenemine, palun proovi uuesti.");
 		} else {
-			message.storeMessage(model, "Kasutaja \"" + user + "\" on sisse loginud.");
+			message.storeMessage(taskId, model, "Kasutaja \"" + user + "\" on sisse loginud.");
 		}
 	}
 

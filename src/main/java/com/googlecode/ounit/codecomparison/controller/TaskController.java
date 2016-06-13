@@ -61,6 +61,7 @@ public class TaskController {
 
 	private static final int UTF8_TEXT_MAX_LENGTH = 32766;
 	private static final int MAX_COMPARISONS_PER_TASK = 100;
+	private static final int MESSAGE_BUFFER_SIZE = 100;
 	private static final Integer RESULT_COUNT = 8;
 
 	@Resource
@@ -239,16 +240,12 @@ public class TaskController {
 	@RequestMapping(value = "/task/{taskId}/{startId}", method = RequestMethod.GET)
 	public ModelAndView showTask(@PathVariable("taskId") String taskId, @PathVariable("startId") String startId,
 			Model model) {
-		if (!model.containsAttribute("messages")) {
-			model.addAttribute("messages", new CircularBuffer(20));
-		}
-
 		Long taskIdLong = Long.parseLong(taskId);
 		Long currentVersionId = versionDao.getCurrentVersion();
 		Integer startFromId = new Integer(startId);
-
 		TaskForm form = new TaskForm();
 
+		createMessageBuffer(model, taskIdLong);
 		setTask(taskIdLong, form);
 		setComparisonsTable(taskIdLong, startFromId, RESULT_COUNT, form);
 		setPagination(taskIdLong, currentVersionId, form, startFromId);
@@ -260,23 +257,46 @@ public class TaskController {
 		form.setAttemptCount(attemptDao.getTasksAttemptCount(taskIdLong));
 		form.setUnfetchedAttemptCount(attemptDao.getUnfetchedTasksAttemptCount(taskIdLong));
 		model.addAttribute("taskForm", form);
-		return new ModelAndView("task", "message", getMessages(model));
+		return new ModelAndView("task", "message", getMessages(model, taskId));
 	}
 
-	@RequestMapping(value = "/messages", method = RequestMethod.GET)
-	public @ResponseBody String getMessages(Model model) {
+	@SuppressWarnings("unchecked")
+	private void createMessageBuffer(Model model, Long taskIdLong) {
 		Map<String, Object> modelMap = model.asMap();
-		CircularBuffer buffer = (CircularBuffer) modelMap.get("messages");
-		if (buffer != null) {
-			String response = buffer.read();
-			if (response == null || response.isEmpty()) {
-				return "";
-			} else {
-				return response+" => ";
+		Map<Long, CircularBuffer> modelMapInner = (HashMap<Long, CircularBuffer>) modelMap.get("messages");
+		if (modelMapInner != null) {
+			CircularBuffer buffer = (CircularBuffer) modelMapInner.get(taskIdLong);
+			if (buffer == null) {
+				modelMapInner.put(taskIdLong, new CircularBuffer(MESSAGE_BUFFER_SIZE));
 			}
 		} else {
-			return "";
+			model.addAttribute("messages", new HashMap<Long, CircularBuffer>());
+			modelMap = model.asMap();
+			HashMap<Long, CircularBuffer> modelMapInner2 = (HashMap<Long, CircularBuffer>) modelMap.get("messages");
+			CircularBuffer buffer = (CircularBuffer) modelMapInner2.get(taskIdLong);
+			if (buffer == null) {
+				modelMapInner2.put(taskIdLong, new CircularBuffer(MESSAGE_BUFFER_SIZE));
+			}
 		}
+	}
+
+	@RequestMapping(value = "/messages/{taskId}", method = RequestMethod.GET)
+	public @ResponseBody String getMessages(Model model, @PathVariable("taskId") String taskId) {
+		Map<String, Object> modelMap = model.asMap();
+		@SuppressWarnings("unchecked")
+		Map<Long, CircularBuffer> modelMapInner = (Map<Long, CircularBuffer>) modelMap.get("messages");
+		if (modelMapInner != null) {
+			CircularBuffer buffer = (CircularBuffer) modelMapInner.get(new Long(taskId));
+			if (buffer != null) {
+				String response = buffer.read();
+				if (response == null || response.isEmpty()) {
+					return "";
+				} else {
+					return response + " => ";
+				}
+			}
+		}
+		return "";
 	}
 
 	private void setTask(Long taskIdLong, TaskForm form) {
@@ -317,7 +337,7 @@ public class TaskController {
 		Long taskIdLong = Long.parseLong(taskId);
 		Task task = taskDao.findTaskForId(taskIdLong);
 		if (task != null) {
-			for(Round round : task.getRounds()){
+			for (Round round : task.getRounds()) {
 				roundDao.delete(round.getId());
 			}
 			taskDao.delete(taskIdLong);
@@ -333,12 +353,12 @@ public class TaskController {
 		Long taskIdLong = Long.parseLong(taskId);
 		List<Round> rounds = roundDao.findAllRoundsInTask(taskIdLong);
 
-		MoodleScraper ms = login(login, model, msr, rounds);
+		MoodleScraper ms = login(taskIdLong, login, model, msr, rounds);
 		saveNewStudents(rounds, taskId, ms);
 		saveNewAttempts(rounds, taskId, ms);
 		saveAttempts(rounds, taskId, ms);
-		renewConstants(model, taskIdLong);
-		logout(model, ms);
+		renewConstants(taskIdLong, model, taskIdLong);
+		logout(taskIdLong, model, ms);
 		if (model.containsAttribute("messages")) {
 			model.asMap().remove("messages");
 		}
@@ -350,9 +370,9 @@ public class TaskController {
 		return "redirect:/task/" + taskId + "/0";
 	}
 
-	private MoodleScraper login(Login login, Model model, MoodleScraperRunner msr, List<Round> rounds) {
-		message.storeMessage(model, "Alustame logimist");
-		MoodleScraper ms = msr.login(rounds.get(0), login, model, message);
+	private MoodleScraper login(Long taskId, Login login, Model model, MoodleScraperRunner msr, List<Round> rounds) {
+		message.storeMessage(taskId, model, "Alustame logimist");
+		MoodleScraper ms = msr.login(taskId, rounds.get(0), login, model, message);
 		return ms;
 	}
 
@@ -366,7 +386,7 @@ public class TaskController {
 				newStudents++;
 			}
 		}
-		message.storeMessage(ms.getModel(), "On salvestatud " + newStudents + " uut tudengit");
+		message.storeMessage(Long.parseLong(taskId), ms.getModel(), "On salvestatud " + newStudents + " uut tudengit");
 	}
 
 	private void saveNewAttempts(List<Round> rounds, String taskId, MoodleScraper ms) {
@@ -380,7 +400,7 @@ public class TaskController {
 				newAttempts++;
 			}
 		}
-		message.storeMessage(ms.getModel(),
+		message.storeMessage(Long.parseLong(taskId), ms.getModel(),
 				"On registreeritud " + newAttempts + " uut esitust eelmisest korrast saati.");
 	}
 
@@ -399,29 +419,31 @@ public class TaskController {
 					attemptDao.store(attempt);
 					attempts++;
 					attemptsNotFetchedInThisRound--;
-					message.storeMessage(ms.getModel(), "On salvestatud tudengi id-ga: " + attempt.getStudentId()
-							+ " esitus id-ga: " + attempt.getMoodleId());
+					message.storeMessage(Long.parseLong(taskId), ms.getModel(), "On salvestatud tudengi id-ga: "
+							+ attempt.getStudentId() + " esitus id-ga: " + attempt.getMoodleId());
 				}
 			}
 			attemptsNotFetchedCount += attemptsNotFetchedInThisRound;
 		}
-		message.storeMessage(ms.getModel(), "On salvestatud " + attempts + " uut tudengi koodi.");
+		message.storeMessage(Long.parseLong(taskId), ms.getModel(),
+				"On salvestatud " + attempts + " uut tudengi koodi.");
 		if (attemptsNotFetchedCount > 0) {
-			message.storeMessage(ms.getModel(), attemptsNotFetchedCount + " koodi on salvestamata. Proovige uuesti.");
+			message.storeMessage(Long.parseLong(taskId), ms.getModel(),
+					attemptsNotFetchedCount + " koodi on salvestamata. Proovige uuesti.");
 		}
 	}
 
-	private void renewConstants(Model model, Long taskIdLong) {
+	private void renewConstants(Long taskId, Model model, Long taskIdLong) {
 		Task task = taskDao.findTaskForId(taskIdLong);
 		java.util.Date date = new java.util.Date();
 		task.setLastSyncTime(new Timestamp(date.getTime()));
 		taskDao.store(task);
-		message.storeMessage(model, "Konstandid uuendatud");
+		message.storeMessage(taskId, model, "Konstandid uuendatud");
 	}
 
-	private void logout(Model model, MoodleScraper ms) {
+	private void logout(Long taskId, Model model, MoodleScraper ms) {
 		ms.logout();
-		message.storeMessage(model, "Oleme välja loginud");
+		message.storeMessage(taskId, model, "Oleme välja loginud");
 	}
 
 	@RequestMapping(value = "/analyzetask/{taskId}/{dummy}/{noise}/{match}", method = RequestMethod.POST)

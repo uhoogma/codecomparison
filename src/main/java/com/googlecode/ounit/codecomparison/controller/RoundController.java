@@ -63,8 +63,8 @@ public class RoundController {
 		if (round != null) {
 			if (round.getRoundName().isEmpty()) {
 				MoodleScraperRunner msr = new MoodleScraperRunner();
-				message.storeMessage(model, "Alustame logimist");
-				String name = msr.getRoundName(login, model, round, message);
+				message.storeMessage(0L, model, "Alustame logimist");
+				String name = msr.getRoundName(0L, login, model, round, message);
 				round.setRoundName(name);
 				roundDao.store(round);
 			}

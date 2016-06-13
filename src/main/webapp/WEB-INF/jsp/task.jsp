@@ -57,6 +57,7 @@
 				<p id="messages">Teated</p>
 			</div>
 		</div>
+		<div class="hidden" id="taskId">${taskForm.task.id}</div>
 		<div class="row">
 			<div class="padding">
 				<div class="col-sm-4">

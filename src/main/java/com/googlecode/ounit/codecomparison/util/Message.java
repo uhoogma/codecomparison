@@ -8,13 +8,15 @@ import com.googlecode.ounit.codecomparison.controller.CircularBuffer;
 
 public class Message {
 
-	public void storeMessage(Model model, String message) {
+	public void storeMessage(Long id, Model model, String message) {
 		Map<String, Object> modelMap = model.asMap();
-		CircularBuffer modelValue = (CircularBuffer) modelMap.get("messages");
-		if (modelValue != null) {
-			
-		
-		modelValue.store(message);
+		@SuppressWarnings("unchecked")
+		Map<Long, CircularBuffer> modelMapInner = (Map<Long, CircularBuffer>) modelMap.get("messages");
+		if (modelMapInner != null) {
+			CircularBuffer modelValue = modelMapInner.get(id);
+			if (modelValue != null) {
+				modelValue.store(message);
+			}
 		}
 	}
 }
